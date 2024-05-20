@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SimpleUser extends Person{
+    private String phoneNumber;
     private int securityNumber;
     private String password;
-    private  Account account;
-    private ArrayList<Transaction> transactions;
-    private ArrayList<Contact> contacts;
-    private ArrayList<Request> requests;
+    private Account account;
+    private List<Transaction> transactions;
+    private List<Contact> contacts;
+    private List<Request> requests;
     private boolean contactOption;
     private boolean authenticated;
     private List<Person> recents;
@@ -52,5 +53,13 @@ public class SimpleUser extends Person{
 
     public void setAuthenticated(boolean authenticated) {
         this.authenticated = authenticated;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 }
