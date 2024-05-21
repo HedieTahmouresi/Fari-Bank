@@ -4,8 +4,11 @@ import java.util.List;
 
 public class Admin extends Person{
     private String password;
-    private List<Request> requests;
-    private List<SimpleUser> newUsers;
+    private Data data;
+
+    public Admin(String name, String lastName) {
+        super(name, lastName);
+    }
 
     public String getPassword() {
         return password;
@@ -14,4 +17,13 @@ public class Admin extends Person{
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public Data getData() {
+        return data;
+    }
+
+    public void setData(Data data) {
+        this.data = data;
+    }
 }
+

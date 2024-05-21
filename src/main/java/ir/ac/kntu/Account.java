@@ -44,4 +44,25 @@ public class Account {
         this.accountId = accountId;
     }
 
+    public Account (Person owner, ArrayList<SimpleUser> users){
+        setOwner(owner);
+        setBalance(0);
+        transactions = new ArrayList<>();
+        Random random = new Random();
+        String mask1 = "0000000";
+        DecimalFormat df1 = new DecimalFormat(mask1);
+        String mask2 = "000000";
+        DecimalFormat df2 = new DecimalFormat(mask2);
+        int accountId1;
+        int accountId2;
+        String accountIdString;
+        do{
+            accountId1 = random.nextInt(10000000);
+            accountId2 = random.nextInt(1000000);
+            accountIdString = df1.format(accountId1).concat(df2.format(accountId2));
+        }while(!Input.existsAccountId(accountIdString,users));
+        setAccountId(accountIdString);
+        setCreditCard(new CreditCard(users));
+    }
+
 }

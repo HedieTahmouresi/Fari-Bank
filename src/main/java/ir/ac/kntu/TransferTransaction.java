@@ -2,6 +2,8 @@ package ir.ac.kntu;
 
 public class TransferTransaction extends Transaction{
     private Person reciever;
+    // account id reciever and the sender?
+
 
     public Person getReciever() {
         return reciever;

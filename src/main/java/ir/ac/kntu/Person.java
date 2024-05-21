@@ -22,4 +22,8 @@ public class Person {
         this.lastName = lastName;
     }
 
+    public Person(String name, String lastName) {
+        setName(name);
+        setLastName(lastName);
+    }
 }
