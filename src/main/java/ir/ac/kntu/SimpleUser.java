@@ -165,5 +165,146 @@ public class SimpleUser extends Person {
         return wantedUser;
     }
 
+    public void changeName(){
+        System.out.println("Would you like to change your name? (previous name : " + this.getName() + ")");
+        String ans = Input.inputNextLine();
+        switch (ans){
+            case "yes":
+                System.out.println("Write the name you like!");
+                this.setName(Input.inputNextLine());
+                break;
+            case "no":
+                break;
+            default:
+                if("return".equalsIgnoreCase(ans)){
+                    return;
+                }else if("quit".equalsIgnoreCase(ans)){
+                    System.out.println("Thanks for trusting our bank! Bye Bye");
+                    System.exit(0);
+                } else{
+                    System.out.println("wrong input! try again");
+                }
+        }
+    }
 
+    public void changeLastName(){
+        System.out.println("Would you like to change your Last name? (previous last name : " + this.getSurname() + ")");
+        String ans = Input.inputNextLine();
+        switch (ans){
+            case "yes":
+                System.out.println("Write the last name you like!");
+                this.setSurname(Input.inputNextLine());
+                break;
+            case "no":
+                break;
+            default:
+                if("return".equalsIgnoreCase(ans)){
+                    return;
+                }else if("quit".equalsIgnoreCase(ans)){
+                    System.out.println("Thanks for trusting our bank! Bye Bye");
+                    System.exit(0);
+                } else{
+                    System.out.println("wrong input! try again");
+                }
+        }
+    }
+
+    public void changePhoneNumber(NeoBank neoBank){
+        System.out.println("Would you like to change your phone number? (previous phone number : " + this.getPhoneNumber() + ")");
+        String ans = Input.inputNextLine();
+        switch (ans){
+            case "yes":
+                System.out.println("Write the phone number you have!");
+                String phoneNumber ;
+                do{
+                    phoneNumber = Input.inputNextLine();
+                    if ("return".equalsIgnoreCase(phoneNumber)) {
+                        return;
+                    } else if ("quit".equalsIgnoreCase(phoneNumber)){
+                        System.out.println("Thanks for trusting our bank! Bye Bye!");
+                        System.exit(0);
+                    }
+                }while (!neoBank.existsPhoneNumber(phoneNumber) && !Input.checkPhoneNumber(phoneNumber));
+                this.setPhoneNumber(phoneNumber);
+                break;
+            case "no":
+                break;
+            default:
+                if("return".equalsIgnoreCase(ans)){
+                    return;
+                }else if("quit".equalsIgnoreCase(ans)){
+                    System.out.println("Thanks for trusting our bank! Bye Bye");
+                    System.exit(0);
+                } else{
+                    System.out.println("wrong input! try again");
+                }
+                break;
+        }
+    }
+
+    public void changeSecurityNumber(NeoBank neoBank){
+        System.out.println("Would you like to change your Social security number? (previous social security number : " + this.getSecurityNumber() + ")");
+        String ans = Input.inputNextLine();
+        switch (ans){
+            case "yes":
+                System.out.println("Write the Social security number you have!");
+                String securityNumber;
+                do{
+                    securityNumber = Input.inputNextLine();
+                    if ("return".equalsIgnoreCase(securityNumber)) {
+                        return;
+                    } else if ("quit".equalsIgnoreCase(securityNumber)){
+                        System.out.println("Thanks for trusting our bank! Bye Bye!");
+                        System.exit(0);
+                    }
+                }while (!neoBank.existsPhoneNumber(securityNumber) && !Input.checkPhoneNumber(securityNumber));
+                this.setSecurityNumber(securityNumber);
+                break;
+            case "no":
+                break;
+            default:
+                if("return".equalsIgnoreCase(ans)){
+                    return;
+                }else if("quit".equalsIgnoreCase(ans)){
+                    System.out.println("Thanks for trusting our bank! Bye Bye");
+                    System.exit(0);
+                } else{
+                    System.out.println("wrong input! try again");
+                }
+        }
+    }
+
+    public void changePassword(){
+        System.out.println("Would you like to change your password? (previous password : " + this.getPassword() + ")");
+        String ans = Input.inputNextLine();
+        switch (ans){
+            case "yes":
+                System.out.println("Write the last password you like!");
+                String password;
+                do {
+                    password =Input.inputNextLine();
+                }while (Input.checkPassword(password));
+                this.setPassword(password);
+                break;
+            case "no":
+                break;
+            default:
+                if("return".equalsIgnoreCase(ans)){
+                    return;
+                }else if("quit".equalsIgnoreCase(ans)){
+                    System.out.println("Thanks for trusting our bank! Bye Bye");
+                    System.exit(0);
+                } else{
+                    System.out.println("wrong input! try again");
+                }
+        }
+    }
+
+    public void editSignUpInfo(NeoBank neoBank){
+        this.changeName();
+        this.changeLastName();
+        this.changePhoneNumber(neoBank);
+        this.changeSecurityNumber(neoBank);
+        this.changePassword();
+    }
 }

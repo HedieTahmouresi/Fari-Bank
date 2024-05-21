@@ -45,13 +45,30 @@ public class Menu {
                     if (currentUser!=null) {
                         System.out.println("You have successfully signed in!\n\n");
                         if (currentUser.isAuthenticated()){
-                            serviceMenu(neoBank);
+                            serviceUserMenu(neoBank);
                         } else {
-                            displayServiceMenu();
+                            displayServiceUserMenu();
                             System.out.println("You can't choose any because you have not been authenticated!");
+                            System.out.println("Would you like to edit your info?");
+                            System.out.println("   1.yes");
+                            System.out.println("   2.no");
+                            String input = Input.inputNextLine();
+                            switch (input){
+                                case "1", "yes":
+                                    currentUser.editSignUpInfo(neoBank);
+                                    break;
+                                case "2", "no":
+                                    break;
+                                default:
+                                    if("return".equalsIgnoreCase(input)){
+                                        return;
+                                    } else if("quit".equalsIgnoreCase(input)){
+                                        System.out.println("Thanks for trusting our bank! Bye Bye!");
+                                    } else{
+                                        System.out.println("Wrong input!");
+                                    }
+                            }
                         }
-                    } else{
-                        System.out.println("haha!");
                     }
                     break;
                 case "3", "Return":
@@ -82,7 +99,10 @@ public class Menu {
             answer = Input.inputNextLine();
             switch (answer) {
                 case "1", "Sign In":
-                    //sign in
+                    Admin currAdmin = Admin.signIn(neoBank);
+                    if (currAdmin != null){
+
+                    }
                     break;
                 case "2", "Return":
                     return;
@@ -92,6 +112,7 @@ public class Menu {
                         break;
                     } else{
                         System.out.println("Thanks for trusting our bank! Bye Bye!");
+                        System.exit(0);
                     }
             }
         } while (!answer.equalsIgnoreCase("return"));
@@ -103,10 +124,10 @@ public class Menu {
         System.out.println("   2. Return");
     }
 
-    public static void serviceMenu(NeoBank neoBank){
+    public static void serviceUserMenu(NeoBank neoBank){
         String answer;
         do {
-            displayServiceMenu();
+            displayServiceUserMenu();
             answer = Input.inputNextLine();
             switch (answer) {
                 case "1", "Account Management":
@@ -137,7 +158,7 @@ public class Menu {
         } while (!answer.equalsIgnoreCase("return"));
     }
 
-    public static void displayServiceMenu(){
+    public static void displayServiceUserMenu(){
         System.out.println("Choose : ");
         System.out.println("   1.Account Management");
         System.out.println("   2.Contacts");
@@ -145,5 +166,40 @@ public class Menu {
         System.out.println("   4.Administer");
         System.out.println("   5.Settings");
         System.out.println("   6.Return");
+    }
+
+    public static void serviceAdminMenu(NeoBank neoBank){
+        String answer;
+        do {
+            displayServiceAdminMenu();
+            answer = Input.inputNextLine();
+            switch(answer){
+                case "1", "Authentications":
+                    //list of authentications
+                    break;
+                case "2", "Requests":
+                    //list of requests
+                    break;
+                case "3", "Users":
+                    //list of users
+                    break;
+                case "4", "Return":
+                    return;
+                default:
+                    if (!answer.equalsIgnoreCase("quit")) {
+                        System.out.println("THERE IS NO OTHER OPTION! Please input something else!");
+                        break;
+                    } else{
+                        System.out.println("Thanks for trusting our bank! Bye Bye!");
+                    }
+            }
+        }while (!"quit".equalsIgnoreCase(answer));
+    }
+    public static void displayServiceAdminMenu(){
+        System.out.println("How would you like to assist!");
+        System.out.println("   1.Authentications");
+        System.out.println("   2.Requests");
+        System.out.println("   3.Users");
+        System.out.println("   4.Return");
     }
 }

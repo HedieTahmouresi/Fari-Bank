@@ -26,6 +26,15 @@ public class NeoBank {
         return -1;
     }
 
+    public int getSpecificUserBySSN(String securityNumber){
+        for (int index = 0 ; index < this.simpleUsers.size() ; index++){
+            if (this.getSpecificUser(index).getSecurityNumber().equals(securityNumber)){
+                return index;
+            }
+        }
+        return -1;
+    }
+
 
     public List<Admin> getAdmins() {
         return admins;
@@ -43,11 +52,15 @@ public class NeoBank {
         this.data = data;
     }
 
-    public NeoBank(List<Admin> admins) {
+    public NeoBank() {
         simpleUsers = new ArrayList<>();
         admins = new ArrayList<>();
         tracingNumbers = new ArrayList<>();
         data = new Data();
+    }
+
+    public void addAdmin(Admin admin){
+        this.admins.add(admin);
     }
 
     public void bank() {
