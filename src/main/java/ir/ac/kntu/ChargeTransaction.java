@@ -1,6 +1,6 @@
 package ir.ac.kntu;
 
 
-public class ChargeTransaction extends Transaction{
+public class ChargeTransaction extends Transaction {
 
 }

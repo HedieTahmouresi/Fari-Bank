@@ -1,29 +1,28 @@
 package ir.ac.kntu;
 
-import java.util.Objects;
 
 public class Person {
     private String name;
-    private String lastName;
+    private String surname;
 
     public String getName() {
         return name;
     }
 
-    public String getLastName() {
-        return lastName;
+    public String getSurname() {
+        return surname;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setSurname(String lastName) {
+        this.surname = lastName;
     }
 
-    public Person(String name, String lastName) {
+    public Person(String name, String surame) {
         setName(name);
-        setLastName(lastName);
+        setSurname(surame);
     }
 }

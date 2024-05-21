@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class Data {
     private List<Request> requests;
-    private Map<String,Boolean> authentications;
+    private Map<String, Boolean> authentications;
     private List<SimpleUser> users;
 
     public Data() {
@@ -16,11 +16,11 @@ public class Data {
         this.users = new ArrayList<>();
     }
 
-    public void addAuthentication(String securityNumber){
-        this.authentications.put(securityNumber,false);
+    public void addAuthentication(String securityNumber) {
+        this.authentications.put(securityNumber, false);
     }
 
-    public void removeAuthentication(String securityNumber){
+    public void removeAuthentication(String securityNumber) {
         this.authentications.remove(securityNumber);
     }
 
@@ -30,8 +30,8 @@ public class Data {
         return requests1;
     }
 
-    public Map<String,Boolean> getAuthentications() {
-        Map<String,Boolean> authentications1 = new HashMap<>();
+    public Map<String, Boolean> getAuthentications() {
+        Map<String, Boolean> authentications1 = new HashMap<>();
         authentications1 = this.authentications;
         return authentications1;
     }

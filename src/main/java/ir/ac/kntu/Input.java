@@ -1,6 +1,7 @@
 package ir.ac.kntu;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -8,41 +9,30 @@ import java.util.regex.Pattern;
 public class Input {
     private static Scanner scn;
 
-    public static String inputNextLine(){
+    public static String inputNextLine() {
         scn = new Scanner(System.in);
         return scn.nextLine().trim();
     }
 
-    public static int inputNextInt(){
+    public static int inputNextInt() {
         scn = new Scanner(System.in);
         return scn.nextInt();
     }
 
-    public static boolean checkSecurityNumber(String securityNumber){
+    public static boolean checkSecurityNumber(String securityNumber) {
         String numberRegEx = "^[0-9]{10}$";
         Pattern numberPattern = Pattern.compile(numberRegEx);
         Matcher numberMatcher = numberPattern.matcher(securityNumber);
-        if (!numberMatcher.matches()){
+        if (!numberMatcher.matches()) {
             System.out.println("Invalid Social Security Number Please try again");
             return false;
         }
         return true;
     }
 
-    public static boolean existsSecurityNumber(String securityNumber, ArrayList<SimpleUser> users){
-        if (users.isEmpty()){
-            return true;
-        }
-        for (SimpleUser user : users) {
-            if (user.getSecurityNumber().equals(securityNumber)) {
-                System.out.println("SomeBody with this social security number already an account! Please try again!");
-                return false;
-            }
-        }
-        return true;
-    }
 
-    public static boolean checkPhoneNumber (String phoneNumber){
+
+    public static boolean checkPhoneNumber(String phoneNumber) {
         String phoneRegEx = "^09[0-9]{9}$";
         Pattern phonePattern = Pattern.compile(phoneRegEx);
         Matcher phoneMatcher = phonePattern.matcher(phoneNumber);
@@ -52,21 +42,11 @@ public class Input {
         }
         return true;
     }
-    public static boolean existsPhoneNumber(String phoneNumber, ArrayList<SimpleUser> users){
-        if (users.isEmpty()){
-            return true;
-        }
-        for (SimpleUser user : users) {
-            if (user.getPhoneNumber().equals(phoneNumber)) {
-                System.out.println("SomeBody with this phone number already exists! Please try again!");
-                return false;
-            }
-        }
-        return true;
-    }
 
-    public static boolean checkPassword(String password){
-        if (password.length()<8){
+
+
+    public static boolean checkPassword(String password) {
+        if (password.length() < 8) {
             System.out.println("your password is less than 8 letters!");
             return false;
         }
@@ -82,7 +62,7 @@ public class Input {
         String uniqueRegEx = "@|#|\\$|%|\\^|&|\\*";
         Pattern uniquePattern = Pattern.compile(uniqueRegEx);
         Matcher uniqueMatcher = uniquePattern.matcher(password);
-        if (numMatcher.find() && capitalMatcher.find() && smallMatcher.find() && uniqueMatcher.find()){
+        if (numMatcher.find() && capitalMatcher.find() && smallMatcher.find() && uniqueMatcher.find()) {
             return true;
         }
         System.out.println("weak password! Please try again!");
@@ -90,21 +70,5 @@ public class Input {
         return false;
     }
 
-    public static boolean existsAccountId(String accountId, ArrayList<SimpleUser> users){
-        for (int index = 0 ; index < users.size()-1 ; index++) {
-            if (users.get(index).getAccount().getAccountId().equals(accountId)) {
-                return false;
-            }
-        }
-        return true;
-    }
 
-    public static boolean existsCreditCard(String creditCardId, ArrayList<SimpleUser> users){
-        for (int index = 0 ; index < users.size()-1 ; index++) {
-            if (users.get(index).getAccount().getCreditCard().getCreditCardId().equals(creditCardId)){
-                return false;
-            }
-        }
-        return true;
-    }
 }

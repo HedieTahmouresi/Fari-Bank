@@ -1,11 +1,10 @@
 package ir.ac.kntu;
 
+import java.nio.channels.NonWritableChannelException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-public class SimpleUser extends Person{
+public class SimpleUser extends Person {
     private String phoneNumber;
     private String securityNumber;
     private String password;
@@ -64,55 +63,106 @@ public class SimpleUser extends Person{
         this.phoneNumber = phoneNumber;
     }
 
-    public SimpleUser(String name, String lastName,String phoneNumber, String securityNumber,String password){
-        super(name,lastName);
+    public SimpleUser(String name, String lastName, String phoneNumber, String securityNumber, String password) {
+        super(name, lastName);
         setSecurityNumber(securityNumber);
         setPassword(password);
         setPhoneNumber(phoneNumber);
     }
 
-    public static boolean signUp(ArrayList<SimpleUser> users, Data data){
+    public static void signUp(NeoBank neoBank, Data data) {
         System.out.println("Please Enter your name!");
         String name = Input.inputNextLine();
-        if ("return".equalsIgnoreCase(name)){
-            return false;
+        if ("return".equalsIgnoreCase(name)) {
+            return;
+        } else if ("quit".equalsIgnoreCase(name)){
+            System.exit(0);
         }
         System.out.println("Please Enter your lastname!");
         String lastName = Input.inputNextLine();
-        if ("return".equalsIgnoreCase(lastName)){
-            return false;
+        if ("return".equalsIgnoreCase(lastName)) {
+            return;
+        } else if ("quit".equalsIgnoreCase(lastName)){
+            System.out.println("Thanks for trusting our bank! Bye Bye!");
+            System.exit(0);
         }
         System.out.println("Please Enter your phoneNumber!");
         String input;
-        do{
-            input=Input.inputNextLine();
-            if ("return".equalsIgnoreCase(input)){
-                return false;
+        do {
+            input = Input.inputNextLine();
+            if ("return".equalsIgnoreCase(input)) {
+                return;
+            } else if ("quit".equalsIgnoreCase(input)){
+                System.out.println("Thanks for trusting our bank! Bye Bye!");
+                System.exit(0);
             }
-        }while(!Input.checkPhoneNumber(input) || !Input.existsPhoneNumber(input,users));
+        } while (!Input.checkPhoneNumber(input) || !neoBank.existsPhoneNumber(input));
         String phoneNumber = input;
         System.out.println("Please Enter your social security number!");
-        do{
-            input =Input.inputNextLine();
-            if ("return".equalsIgnoreCase(input)){
-                return false;
+        do {
+            input = Input.inputNextLine();
+            if ("return".equalsIgnoreCase(input)) {
+                return;
+            } else if ("quit".equalsIgnoreCase(input)){
+                System.out.println("Thanks for trusting our bank! Bye Bye!");
+                System.exit(0);
             }
-        }while(!Input.checkSecurityNumber(input));
+        } while (!Input.checkSecurityNumber(input) || !neoBank.existsSecurityNumber(input));
         String securityNumber = input;
         System.out.println("Please Enter your password!");
-        do{
-            input=Input.inputNextLine();
-            if ("return".equalsIgnoreCase(input)){
-                return false;
+        do {
+            input = Input.inputNextLine();
+            if ("return".equalsIgnoreCase(input)) {
+                return;
+            } else if ("quit".equalsIgnoreCase(input)){
+                System.out.println("Thanks for trusting our bank! Bye Bye!");
+                System.exit(0);
             }
-        }while(!Input.checkPassword(input));
+        } while (!Input.checkPassword(input));
         String password = input;
-        SimpleUser newUser = new SimpleUser(name,lastName,phoneNumber,securityNumber,password);
-        users.add(newUser);
-        newUser.setAccount(new Account(newUser, users));
+        SimpleUser newUser = new SimpleUser(name, lastName, phoneNumber, securityNumber, password);
+        neoBank.addSimpleUsers(newUser);
         data.addAuthentication(securityNumber);
-        System.out.println("You have successfully signed up! Please sign in with your phone number and password later!");
-        return true;
+        System.out.println("You have successfully signed up! Please sign in to access your account!\n\n");
+        return;
+    }
+
+    public static SimpleUser getUserByPhone(NeoBank neoBank){
+        System.out.println("Please Enter your phoneNumber!");
+        String phoneNumber;
+        int userIndex;
+        do{
+            phoneNumber = Input.inputNextLine();
+            userIndex = neoBank.getSpecificUser(phoneNumber);
+            if ("return".equalsIgnoreCase(phoneNumber)){
+                return null;
+            } else if ("quit".equalsIgnoreCase(phoneNumber)){
+                System.out.println("Thanks for trusting our bank! Bye Bye!");
+                System.exit(0);
+            } else if (userIndex==-1){
+                System.out.println("This phone number doesn't exist in our database!");
+            }
+        }while(userIndex==-1);
+        return neoBank.getSpecificUser(userIndex);
+    }
+    public static SimpleUser signIn(NeoBank neoBank, Data data) {
+        SimpleUser wantedUser = getUserByPhone(neoBank);
+        if (wantedUser==null){
+            return null;
+        }
+        String password;
+        do{
+            password=Input.inputNextLine();
+            if ("return".equalsIgnoreCase(password)){
+                return null;
+            } else if("quit".equalsIgnoreCase(password)){
+                System.out.println("Thanks for trusting our bank! Bye Bye!");
+                System.exit(0);
+            } else if(!password.equals(wantedUser.getPassword())){
+                System.out.println("Wrong password! if you would like to change the phone number return to the previous menu!");
+            }
+        }while(!password.equals(wantedUser.getPassword()));
+        return wantedUser;
     }
 
 

@@ -1,6 +1,6 @@
 package ir.ac.kntu;
 
-public class TransferTransaction extends Transaction{
+public class TransferTransaction extends Transaction {
     private Person reciever;
     // account id reciever and the sender?
 

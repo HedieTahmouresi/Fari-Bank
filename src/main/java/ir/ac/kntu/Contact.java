@@ -1,6 +1,6 @@
 package ir.ac.kntu;
 
-public class Contact extends Person{
+public class Contact extends Person {
     private String phoneNumber;
 
     public Contact(String name, String lastName) {

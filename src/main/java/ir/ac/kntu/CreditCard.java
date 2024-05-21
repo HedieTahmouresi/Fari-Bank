@@ -2,6 +2,7 @@ package ir.ac.kntu;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class CreditCard {
@@ -33,17 +34,17 @@ public class CreditCard {
         this.havePassword = havePassword;
     }
 
-    public CreditCard(ArrayList<SimpleUser> users){
+    public CreditCard(NeoBank neoBank) {
         Random random = new Random();
         long creditCard;
         String creditCardString;
         String mask = "00000000";
-        DecimalFormat df = new DecimalFormat(mask);
-        do{
+        DecimalFormat decimalFormat = new DecimalFormat(mask);
+        do {
             creditCardString = "21995282";
             creditCard = random.nextLong(100000000);
-            creditCardString = creditCardString.concat(df.format(creditCard));
-        }while (!Input.existsCreditCard(creditCardString,users));
+            creditCardString = creditCardString.concat(decimalFormat.format(creditCard));
+        } while (!neoBank.existsCreditCard(creditCardString));
         setCreditCardId(creditCardString);
         setHavePassword(false);
     }
