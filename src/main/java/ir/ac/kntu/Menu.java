@@ -67,6 +67,7 @@ public class Menu {
                                     } else{
                                         System.out.println("Wrong input!");
                                     }
+                                    break;
                             }
                         }
                     }
@@ -101,7 +102,7 @@ public class Menu {
                 case "1", "Sign In":
                     Admin currAdmin = Admin.signIn(neoBank);
                     if (currAdmin != null){
-
+                        serviceAdminMenu(neoBank);
                     }
                     break;
                 case "2", "Return":
@@ -175,7 +176,7 @@ public class Menu {
             answer = Input.inputNextLine();
             switch(answer){
                 case "1", "Authentications":
-                    //list of authentications
+                    neoBank.getData().selectUser(neoBank);
                     break;
                 case "2", "Requests":
                     //list of requests
@@ -192,6 +193,7 @@ public class Menu {
                     } else{
                         System.out.println("Thanks for trusting our bank! Bye Bye!");
                     }
+                    break;
             }
         }while (!"quit".equalsIgnoreCase(answer));
     }

@@ -57,5 +57,7 @@ public class Admin extends Person {
         } while (!password.equals(wantedAdmin.getPassword()));
         return wantedAdmin;
     }
+
+
 }
 
