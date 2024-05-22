@@ -2,7 +2,10 @@ package ir.ac.kntu;
 
 public class TransferTransaction extends Transaction {
     private Person receiver;
-    
+
+    public TransferTransaction(int value, int tracingNumber) {
+        super(value, tracingNumber);
+    }
 
 
     public Person getReceiver() {
@@ -12,6 +15,5 @@ public class TransferTransaction extends Transaction {
     public void setReceiver(Person receiver) {
         this.receiver = receiver;
     }
-
 
 }

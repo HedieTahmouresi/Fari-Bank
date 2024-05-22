@@ -1,16 +1,14 @@
 package ir.ac.kntu;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class Account {
     private CreditCard creditCard;
     private String accountId;
     private Person owner;
     private int balance;
-    private List<Transaction> transactions;
+    private List<Map<String, Transaction>> transactions;
 
     public CreditCard getCreditCard() {
         return creditCard;
@@ -67,10 +65,10 @@ public class Account {
 
     public void showBalance(){
         System.out.println("Here is your Balance: ");
-        System.out.println("    *" + this.getBalance() + "*   ");
+        System.out.println("*" + this.getBalance()+ "$");
     }
 
-    public void charge(){
+    public void charge(NeoBank neoBank){
         System.out.println("How much would you like to charge your account?");
         String answer;
         do{
@@ -84,10 +82,23 @@ public class Account {
                 System.out.println("Wrong input! Try again!");
             } else{
                 this.setBalance(this.getBalance()+Integer.parseInt(answer));
+                Map<String, Transaction> map= new HashMap<>();
+                map.put("charge",new Transaction(Integer.parseInt(answer), neoBank.getTracingNumber()));
+                transactions.add(0,map);
+                neoBank.setTracingNumber(neoBank.getTracingNumber()+1);
                 System.out.println("Account successfully charged!");
                 return;
             }
         }while (!"return".equalsIgnoreCase(answer));
     }
 
+    public void showTransaction(NeoBank neoBank){
+        int index = 1;
+        for (Map<String, Transaction> transaction: transactions){
+            for (Map.Entry<String, Transaction> entry : transaction.entrySet()){
+                System.out.println(index + ". Transaction Type: " + entry.getKey() + entry.getValue().toString());
+                index++;
+            }
+        }
+    }
 }

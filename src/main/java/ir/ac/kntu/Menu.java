@@ -218,13 +218,13 @@ public class Menu {
             answer = Input.inputNextLine();
             switch(answer){
                 case "1", "Charge Account":
-                    user.getAccount().charge();
+                    user.getAccount().charge(neoBank);
                     break;
                 case "2", "Check Balance":
                     user.getAccount().showBalance();
                     break;
                 case "3", "See Transactions":
-                    //list of users
+                    user.getAccount().showTransaction(neoBank);
                     break;
                 case "4", "Return":
                     return;

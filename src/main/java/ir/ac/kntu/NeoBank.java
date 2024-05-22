@@ -2,12 +2,13 @@ package ir.ac.kntu;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class NeoBank {
     private List<SimpleUser> simpleUsers;
     private List<Admin> admins;
-    private List<String> tracingNumbers;
     private Data data;
+    private int tracingNumber;
 
     public void addSimpleUsers(SimpleUser user) {
         this.simpleUsers.add(user);
@@ -36,14 +37,6 @@ public class NeoBank {
     }
 
 
-    public List<Admin> getAdmins() {
-        return admins;
-    }
-
-    public List<String> getTracingNumbers() {
-        return tracingNumbers;
-    }
-
     public Data getData() {
         return data;
     }
@@ -55,7 +48,8 @@ public class NeoBank {
     public NeoBank() {
         simpleUsers = new ArrayList<>();
         admins = new ArrayList<>();
-        tracingNumbers = new ArrayList<>();
+        Random random = new Random();
+        tracingNumber = random.nextInt(8999999);
         data = new Data();
     }
 
@@ -126,5 +120,13 @@ public class NeoBank {
 
     public Admin getSpecificAdmin(int index){
         return this.admins.get(index);
+    }
+
+    public int getTracingNumber() {
+        return tracingNumber;
+    }
+
+    public void setTracingNumber(int tracingNumber) {
+        this.tracingNumber = tracingNumber;
     }
 }
