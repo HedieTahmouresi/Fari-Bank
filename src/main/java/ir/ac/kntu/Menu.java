@@ -20,9 +20,11 @@ public class Menu {
                         System.out.println("THERE IS NO OTHER ROLE! Please retry!");
                         break;
                     }
+                    break;
             }
         } while (!"quit".equalsIgnoreCase(answer));
-        System.out.println("Thanks for using our bank!");
+        System.out.println("Thanks for trusting our bank! Bye Bye!");
+        System.exit(0);
     }
 
     public static void displayMainMenu(){
@@ -45,7 +47,7 @@ public class Menu {
                     if (currentUser!=null) {
                         System.out.println("You have successfully signed in!\n\n");
                         if (currentUser.isAuthenticated()){
-                            serviceUserMenu(neoBank);
+                            serviceUserMenu(neoBank, currentUser);
                         } else {
                             displayServiceUserMenu();
                             System.out.println("You can't choose any because you have not been authenticated!");
@@ -64,6 +66,7 @@ public class Menu {
                                         return;
                                     } else if("quit".equalsIgnoreCase(input)){
                                         System.out.println("Thanks for trusting our bank! Bye Bye!");
+                                        System.exit(0);
                                     } else{
                                         System.out.println("Wrong input!");
                                     }
@@ -125,14 +128,14 @@ public class Menu {
         System.out.println("   2. Return");
     }
 
-    public static void serviceUserMenu(NeoBank neoBank){
+    public static void serviceUserMenu(NeoBank neoBank, SimpleUser user){
         String answer;
         do {
             displayServiceUserMenu();
             answer = Input.inputNextLine();
             switch (answer) {
                 case "1", "Account Management":
-                    //account management
+                    managementMenu(user, neoBank);
                     break;
                 case "2", "Contacts":
                     //contacts
@@ -154,6 +157,7 @@ public class Menu {
                         break;
                     } else{
                         System.out.println("Thanks for trusting our bank! Bye Bye!");
+                        System.exit(0);
                     }
             }
         } while (!answer.equalsIgnoreCase("return"));
@@ -192,16 +196,56 @@ public class Menu {
                         break;
                     } else{
                         System.out.println("Thanks for trusting our bank! Bye Bye!");
+                        System.exit(0);
                     }
                     break;
             }
         }while (!"quit".equalsIgnoreCase(answer));
     }
+
     public static void displayServiceAdminMenu(){
         System.out.println("How would you like to assist!");
         System.out.println("   1.Authentications");
         System.out.println("   2.Requests");
         System.out.println("   3.Users");
+        System.out.println("   4.Return");
+    }
+
+    public static void managementMenu(SimpleUser user, NeoBank neoBank){
+        String answer;
+        do {
+            displayManagementMenu();
+            answer = Input.inputNextLine();
+            switch(answer){
+                case "1", "Charge Account":
+                    user.getAccount().charge();
+                    break;
+                case "2", "Check Balance":
+                    user.getAccount().showBalance();
+                    break;
+                case "3", "See Transactions":
+                    //list of users
+                    break;
+                case "4", "Return":
+                    return;
+                default:
+                    if (!answer.equalsIgnoreCase("quit")) {
+                        System.out.println("THERE IS NO OTHER OPTION! Please input something else!");
+                        break;
+                    } else{
+                        System.out.println("Thanks for trusting our bank! Bye Bye!");
+                        System.exit(0);
+                    }
+                    break;
+            }
+        }while (!"quit".equalsIgnoreCase(answer));
+    }
+
+    public static void displayManagementMenu(){
+        System.out.println("What do you want to do?");
+        System.out.println("   1.Charge Account");
+        System.out.println("   2.Check Balance");
+        System.out.println("   3.See Transactions");
         System.out.println("   4.Return");
     }
 }

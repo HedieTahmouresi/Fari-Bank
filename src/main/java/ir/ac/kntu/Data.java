@@ -41,6 +41,7 @@ public class Data {
         List<String> securityNumbers = new ArrayList<>();
         if(this.authentications.isEmpty()){
             System.out.println("There are no authentication requests");
+            return null;
         }
         for (Map.Entry<String, Boolean> entry : this.authentications.entrySet()){
             String key = entry.getKey();
@@ -56,6 +57,9 @@ public class Data {
         List<String> securityNumbers = new ArrayList<>();
         do{
             securityNumbers = this.displayAuthentications();
+            if (securityNumbers==null){
+                return;
+            }
             input=Input.inputNextLine();
             if ("quit".equalsIgnoreCase(input)) {
                 System.out.println("Thanks for trusting our bank! Bye Bye!");
@@ -95,6 +99,7 @@ public class Data {
             user.setAuthenticated(true);
             this.removeAuthentication(securityNumber);
             System.out.println("User successfully authenticated!");
+            user.setAccount(new Account(user, neoBank));
         }else if("quit".equalsIgnoreCase(answer)){
             System.out.println("Thanks for trusting our Bank! Bye Bye!");
             System.exit(0);

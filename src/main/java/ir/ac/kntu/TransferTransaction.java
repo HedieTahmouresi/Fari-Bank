@@ -1,16 +1,16 @@
 package ir.ac.kntu;
 
 public class TransferTransaction extends Transaction {
-    private Person reciever;
-    // account id reciever and the sender?
+    private Person receiver;
+    
 
 
-    public Person getReciever() {
-        return reciever;
+    public Person getReceiver() {
+        return receiver;
     }
 
-    public void setReciever(Person reciever) {
-        this.reciever = reciever;
+    public void setReceiver(Person receiver) {
+        this.receiver = receiver;
     }
 
 

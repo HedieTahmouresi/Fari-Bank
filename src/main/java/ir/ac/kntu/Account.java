@@ -65,4 +65,29 @@ public class Account {
         setCreditCard(new CreditCard(neoBank));
     }
 
+    public void showBalance(){
+        System.out.println("Here is your Balance: ");
+        System.out.println("    *" + this.getBalance() + "*   ");
+    }
+
+    public void charge(){
+        System.out.println("How much would you like to charge your account?");
+        String answer;
+        do{
+            answer = Input.inputNextLine();
+            if ("quit".equalsIgnoreCase(answer)){
+                System.out.println("Thanks for trusting our bank! Bye Bye!");
+                System.exit(0);
+            }else if("return".equalsIgnoreCase(answer)){
+                return;
+            }else if(!answer.matches("-?\\d+(\\.\\d+)?")){
+                System.out.println("Wrong input! Try again!");
+            } else{
+                this.setBalance(this.getBalance()+Integer.parseInt(answer));
+                System.out.println("Account successfully charged!");
+                return;
+            }
+        }while (!"return".equalsIgnoreCase(answer));
+    }
+
 }

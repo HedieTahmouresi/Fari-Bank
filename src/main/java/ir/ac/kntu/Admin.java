@@ -36,6 +36,7 @@ public class Admin extends Person {
             if ("return".equalsIgnoreCase(userName)){
                 return null;
             } else if("quit".equalsIgnoreCase(userName)){
+                System.out.println("Thanks for trusting our bank! Bye Bye!");
                 System.exit(0);
             }
             wantedAdmin = neoBank.getSpecificAdmin(userName);
@@ -50,6 +51,7 @@ public class Admin extends Person {
             if ("return".equalsIgnoreCase(password)){
                 return null;
             } else if("quit".equalsIgnoreCase(password)){
+                System.out.println("Thanks for trusting our bank! Bye Bye!");
                 System.exit(0);
             }else if (!password.equals(wantedAdmin.getPassword())){
                 System.out.println("Wrong Password! If you would like to change the user name return to the previous menu");
