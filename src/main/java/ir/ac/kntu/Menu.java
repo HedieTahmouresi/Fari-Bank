@@ -266,6 +266,7 @@ public class Menu {
                     if(currContact!=null){
                         currContact.showInfo();
                         currContact.changeContactInfo(neoBank, user);
+                        currContact.deleteContact(user);
                     }
                     break;
                 case "3", "Return":

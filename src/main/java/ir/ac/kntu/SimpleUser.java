@@ -20,6 +20,10 @@ public class SimpleUser extends Person {
         return this.contacts.size();
     }
 
+    public void removeContact(Contact contact){
+        this.contacts.remove(contact);
+    }
+
     public Contact getSpecificContact(int index){
         return this.contacts.get(index);
     }

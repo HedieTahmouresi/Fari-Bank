@@ -120,7 +120,7 @@ public class Contact extends Person {
                     do{
                         phoneNumber = Input.inputNextLine();
                         if ("return".equalsIgnoreCase(phoneNumber)) {
-                            return false;
+                            return;
                         } else if ("quit".equalsIgnoreCase(phoneNumber)){
                             System.out.println("Thanks for trusting our bank! Bye Bye!");
                             System.exit(0);
@@ -165,6 +165,30 @@ public class Contact extends Person {
                     System.out.println("Thanks for trusting our bank! Bye Bye!");
                     System.exit(0);
                 } else{
+                    System.out.println("Wrong input!");
+                }
+                break;
+        }
+    }
+
+    public void deleteContact(SimpleUser user){
+        System.out.println("Would you like to delete your contact?");
+        System.out.println("   1.yes");
+        System.out.println("   2.no");
+        String input = Input.inputNextLine();
+        switch (input) {
+            case "1", "yes":
+                user.removeContact(this);
+                break;
+            case "2", "no":
+                break;
+            default:
+                if ("return".equalsIgnoreCase(input)) {
+                    return;
+                } else if ("quit".equalsIgnoreCase(input)) {
+                    System.out.println("Thanks for trusting our bank! Bye Bye!");
+                    System.exit(0);
+                } else {
                     System.out.println("Wrong input!");
                 }
                 break;
