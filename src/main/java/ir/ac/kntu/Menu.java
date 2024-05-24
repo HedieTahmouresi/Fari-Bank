@@ -144,7 +144,7 @@ public class Menu {
                     user.getAccount().transferMoney(neoBank);
                     break;
                 case "4", "Administer":
-                    //backup
+                    administerMenu(neoBank, user);
                     break;
                 case "5", "Settings":
                     //settings
@@ -289,5 +289,39 @@ public class Menu {
         System.out.println("   1.Add Contact");
         System.out.println("   2.Show Contact list");
         System.out.println("   3.Return");
+    }
+
+    public static void administerMenu(NeoBank neoBank, SimpleUser user){
+        String answer;
+        do {
+            displayAdministerMenu();
+            answer = Input.inputNextLine();
+            switch(answer){
+                case "1", "Add Request":
+                    Request.createRequest(neoBank, user);
+                    break;
+                case "2", "Show Request list":
+                    Request.selectRequest(neoBank, user);
+                    break;
+                case "3", "Return":
+                    return;
+                default:
+                    if (!answer.equalsIgnoreCase("quit")) {
+                        System.out.println("THERE IS NO OTHER OPTION! Please input something else!");
+                        break;
+                    } else{
+                        System.out.println("Thanks for trusting our bank! Bye Bye!");
+                        System.exit(0);
+                    }
+                    break;
+            }
+        }while (!"quit".equalsIgnoreCase(answer));
+    }
+
+    public static void displayAdministerMenu(){
+        System.out.println("How can we help you?");
+        System.out.println("   1. Add Request");
+        System.out.println("   2. Show Request list");
+        System.out.println("   3. Return");
     }
 }

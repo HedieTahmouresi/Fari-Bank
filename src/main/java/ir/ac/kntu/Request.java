@@ -1,5 +1,8 @@
 package ir.ac.kntu;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Request {
     private String request;
     private String answer;
@@ -26,6 +29,7 @@ public class Request {
         return status;
     }
 
+
     public void setStatus(RequestStatus status) {
         this.status = status;
     }
@@ -36,5 +40,115 @@ public class Request {
 
     public void setSection(RequestSection section) {
         this.section = section;
+    }
+
+    public Request(String request, RequestSection section){
+        setRequest(request);
+        setSection(section);
+        setAnswer("No answer");
+        setStatus(RequestStatus.NOTED);
+    }
+
+    public static void displaySections(){
+        System.out.println("What section is your problem?");
+        System.out.println("   1. Account Management");
+        System.out.println("   2. Contacts");
+        System.out.println("   3. Transfer");
+        System.out.println("   4. Settings");
+        System.out.println("   5. Return");
+    }
+
+    public static RequestSection createRequestSection(){
+        String answer;
+        do {
+            displaySections();
+            answer = Input.inputNextLine();
+            switch(answer){
+                case "1", "Account Management":
+                    return RequestSection.MANAGEMENT;
+                case "2", "Contacts":
+                    return RequestSection.CONTACTS;
+                case "3", "Transfer":
+                    return RequestSection.TRANSFER;
+                case "4", "Settings":
+                    return RequestSection.SETTINGS;
+                case "5", "Return":
+                    return null;
+                default:
+                    if (!answer.equalsIgnoreCase("quit")) {
+                        System.out.println("THERE IS NO OTHER OPTION! Please input something else!");
+                    } else{
+                        System.out.println("Thanks for trusting our bank! Bye Bye!");
+                        System.exit(0);
+                    }
+                    break;
+            }
+        }while (!"quit".equalsIgnoreCase(answer));
+        return null;
+    }
+
+    public static void createRequest(NeoBank neoBank, SimpleUser user){
+        RequestSection section1 = createRequestSection();
+        System.out.println("Please Enter your problem.");
+        String text = Input.inputNextLine();
+        if ("return".equalsIgnoreCase(text)) {
+            return;
+        } else if ("quit".equalsIgnoreCase(text)){
+            System.out.println("Thanks for trusting our bank! Bye Bye!");
+            System.exit(0);
+        }
+        Request newRequest = new Request(text, section1);
+        neoBank.getData().addRequest(newRequest, user.getSecurityNumber());
+        user.addRequest(newRequest);
+        System.out.println("Request successfully noted!");
+    }
+
+    @Override
+    public String toString() {
+        return "Request{" +
+                " Section=" + this.getSection() +
+                ", Status=" + this.getStatus() +
+                '}';
+    }
+
+    public static void showRequests(SimpleUser user){
+        for (int index = 1 ; index < user.requestSize()+1 ; index++){
+            System.out.println(index + ". " + user.getRequest(index).toString());
+        }
+    }
+
+    public static void selectRequest(NeoBank neoBank, SimpleUser user){
+        String input;
+        do{
+            showRequests(user);
+            if (user.requestSize()==0){
+                return;
+            }
+            input=Input.inputNextLine();
+            if ("quit".equalsIgnoreCase(input)) {
+                System.out.println("Thanks for trusting our bank! Bye Bye!");
+                System.exit(0);
+            } else if ("return".equalsIgnoreCase(input)){
+                return;
+            }else if (!input.matches("[0-9]+")){
+                System.out.println("Wrong input try again!");
+            }else if (Integer.parseInt(input)>0 && Integer.parseInt(input)<user.requestSize()+1){
+                for (int index = 1 ; index < user.requestSize() + 1 ; index++){
+                    if (input.equals(Integer.toString(index))){
+                        user.getRequest(index-1).showRequestInfo();
+                        return;
+                    }
+                }
+            } else{
+                System.out.println("Wrong input try again!");
+            }
+        }while (!"retrun".equalsIgnoreCase(input));
+    }
+
+    public void showRequestInfo(){
+        System.out.println("Request Section : "+ this.getSection());
+        System.out.println("Problem : " + this.getRequest());
+        System.out.println("Request Status : " + this.getStatus());
+        System.out.println("Admins Answer : " + this.getAnswer());
     }
 }

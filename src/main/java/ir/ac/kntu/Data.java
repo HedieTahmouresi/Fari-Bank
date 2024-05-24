@@ -6,12 +6,12 @@ import java.util.List;
 import java.util.Map;
 
 public class Data {
-    private List<Request> requests;
+    private Map<String, Request> requests;
     private Map<String, Boolean> authentications;
     private List<SimpleUser> users;
 
     public Data() {
-        this.requests = new ArrayList<>();
+        this.requests = new HashMap<>();
         this.authentications = new HashMap<>();
         this.users = new ArrayList<>();
     }
@@ -24,16 +24,8 @@ public class Data {
         this.authentications.remove(securityNumber);
     }
 
-    public List<Request> getRequests() {
-        List<Request> requests1 = new ArrayList<>();
-        requests1 = this.requests;
-        return requests1;
-    }
-
-    public Map<String, Boolean> getAuthentications() {
-        Map<String, Boolean> authentications1 = new HashMap<>();
-        authentications1 = this.authentications;
-        return authentications1;
+    public void addRequest(Request request, String securityNumber){
+        this.requests.put(securityNumber, request);
     }
 
     public List<String> displayAuthentications(){

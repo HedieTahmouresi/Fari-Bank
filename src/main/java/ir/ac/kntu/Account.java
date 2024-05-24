@@ -127,8 +127,6 @@ public class Account {
 
     public void selectTransaction(NeoBank neoBank){
         String input;
-        List<String> securityNumbers = new ArrayList<>();
-        Contact currContact;
         do{
             this.showTransaction(neoBank);
             if (this.transactionsSize() == 0){
