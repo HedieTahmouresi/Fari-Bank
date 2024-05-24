@@ -138,7 +138,11 @@ public class Menu {
                     managementMenu(user, neoBank);
                     break;
                 case "2", "Contacts":
-                    contactMenu(neoBank, user);
+                    if (user.isContactOption()) {
+                        contactMenu(neoBank, user);
+                    } else{
+                        System.out.println("You can't choose this option!");
+                    }
                     break;
                 case "3", "Transferring Money":
                     user.getAccount().transferMoney(neoBank);
@@ -338,7 +342,7 @@ public class Menu {
                     user.getAccount().getCreditCard().changeCreditCardPassword();
                     break;
                 case "3", "Contact Option":
-                    //list of users
+                    user.changeContactOption();
                     break;
                 case "4", "Return":
                     return;
