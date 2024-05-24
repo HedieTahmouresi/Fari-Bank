@@ -71,7 +71,7 @@ public class TransferTransaction extends Transaction {
         if (!this.isByContact()){
             System.out.println("FullName sender : " + this.getSender().getName() +" " +  this.getSender().getSurname());
             System.out.println("Account ID sender : " + this.getSender().getAccount().getAccountId());
-            if(!Contact.existsContact(this.getSender(), neoBank.getUserByAccountId(this.getReceiverInfo()).getPhoneNumber()) && !this.isReceiver()){
+            if(!Contact.existsContact(this.getSender(), neoBank.getUserByAccountId(this.getReceiverInfo()).getPhoneNumber()) && !this.isReceiver() && neoBank.getUserByAccountId(this.getReceiverInfo()).isContactOption()){
                 Contact currContact = Contact.getContact(this.getSender(), neoBank.getUserByAccountId(this.getReceiverInfo()).getPhoneNumber());
                 System.out.println("FullName receiver : " +  currContact.getName() +" " + currContact.getSurname());
             } else{
