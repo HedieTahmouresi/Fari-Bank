@@ -2,7 +2,9 @@ package ir.ac.kntu;
 
 import java.nio.channels.NonWritableChannelException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SimpleUser extends Person {
     private String phoneNumber;
@@ -13,8 +15,18 @@ public class SimpleUser extends Person {
     private List<Request> requests;
     private boolean contactOption;
     private boolean authenticated;
-    private List<Person> recents;
 
+    public int contactSize(){
+        return this.contacts.size();
+    }
+
+    public Contact getSpecificContact(int index){
+        return this.contacts.get(index);
+    }
+
+    public void addContact(Contact newContact){
+        this.contacts.add(newContact);
+    }
     public String getSecurityNumber() {
         return securityNumber;
     }
@@ -68,6 +80,8 @@ public class SimpleUser extends Person {
         setSecurityNumber(securityNumber);
         setPassword(password);
         setPhoneNumber(phoneNumber);
+        this.contacts = new ArrayList<>();
+        this.requests = new ArrayList<>();
     }
 
     public static void signUp(NeoBank neoBank, Data data) {
@@ -76,6 +90,7 @@ public class SimpleUser extends Person {
         if ("return".equalsIgnoreCase(name)) {
             return;
         } else if ("quit".equalsIgnoreCase(name)){
+            System.out.println("Thanks for trusting our bank! Bye Bye!");
             System.exit(0);
         }
         System.out.println("Please Enter your lastname!");
@@ -128,7 +143,7 @@ public class SimpleUser extends Person {
     }
 
     public static SimpleUser getUserByPhone(NeoBank neoBank){
-        System.out.println("Please Enter your phoneNumber!");
+        System.out.println("Please Enter the phoneNumber!");
         String phoneNumber;
         int userIndex;
         do{
@@ -189,7 +204,7 @@ public class SimpleUser extends Person {
                             System.out.println("Thanks for trusting our bank! Bye Bye!");
                             System.exit(0);
                         }
-                    }while (!neoBank.existsPhoneNumber(phoneNumber) && !Input.checkPhoneNumber(phoneNumber));
+                    }while (!neoBank.existsPhoneNumber(phoneNumber) || !Input.checkPhoneNumber(phoneNumber));
                     this.setPhoneNumber(phoneNumber);
                     break;
                 }else{
@@ -273,5 +288,15 @@ public class SimpleUser extends Person {
         this.changeSecurityNumber(neoBank);
         this.changePassword();
         System.out.println("Sign Up info changed!");
+    }
+
+    public void showContacts(){
+        for (int index = 1 ; index <= this.contacts.size()+1 ; index++){
+            if (index == this.contacts.size()+1){
+                break;
+            }
+            System.out.print(index);
+            System.out.println(this.contacts.get(index-1).toString());
+        }
     }
 }

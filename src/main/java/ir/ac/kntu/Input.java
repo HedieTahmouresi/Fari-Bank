@@ -1,7 +1,5 @@
 package ir.ac.kntu;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -59,7 +57,7 @@ public class Input {
         String smallRegEx = "[a-z]";
         Pattern smallPattern = Pattern.compile(smallRegEx);
         Matcher smallMatcher = smallPattern.matcher(password);
-        String uniqueRegEx = "@|#|\\$|%|\\^|&|\\*";
+        String uniqueRegEx = "[@#$%^&*]";
         Pattern uniquePattern = Pattern.compile(uniqueRegEx);
         Matcher uniqueMatcher = uniquePattern.matcher(password);
         if (numMatcher.find() && capitalMatcher.find() && smallMatcher.find() && uniqueMatcher.find()) {
@@ -70,5 +68,13 @@ public class Input {
         return false;
     }
 
-
+    public static boolean checkAccountID(String accountID){
+        String regexID = "[0-9]{13}";
+        Pattern patternID = Pattern.compile(regexID);
+        Matcher matcherID = patternID.matcher(accountID);
+        if (matcherID.matches()){
+            return true;
+        }
+        return false;
+    }
 }

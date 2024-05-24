@@ -6,8 +6,17 @@ import java.time.*;
 
 public class Transaction {
     private Instant dateAndTime;
-    private int value;
+    private double value;
     private int tracingNumber;
+    private String sign;
+
+    public String getSign() {
+        return sign;
+    }
+
+    public void setSign(String sign) {
+        this.sign = sign;
+    }
 
     public Instant getDateAndTime() {
         return dateAndTime;
@@ -17,11 +26,11 @@ public class Transaction {
         this.dateAndTime = dateAndTime;
     }
 
-    public int getValue() {
+    public double getValue() {
         return value;
     }
 
-    public void setValue(int value) {
+    public void setValue(double value) {
         this.value = value;
     }
 
@@ -33,18 +42,26 @@ public class Transaction {
         this.tracingNumber = tracingNumber;
     }
 
-    public Transaction(int value, int tracingNumber) {
+    public Transaction(double value, int tracingNumber, String sign) {
         setValue(value);
         setTracingNumber(tracingNumber);
         setDateAndTime(Calendar.now());
+        setSign(sign);
+    }
+
+    public void showInfo(){
+        ZonedDateTime zonedDateTime = dateAndTime.atZone(ZoneId.systemDefault());
+        LocalDate datePart = zonedDateTime.toLocalDate();
+        LocalTime timePart = zonedDateTime.toLocalTime();
+        System.out.println("Transaction : ");
+        System.out.println("Value: "+this.getSign() + this.getValue());
+        System.out.println("Date: " + datePart  + "Time: "+ timePart);
+        System.out.println("Tracing Number: " + this.getTracingNumber());
     }
 
     @Override
     public String toString() {
-        ZonedDateTime zonedDateTime = dateAndTime.atZone(ZoneId.systemDefault());
-        LocalDate datePart = zonedDateTime.toLocalDate();
-        LocalTime timePart = zonedDateTime.toLocalTime();
-        return ", Date : " +datePart +", Time : " + timePart+
+        return ", Date and Time " + this.getDateAndTime() +
                 ", Value : " + this.getValue() +
                 ", Tracing Number : " + this.getTracingNumber();
     }

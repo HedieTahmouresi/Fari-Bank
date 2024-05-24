@@ -138,10 +138,10 @@ public class Menu {
                     managementMenu(user, neoBank);
                     break;
                 case "2", "Contacts":
-                    //contacts
+                    contactMenu(neoBank, user);
                     break;
                 case "3", "Transferring Money":
-                    //transfer
+                    user.getAccount().transferMoney(neoBank);
                     break;
                 case "4", "Administer":
                     //backup
@@ -224,9 +224,11 @@ public class Menu {
                     user.getAccount().showBalance();
                     break;
                 case "3", "See Transactions":
-                    user.getAccount().showTransaction(neoBank);
+                    user.getAccount().selectTransaction(neoBank);
                     break;
-                case "4", "Return":
+                case "4", "Show Account info":
+                    user.getAccount().showAccountInfo();
+                case "5", "Return":
                     return;
                 default:
                     if (!answer.equalsIgnoreCase("quit")) {
@@ -246,6 +248,45 @@ public class Menu {
         System.out.println("   1.Charge Account");
         System.out.println("   2.Check Balance");
         System.out.println("   3.See Transactions");
-        System.out.println("   4.Return");
+        System.out.println("   4.Show Account info");
+        System.out.println("   5.Return");
+    }
+
+    public static void contactMenu(NeoBank neoBank, SimpleUser user){
+        String answer;
+        do {
+            displayContactMenu();
+            answer = Input.inputNextLine();
+            switch(answer){
+                case "1", "Add Contact":
+                    Contact.addContacts(neoBank, user);
+                    break;
+                case "2", "Show Contact list":
+                    Contact currContact = Contact.selectContact(neoBank, user);
+                    if(currContact!=null){
+                        currContact.showInfo();
+                        currContact.changeContactInfo(neoBank, user);
+                    }
+                    break;
+                case "3", "Return":
+                    return;
+                default:
+                    if (!answer.equalsIgnoreCase("quit")) {
+                        System.out.println("THERE IS NO OTHER OPTION! Please input something else!");
+                        break;
+                    } else{
+                        System.out.println("Thanks for trusting our bank! Bye Bye!");
+                        System.exit(0);
+                    }
+                    break;
+            }
+        }while (!"quit".equalsIgnoreCase(answer));
+    }
+
+    public static void displayContactMenu(){
+        System.out.println("What do you want to do?");
+        System.out.println("   1.Add Contact");
+        System.out.println("   2.Show Contact list");
+        System.out.println("   3.Return");
     }
 }
