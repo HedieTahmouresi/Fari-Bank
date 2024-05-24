@@ -324,4 +324,44 @@ public class Menu {
         System.out.println("   2. Show Request list");
         System.out.println("   3. Return");
     }
+
+    public static void settingsMenu(NeoBank neoBank, SimpleUser user){
+        String answer;
+        do {
+            displayServiceAdminMenu();
+            answer = Input.inputNextLine();
+            switch(answer){
+                case "1", "Change User Password":
+                    user.changePassword();
+                    break;
+                case "2", "Set Credit Card Password":
+                    user.getAccount().getCreditCard().changeCreditCardPassword();
+                    break;
+                case "3", "Contact Option":
+                    //list of users
+                    break;
+                case "4", "Return":
+                    return;
+                default:
+                    if (!answer.equalsIgnoreCase("quit")) {
+                        System.out.println("THERE IS NO OTHER OPTION! Please input something else!");
+                        break;
+                    } else{
+                        System.out.println("Thanks for trusting our bank! Bye Bye!");
+                        System.exit(0);
+                    }
+                    break;
+            }
+        }while (!"quit".equalsIgnoreCase(answer));
+    }
+
+    public static void displaySettings(){
+        System.out.println("What do you want to do?");
+        System.out.println("   1. Change User Password");
+        System.out.println("   2. Set Credit Card Password");
+        System.out.println("   3. Contact Option");
+        System.out.println("   4. Return");
+    }
+
+
 }

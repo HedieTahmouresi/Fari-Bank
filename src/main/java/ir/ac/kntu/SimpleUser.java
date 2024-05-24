@@ -316,4 +316,12 @@ public class SimpleUser extends Person {
             System.out.println(this.contacts.get(index-1).toString());
         }
     }
+
+    public void changeContactOption(){
+        if (this.isContactOption()) {
+            System.out.println("Would you like to turn it off?");
+        } else{
+            System.out.println("Would you like to turn it on?");
+        }
+    }
 }

@@ -49,4 +49,21 @@ public class CreditCard {
         setHavePassword(false);
     }
 
+    public void changeCreditCardPassword(){
+        System.out.println("Enter the passcode you want.");
+        String input;
+        do{
+            input = Input.inputNextLine();
+            if ("quit".equalsIgnoreCase(input)){
+                System.out.println("Thanks for trusting our bank! Bye Bye!");
+                System.exit(0);
+            } else if ("return".equalsIgnoreCase(input)){
+                return;
+            }else if (!input.matches("[0-9]{4}")){
+                System.out.println("Invalid passcode!");
+            }
+        }while(!input.matches("[0-9]{4}"));
+        this.setPassword(Integer.parseInt(input));
+    }
+
 }
