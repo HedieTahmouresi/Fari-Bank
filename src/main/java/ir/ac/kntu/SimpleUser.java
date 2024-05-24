@@ -318,10 +318,33 @@ public class SimpleUser extends Person {
     }
 
     public void changeContactOption(){
+        String ans;
         if (this.isContactOption()) {
             System.out.println("Would you like to turn it off?");
+            ans = Input.inputNextLine();
+            if ("yes".equalsIgnoreCase(ans)){
+                this.setContactOption(false);
+            } else if ("no".equalsIgnoreCase(ans)){
+                this.setContactOption(true);
+            }else if("return".equalsIgnoreCase(ans)){
+                return;
+            }else if("quit".equalsIgnoreCase(ans)){
+                System.out.println("Thanks for trusting our bank! Bye Bye!");
+                System.exit(0);
+            }
         } else{
             System.out.println("Would you like to turn it on?");
+            ans = Input.inputNextLine();
+            if ("yes".equalsIgnoreCase(ans)){
+                this.setContactOption(true);
+            } else if ("no".equalsIgnoreCase(ans)){
+                this.setContactOption(false);
+            }else if("return".equalsIgnoreCase(ans)){
+                return;
+            }else if("quit".equalsIgnoreCase(ans)){
+                System.out.println("Thanks for trusting our bank! Bye Bye!");
+                System.exit(0);
+            }
         }
     }
 }
