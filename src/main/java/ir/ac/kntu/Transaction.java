@@ -49,7 +49,7 @@ public class Transaction {
         setSign(sign);
     }
 
-    public void showInfo(){
+    public void showInfo(NeoBank neoBank){
         ZonedDateTime zonedDateTime = dateAndTime.atZone(ZoneId.systemDefault());
         LocalDate datePart = zonedDateTime.toLocalDate();
         LocalTime timePart = zonedDateTime.toLocalTime();

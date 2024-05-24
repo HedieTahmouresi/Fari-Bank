@@ -82,6 +82,7 @@ public class SimpleUser extends Person {
         setPhoneNumber(phoneNumber);
         this.contacts = new ArrayList<>();
         this.requests = new ArrayList<>();
+        setContactOption(true);
     }
 
     public static void signUp(NeoBank neoBank, Data data) {

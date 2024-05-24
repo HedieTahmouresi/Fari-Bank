@@ -9,11 +9,11 @@ public class Account {
     private SimpleUser owner;
     private double balance;
     private List<Map<String, Transaction>> transactions;
-    private List<Map<String, SimpleUser>> recents;
+    private List<Map<TransferTransaction, String>> recents;
 
-    public void addRecent(String name, SimpleUser person){
-        Map<String, SimpleUser> map = new HashMap<>();
-        map.put(name, person);
+    public void addRecent(TransferTransaction transaction, String phoneNumber){
+        Map<TransferTransaction, String> map = new HashMap<>();
+        map.put(transaction, phoneNumber);
         recents.add(map);
     }
 
@@ -145,7 +145,7 @@ public class Account {
             }else if (Integer.parseInt(input)>0 && Integer.parseInt(input)<this.transactionsSize()+1){
                 for (int index = 1 ; index < this.transactionsSize()+1 ; index++){
                     if (input.equals(Integer.toString(index))){
-                        this.getTransaction(index-1).showInfo();
+                        this.getTransaction(index-1).showInfo(neoBank);
                         return;
                     }
                 }
@@ -172,7 +172,11 @@ public class Account {
                     this.transferByAccount(neoBank);
                     break;
                 case "2", "by Contact":
-                    this.transferByContact(neoBank);
+                    if (this.getOwner().isContactOption()) {
+                        this.transferByContact(neoBank);
+                    } else{
+                        System.out.println("your contact option is off!");
+                    }
                     break;
                 case "3", "by Recent List":
                     this.transferByRecent(neoBank);
@@ -224,20 +228,11 @@ public class Account {
                     }
                     this.setBalance(this.getBalance() - Double.parseDouble(input) - neoBank.getWage());
                     receiver.getAccount().setBalance(receiver.getAccount().getBalance() + Double.parseDouble(input));
-                    Transaction newTransaction;
-                    String name = receiver.getName();
-                    if (!Contact.existsContact(this.getOwner(), receiver.getPhoneNumber())) {
-                        Contact receiverMoney = Contact.getContact(this.owner, receiver.getPhoneNumber());
-                        System.out.println("contact : " + receiverMoney.getName());
-                        newTransaction = new TransferTransaction(Double.parseDouble(input), neoBank.getTracingNumber(), receiverMoney, false, receiver.getAccount().getAccountId(), "-", this.getOwner());
-                        name = receiverMoney.getName();
-                    } else {
-                        newTransaction = new TransferTransaction(Double.parseDouble(input), neoBank.getTracingNumber(), receiver, false, receiver.getAccount().getAccountId(), "-", this.getOwner());
-                    }
+                    TransferTransaction newTransaction = new TransferTransaction(Double.parseDouble(input), neoBank.getTracingNumber(), receiver, false, receiver.getAccount().getAccountId(), "-", this.getOwner(), false);
                     this.addTransaction(newTransaction, "transfer");
-                    receiver.getAccount().addTransaction(new TransferTransaction(Double.parseDouble(input), neoBank.getTracingNumber()+1, receiver, false,  receiver.getAccount().getAccountId(), "+", this.getOwner()), "transfer");
+                    receiver.getAccount().addTransaction(new TransferTransaction(Double.parseDouble(input), neoBank.getTracingNumber()+1, receiver, false,  receiver.getAccount().getAccountId(), "+", this.getOwner(), true), "transfer");
                     neoBank.setTracingNumber(neoBank.getTracingNumber()+2);
-                    this.addRecent(name, receiver);
+                    this.addRecent(newTransaction, receiver.getPhoneNumber());
                     System.out.println("Transfer Completed!");
                     return;
                 } else{
@@ -270,14 +265,15 @@ public class Account {
 
     public void showRecents(){
         for (int index = 1 ; index < recents.size()+1 ; index++) {
-            for (Map.Entry<String, SimpleUser> entry : recents.get(index-1).entrySet()) {
-                System.out.println(index+ ". " + entry.getKey());
+            for (Map.Entry<TransferTransaction, String> entry : recents.get(index).entrySet()){
+                System.out.println(index + ". " + entry.getKey().getReceiver().getName() + " " + entry.getKey().getReceiver().getSurname());
             }
         }
     }
 
-    public SimpleUser selectRecent(){
+    public Map<SimpleUser, Boolean> selectRecent(NeoBank neoBank){
         String input;
+        Map<SimpleUser, Boolean> map = new HashMap<>();
         do{
             this.showRecents();
             if (this.recents.isEmpty()){
@@ -294,9 +290,11 @@ public class Account {
             }else if (Integer.parseInt(input)>0 && Integer.parseInt(input)<this.recents.size()+1){
                 for (int index = 1 ; index < recents.size()+1 ; index++) {
                     if (Integer.parseInt(input)==index) {
-                        for (Map.Entry<String, SimpleUser> entry : recents.get(index-1).entrySet()) {
-                            return entry.getValue();
+                        for (Map.Entry<TransferTransaction, String> entry : recents.get(index).entrySet()){
+                            map.put(neoBank.getSpecificUser(neoBank.getSpecificUser(entry.getValue())),entry.getKey().isByContact());
+                            return map;
                         }
+
                     }
                 }
             } else{
@@ -307,7 +305,17 @@ public class Account {
     }
 
     public void transferByRecent(NeoBank neoBank){
-        SimpleUser receiver = this.selectRecent();
+        Map<SimpleUser, Boolean> map = this.selectRecent(neoBank);
+        if (map==null){
+            return;
+        }
+        SimpleUser receiver = null;
+        boolean byContact = false;
+        for (Map.Entry<SimpleUser, Boolean> entry : map.entrySet()){
+            receiver = entry.getKey();
+            byContact = entry.getValue();
+        }
+
         System.out.println("How much would you like to transfer to " + receiver.getName() + " " + receiver.getSurname() + "?");
         String input;
         do {
@@ -327,19 +335,12 @@ public class Account {
                     }
                     this.setBalance(this.getBalance() - Double.parseDouble(input) - neoBank.getWage());
                     receiver.getAccount().setBalance(receiver.getAccount().getBalance() + Double.parseDouble(input));
-                    Transaction newTransaction;
-                    String name = receiver.getName();
-                    if (!Contact.existsContact(this.getOwner(), receiver.getPhoneNumber())) {
-                        Contact receiverMoney = Contact.getContact(this.owner, receiver.getPhoneNumber());
-                        newTransaction = new TransferTransaction(Double.parseDouble(input), neoBank.getTracingNumber(), receiverMoney, false, receiver.getAccount().getAccountId(), "-", this.getOwner());
-                        name = receiverMoney.getName();
-                    } else {
-                        newTransaction = new TransferTransaction(Double.parseDouble(input), neoBank.getTracingNumber(), receiver, false, receiver.getAccount().getAccountId(), "-", this.getOwner());
-                    }
+                    TransferTransaction newTransaction = new TransferTransaction(Double.parseDouble(input), neoBank.getTracingNumber(), receiver, byContact, receiver.getAccount().getAccountId(), "-", this.getOwner(), false);
+                    String name = receiver.getName() + " " + receiver.getSurname();
                     this.addTransaction(newTransaction, "transfer");
-                    receiver.getAccount().addTransaction(new TransferTransaction(Double.parseDouble(input), neoBank.getTracingNumber()+1, receiver, false,  receiver.getAccount().getAccountId(), "+", this.getOwner()), "transfer");
+                    receiver.getAccount().addTransaction(new TransferTransaction(Double.parseDouble(input), neoBank.getTracingNumber()+1, receiver, false,  receiver.getAccount().getAccountId(), "+", this.getOwner(), true), "transfer");
                     neoBank.setTracingNumber(neoBank.getTracingNumber()+2);
-                    this.addRecent(name, receiver);
+                    this.addRecent(newTransaction, receiver.getPhoneNumber());
                     System.out.println("Transfer Completed!");
                     return;
                 } else{
@@ -365,22 +366,26 @@ public class Account {
             } else if (!input.matches("[0-9]+\\.?[0-9]*")) {
                 System.out.println("Wrong input! Try again!");
             } else {
-                if (this.getConfirmation(receiver, input)) {
-                    if (Double.parseDouble(input) > this.getBalance() + neoBank.getWage() ) {
-                        System.out.println("transfer failed! you don't have enough money!");
+                if (!Contact.existsContact(receiver, this.getOwner().getPhoneNumber()) && receiver.isContactOption()) {
+                    if (this.getConfirmation(receiver, input)) {
+                        if (Double.parseDouble(input) > this.getBalance() + neoBank.getWage()) {
+                            System.out.println("transfer failed! you don't have enough money!");
+                            return;
+                        }
+                        this.setBalance(this.getBalance() - Double.parseDouble(input) - neoBank.getWage());
+                        receiver.getAccount().setBalance(receiver.getAccount().getBalance() + Double.parseDouble(input));
+                        TransferTransaction newTransaction = new TransferTransaction(Double.parseDouble(input), neoBank.getTracingNumber(), receiver, true, receiver.getPhoneNumber(), "-", this.getOwner(), false);
+                        this.addTransaction(newTransaction, "transfer");
+                        receiver.getAccount().addTransaction(new TransferTransaction(Double.parseDouble(input), neoBank.getTracingNumber() + 1, receiver, true, receiver.getPhoneNumber(), "+", this.getOwner(), true), "transfer");
+                        neoBank.setTracingNumber(neoBank.getTracingNumber() + 2);
+                        this.addRecent(newTransaction, receiver.getPhoneNumber());
+                        System.out.println("Transfer Completed!");
+                        return;
+                    } else {
                         return;
                     }
-                    this.setBalance(this.getBalance() - Double.parseDouble(input) - neoBank.getWage());
-                    receiver.getAccount().setBalance(receiver.getAccount().getBalance() + Double.parseDouble(input));
-                    Transaction newTransaction = new TransferTransaction(Double.parseDouble(input), neoBank.getTracingNumber(), receiverMoney, true, receiver.getPhoneNumber(), "-", this.getOwner());
-                    this.addTransaction(newTransaction, "transfer");
-                    receiver.getAccount().addTransaction(new TransferTransaction(Double.parseDouble(input), neoBank.getTracingNumber()+1, receiver, true,  receiver.getPhoneNumber(), "+", this.getOwner()), "transfer");
-                    neoBank.setTracingNumber(neoBank.getTracingNumber()+2);
-                    this.addRecent(receiverMoney.getName(), receiver);
-                    System.out.println("Transfer Completed!");
-                    return;
                 } else{
-                    return;
+                    System.out.println("You can't send money to this user by Contact!");
                 }
             }
         } while (!"return".equalsIgnoreCase(input));

@@ -26,49 +26,47 @@ public class Person {
         setSurname(surame);
     }
 
-    public boolean changeName(){
+    public void changeName(){
         System.out.println("Would you like to change the name? (previous name : " + this.getName() + ")");
         String ans = Input.inputNextLine();
         if (!"no".equalsIgnoreCase(ans)){
             do {
                 if("return".equalsIgnoreCase(ans)){
-                    return false;
+                    return;
                 }else if("quit".equalsIgnoreCase(ans)){
                     System.out.println("Thanks for trusting our bank! Bye Bye");
                     System.exit(0);
                 } else if("yes".equalsIgnoreCase(ans)){
                     System.out.println("Write the name you like!");
                     this.setName(Input.inputNextLine());
-                    return true;
+                    return;
                 }else{
                     System.out.println("wrong input! try again");
                 }
                 ans = Input.inputNextLine();
             }while(!"no".equalsIgnoreCase(ans));
         }
-        return false;
     }
 
-    public boolean changeLastName(){
+    public void changeLastName(){
         System.out.println("Would you like to change the Last name? (previous last name : " + this.getSurname() + ")");
         String ans = Input.inputNextLine();
         if (!"no".equalsIgnoreCase(ans)){
             do {
                 if("return".equalsIgnoreCase(ans)){
-                    return false;
+                    return;
                 }else if("quit".equalsIgnoreCase(ans)){
                     System.out.println("Thanks for trusting our bank! Bye Bye");
                     System.exit(0);
                 } else if("yes".equalsIgnoreCase(ans)){
                     System.out.println("Write the last name you like!");
                     this.setSurname(Input.inputNextLine());
-                    return true;
+                    return;
                 }else{
                     System.out.println("wrong input! try again");
                 }
                 ans = Input.inputNextLine();
             }while(!"no".equalsIgnoreCase(ans));
         }
-        return false;
     }
 }

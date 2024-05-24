@@ -104,13 +104,13 @@ public class Contact extends Person {
         return null;
     }
 
-    public boolean changePhoneNumber(NeoBank neoBank, SimpleUser user){
+    public void changePhoneNumber(NeoBank neoBank, SimpleUser user){
         System.out.println("Would you like to change your phone number? (previous phone number : " + this.getPhoneNumber() + ")");
         String ans = Input.inputNextLine();
         if (!"no".equalsIgnoreCase(ans)){
             do {
                 if("return".equalsIgnoreCase(ans)){
-                    return false;
+                    return;
                 }else if("quit".equalsIgnoreCase(ans)){
                     System.out.println("Thanks for trusting our bank! Bye Bye");
                     System.exit(0);
@@ -135,14 +135,13 @@ public class Contact extends Person {
                         }
                     }while (!existsContact(user, phoneNumber));
                     this.setPhoneNumber(phoneNumber);
-                    return true;
+                    return;
                 }else{
                     System.out.println("wrong input! try again");
                 }
                 ans = Input.inputNextLine();
             }while(!"no".equalsIgnoreCase(ans));
         }
-        return false;
     }
 
     public void changeContactInfo(NeoBank neoBank, SimpleUser user){
@@ -152,9 +151,10 @@ public class Contact extends Person {
         String input = Input.inputNextLine();
         switch (input){
             case "1", "yes":
-                if (this.changeName() || this.changeLastName() || this.changePhoneNumber(neoBank, user)){
-                    System.out.println("Contact successfully changed");
-                }
+                this.changeName();
+                this.changeLastName();
+                this.changePhoneNumber(neoBank, user);
+                System.out.println("Contact successfully changed");
                 break;
             case "2", "no":
                 break;

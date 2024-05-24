@@ -13,7 +13,7 @@ public class ChargeTransaction extends Transaction {
     }
 
     @Override
-    public void showInfo() {
+    public void showInfo(NeoBank neoBank) {
         ZonedDateTime zonedDateTime = this.getDateAndTime().atZone(ZoneId.systemDefault());
         LocalDate datePart = zonedDateTime.toLocalDate();
         LocalTime timePart = zonedDateTime.toLocalTime();
