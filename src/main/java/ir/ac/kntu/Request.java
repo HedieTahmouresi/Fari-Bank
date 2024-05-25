@@ -113,7 +113,7 @@ public class Request {
 
     public static void showRequests(SimpleUser user){
         for (int index = 1 ; index < user.requestSize()+1 ; index++){
-            System.out.println(index + ". " + user.getRequest(index).toString());
+            System.out.println(index + ". " + user.getRequest(index-1).toString());
         }
     }
 

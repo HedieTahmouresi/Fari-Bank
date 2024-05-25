@@ -51,6 +51,7 @@ public class Menu {
                         } else {
                             displayServiceUserMenu();
                             System.out.println("You can't choose any because you have not been authenticated!");
+                            System.out.println("The reason : " + currentUser.getAuthenticated().getAnswer());
                             System.out.println("Would you like to edit your info?");
                             System.out.println("   1.yes");
                             System.out.println("   2.no");
@@ -151,7 +152,7 @@ public class Menu {
                     administerMenu(neoBank, user);
                     break;
                 case "5", "Settings":
-                    //settings
+                    settingsMenu(neoBank, user);
                     break;
                 case "6", "Return":
                     return;
@@ -230,9 +231,7 @@ public class Menu {
                 case "3", "See Transactions":
                     user.getAccount().selectTransaction(neoBank);
                     break;
-                case "4", "Show Account info":
-                    user.getAccount().showAccountInfo();
-                case "5", "Return":
+                case "4", "Return":
                     return;
                 default:
                     if (!answer.equalsIgnoreCase("quit")) {
@@ -252,8 +251,7 @@ public class Menu {
         System.out.println("   1.Charge Account");
         System.out.println("   2.Check Balance");
         System.out.println("   3.See Transactions");
-        System.out.println("   4.Show Account info");
-        System.out.println("   5.Return");
+        System.out.println("   4.Return");
     }
 
     public static void contactMenu(NeoBank neoBank, SimpleUser user){
@@ -332,7 +330,7 @@ public class Menu {
     public static void settingsMenu(NeoBank neoBank, SimpleUser user){
         String answer;
         do {
-            displayServiceAdminMenu();
+            displaySettings();
             answer = Input.inputNextLine();
             switch(answer){
                 case "1", "Change User Password":
@@ -344,7 +342,10 @@ public class Menu {
                 case "3", "Contact Option":
                     user.changeContactOption();
                     break;
-                case "4", "Return":
+                case "4", "Show Account info":
+                    user.getAccount().showAccountInfo();
+                    break;
+                case "5", "Return":
                     return;
                 default:
                     if (!answer.equalsIgnoreCase("quit")) {
@@ -364,7 +365,8 @@ public class Menu {
         System.out.println("   1. Change User Password");
         System.out.println("   2. Set Credit Card Password");
         System.out.println("   3. Contact Option");
-        System.out.println("   4. Return");
+        System.out.println("   4.Show Account info");
+        System.out.println("   5. Return");
     }
 
 

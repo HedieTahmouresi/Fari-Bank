@@ -384,6 +384,7 @@ public class Account {
                     }
                 } else{
                     System.out.println("You can't send money to this user by Contact!");
+                    return;
                 }
             }
         } while (!"return".equalsIgnoreCase(input));

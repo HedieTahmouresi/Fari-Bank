@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class Data {
     private Map<String, Request> requests;
-    private Map<String, Boolean> authentications;
+    private Map<String, Authentication> authentications;
     private List<SimpleUser> users;
 
     public Data() {
@@ -17,7 +17,7 @@ public class Data {
     }
 
     public void addAuthentication(String securityNumber) {
-        this.authentications.put(securityNumber, false);
+        this.authentications.put(securityNumber, new Authentication());
     }
 
     public void removeAuthentication(String securityNumber) {
@@ -35,7 +35,7 @@ public class Data {
             System.out.println("There are no authentication requests");
             return null;
         }
-        for (Map.Entry<String, Boolean> entry : this.authentications.entrySet()){
+        for (Map.Entry<String, Authentication> entry : this.authentications.entrySet()){
             String key = entry.getKey();
             System.out.println(index + ". SSN: " + key);
             securityNumbers.add(key);
@@ -88,13 +88,15 @@ public class Data {
         System.out.println("would you like to authenticate this user?");
         String answer = Input.inputNextLine();
         if("yes".equalsIgnoreCase(answer)){
-            user.setAuthenticated(true);
+            user.getAuthenticated().acceptAuthentication();
             this.removeAuthentication(securityNumber);
             System.out.println("User successfully authenticated!");
             user.setAccount(new Account(user, neoBank));
         }else if("quit".equalsIgnoreCase(answer)){
             System.out.println("Thanks for trusting our Bank! Bye Bye!");
             System.exit(0);
+        }else if("no".equalsIgnoreCase(answer)){
+            user.getAuthenticated().rejectAuthentication();
         }
     }
 }

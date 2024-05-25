@@ -14,7 +14,7 @@ public class SimpleUser extends Person {
     private List<Contact> contacts;
     private List<Request> requests;
     private boolean contactOption;
-    private boolean authenticated;
+    private Authentication authenticated;
 
     public void addRequest(Request request){
         this.requests.add(request);
@@ -76,10 +76,14 @@ public class SimpleUser extends Person {
     }
 
     public boolean isAuthenticated() {
-        return authenticated;
+        return authenticated.isAuthenticated();
     }
 
-    public void setAuthenticated(boolean authenticated) {
+    public Authentication getAuthenticated(){
+        return this.authenticated;
+    }
+
+    public void setAuthenticated(Authentication authenticated) {
         this.authenticated = authenticated;
     }
 
@@ -99,6 +103,7 @@ public class SimpleUser extends Person {
         this.contacts = new ArrayList<>();
         this.requests = new ArrayList<>();
         setContactOption(true);
+        setAuthenticated(new Authentication());
     }
 
     public static void signUp(NeoBank neoBank, Data data) {
@@ -118,7 +123,7 @@ public class SimpleUser extends Person {
             System.out.println("Thanks for trusting our bank! Bye Bye!");
             System.exit(0);
         }
-        System.out.println("Please Enter your phoneNumber!");
+        System.out.println("Please Enter your phone number!");
         String input;
         do {
             input = Input.inputNextLine();
@@ -299,11 +304,14 @@ public class SimpleUser extends Person {
     }
 
     public void editSignUpInfo(NeoBank neoBank){
+        neoBank.getData().removeAuthentication(this.getSecurityNumber());
         this.changeName();
         this.changeLastName();
         this.changePhoneNumber(neoBank);
         this.changeSecurityNumber(neoBank);
         this.changePassword();
+        neoBank.getData().addAuthentication(this.getSecurityNumber());
+        this.setAuthenticated(new Authentication());
         System.out.println("Sign Up info changed!");
     }
 
