@@ -6,12 +6,12 @@ import java.util.List;
 import java.util.Map;
 
 public class Data {
-    private Map<String, Request> requests;
+    private List<Request> requests;
     private Map<String, Authentication> authentications;
     private List<SimpleUser> users;
 
     public Data() {
-        this.requests = new HashMap<>();
+        this.requests = new ArrayList<>();
         this.authentications = new HashMap<>();
         this.users = new ArrayList<>();
     }
@@ -24,8 +24,12 @@ public class Data {
         this.authentications.remove(securityNumber);
     }
 
-    public void addRequest(Request request, String securityNumber){
-        this.requests.put(securityNumber, request);
+    public void addRequest(Request request){
+        this.requests.add(request);
+    }
+
+    public void removeRequest(Request request){
+        this.requests.remove(request);
     }
 
     public List<String> displayAuthentications(){
@@ -60,8 +64,8 @@ public class Data {
                 return;
             }else if (!input.matches("-?\\d+(\\.\\d+)?")){
                 System.out.println("Wrong input try again!");
-            }else if (Integer.parseInt(input)>0 && Integer.parseInt(input)<this.authentications.size()+1){
-                for (int index = 1 ; index < this.authentications.size()+1 ; index++){
+            }else if (Integer.parseInt(input)>0 && Integer.parseInt(input)<securityNumbers.size()+1){
+                for (int index = 1 ; index < securityNumbers.size()+1 ; index++){
                     if (input.equals(Integer.toString(index))){
                         this.authenticateUser(neoBank,securityNumbers.get(index-1));
                         break;
@@ -99,4 +103,100 @@ public class Data {
             user.getAuthenticated().rejectAuthentication();
         }
     }
+
+    public void displayRequests(){
+        int index = 1;
+        if(this.requests.isEmpty()){
+            System.out.println("There are no requests");
+            return;
+        }
+        for (Request request : this.requests){
+            System.out.println(index + ". SSN : " + request.getSecurityNumber() + request.toString());
+            index++;
+        }
+    }
+
+
+    public void selectRequest(NeoBank neoBank){
+        String input;
+        do{
+            this.displayRequests();
+            input=Input.inputNextLine();
+            if ("quit".equalsIgnoreCase(input)) {
+                System.out.println("Thanks for trusting our bank! Bye Bye!");
+                System.exit(0);
+            } else if ("return".equalsIgnoreCase(input)){
+                return;
+            }else if (!input.matches("-?\\d+(\\.\\d+)?")){
+                System.out.println("Wrong input try again!");
+            }else if (Integer.parseInt(input)>0 && Integer.parseInt(input)<this.requests.size()+1){
+                for (int index = 1 ; index < this.requests.size()+1 ; index++){
+                    if (input.equals(Integer.toString(index))){
+                        processRequest(neoBank, this.requests.get(index-1));
+                    }
+                }
+            } else{
+                System.out.println("Wrong input try again!");
+            }
+        }while (!"retrun".equalsIgnoreCase(input));
+    }
+
+    public void processRequest(NeoBank neoBank,Request request){
+        SimpleUser user = neoBank.getSpecificUser(neoBank.getSpecificUserBySSN(request.getSecurityNumber()));
+        request.showRequestInfo();
+        System.out.println("Would you like to process this request?");
+        String answer = Input.inputNextLine();
+        switch (answer){
+            case "yes":
+                request.setStatus(RequestStatus.IN_PROCESS);
+                this.closingRequest(request);
+                break;
+            case "no":
+                return;
+            default:
+                if ("return".equalsIgnoreCase(answer)){
+                    return;
+                }else if (!"quit".equalsIgnoreCase(answer)) {
+                    System.out.println("THERE IS NO OTHER OPTION! Please input something else!");
+                    break;
+                } else{
+                    System.out.println("Thanks for trusting our bank! Bye Bye!");
+                    System.exit(0);
+                }
+                break;
+        }
+    }
+
+    public void closingRequest(Request request){
+        System.out.println("Would you like to answer this request?");
+        String input = Input.inputNextLine();
+        switch (input){
+            case "yes":
+                System.out.println("Please enter your answer!");
+                String answer = Input.inputNextLine();
+                if ("return".equalsIgnoreCase(answer)){
+                    return;
+                }else if ("quit".equalsIgnoreCase(answer)) {
+                    System.out.println("Thanks for trusting our bank! Bye Bye!");
+                    System.exit(0);
+                }
+                request.setStatus(RequestStatus.PROCESSED);
+                request.setAnswer(answer);
+                break;
+            case "no":
+                return;
+            default:
+                if ("return".equalsIgnoreCase(input)){
+                    return;
+                }else if (!"quit".equalsIgnoreCase(input)) {
+                    System.out.println("THERE IS NO OTHER OPTION! Please input something else!");
+                    break;
+                } else{
+                    System.out.println("Thanks for trusting our bank! Bye Bye!");
+                    System.exit(0);
+                }
+                break;
+        }
+    }
+
 }

@@ -188,7 +188,7 @@ public class Menu {
                     neoBank.getData().selectUser(neoBank);
                     break;
                 case "2", "Requests":
-                    //list of requests
+                    neoBank.getData().selectRequest(neoBank);
                     break;
                 case "3", "Users":
                     //list of users

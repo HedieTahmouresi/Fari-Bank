@@ -2,12 +2,22 @@ package ir.ac.kntu;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Request {
     private String request;
     private String answer;
     private RequestStatus status;
     private RequestSection section;
+    private String securityNumber;
+
+    public String getSecurityNumber() {
+        return securityNumber;
+    }
+
+    public void setSecurityNumber(String securityNumber) {
+        this.securityNumber = securityNumber;
+    }
 
     public String getRequest() {
         return request;
@@ -42,11 +52,12 @@ public class Request {
         this.section = section;
     }
 
-    public Request(String request, RequestSection section){
+    public Request(String request, RequestSection section, String securityNumber){
         setRequest(request);
         setSection(section);
         setAnswer("No answer");
         setStatus(RequestStatus.NOTED);
+        setSecurityNumber(securityNumber);
     }
 
     public static void displaySections(){
@@ -97,8 +108,8 @@ public class Request {
             System.out.println("Thanks for trusting our bank! Bye Bye!");
             System.exit(0);
         }
-        Request newRequest = new Request(text, section1);
-        neoBank.getData().addRequest(newRequest, user.getSecurityNumber());
+        Request newRequest = new Request(text, section1, user.getSecurityNumber());
+        neoBank.getData().addRequest(newRequest);
         user.addRequest(newRequest);
         System.out.println("Request successfully noted!");
     }
@@ -116,6 +127,7 @@ public class Request {
             System.out.println(index + ". " + user.getRequest(index-1).toString());
         }
     }
+
 
     public static void selectRequest(NeoBank neoBank, SimpleUser user){
         String input;
@@ -150,5 +162,17 @@ public class Request {
         System.out.println("Problem : " + this.getRequest());
         System.out.println("Request Status : " + this.getStatus());
         System.out.println("Admins Answer : " + this.getAnswer());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Request request1)) return false;
+        return Objects.equals(request, request1.request) && Objects.equals(answer, request1.answer) && status == request1.status && section == request1.section;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(request, answer, status, section);
     }
 }

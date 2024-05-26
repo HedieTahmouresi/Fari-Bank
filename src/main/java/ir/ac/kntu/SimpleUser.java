@@ -16,8 +16,13 @@ public class SimpleUser extends Person {
     private boolean contactOption;
     private Authentication authenticated;
 
+
     public void addRequest(Request request){
         this.requests.add(request);
+    }
+
+    public void changeRequest(Request request){
+
     }
 
     public int requestSize(){
