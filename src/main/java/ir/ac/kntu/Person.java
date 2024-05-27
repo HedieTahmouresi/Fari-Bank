@@ -72,9 +72,8 @@ public class Person {
 
     @Override
     public String toString() {
-        return "Person{" +
-                "name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
-                '}';
+        return "Name : " + this.getName() +
+                ", Last Name : " + this.getSurname()
+                ;
     }
 }

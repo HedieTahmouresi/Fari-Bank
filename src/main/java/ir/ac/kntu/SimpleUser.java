@@ -364,7 +364,7 @@ public class SimpleUser extends Person {
     @Override
     public String toString() {
         return "SimpleUser{" + super.toString() +
-                "phoneNumber : " + phoneNumber +
+                ", Phone Number : " + phoneNumber +
                 "} ";
     }
 }

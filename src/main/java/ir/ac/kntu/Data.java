@@ -120,7 +120,8 @@ public class Data {
     }
 
 
-    public List<Request> displayRequestsBySection(RequestSection section) {
+    public List<Request> displayRequestsBySection() {
+        RequestSection section = chooseSection();
         List<Request> list = new ArrayList<>();
         int index = 1;
         if (this.requests.isEmpty()) {
@@ -140,9 +141,10 @@ public class Data {
         return list;
     }
 
-    public List<Request> displayRequestsByPerson(String securityNumber) {
+    public List<Request> displayRequestsByPerson(NeoBank neoBank) {
         int index = 1;
         List<Request> list = new ArrayList<>();
+        String securityNumber = choosePerson(neoBank);
         if (this.requests.isEmpty()) {
             System.out.println("There are no requests");
             return null;
@@ -160,7 +162,8 @@ public class Data {
         return list;
     }
 
-    public List<Request> displayRequestsByStatus(RequestStatus status) {
+    public List<Request> displayRequestsByStatus() {
+        RequestStatus status = chooseStatus();
         List<Request> list = new ArrayList<>();
         int index = 1;
         if (this.requests.isEmpty()) {
@@ -198,9 +201,12 @@ public class Data {
                 if (input.equals(Integer.toString(index))) {
                     if (RequestStatus.IN_PROCESS.equals(requestsList.get(index-1).getStatus())){
                         this.closingRequest(requestsList.get(index-1));
+                        return;
                     } else if (RequestStatus.NOTED.equals(requestsList.get(index-1).getStatus())) {
                         processRequest(neoBank, requestsList.get(index - 1));
+                        return;
                     }
+                    return;
                 }
             }
         } else {
@@ -277,25 +283,23 @@ public class Data {
                     this.selectRequest(neoBank, this.displayRequests());
                     break;
                 case "2", "Show requests by Person":
-                    this.selectRequest(neoBank, this.displayRequestsByPerson(choosePerson(neoBank)));
+                    this.selectRequest(neoBank, this.displayRequestsByPerson(neoBank));
                     break;
                 case "3", "Show requests by Section":
-                    this.selectRequest(neoBank, this.displayRequestsBySection(chooseSection()));
+                    this.selectRequest(neoBank, this.displayRequestsBySection());
                     break;
                 case "4", "Show requests by Status":
-                    this.selectRequest(neoBank, this.displayRequestsByStatus(chooseStatus()));
-                    return;
+                    this.selectRequest(neoBank, this.displayRequestsByStatus());
+                    break;
                 case "5", "Return":
                     return;
                 default:
                     if (!answer.equalsIgnoreCase("quit")) {
                         System.out.println("THERE IS NO OTHER OPTION! Please input something else!");
-                        break;
                     } else {
                         System.out.println("Thanks for trusting our bank! Bye Bye!");
                         System.exit(0);
                     }
-                    break;
             }
         } while (!"quit".equalsIgnoreCase(answer));
     }
@@ -332,7 +336,9 @@ public class Data {
                     section = RequestSection.SETTINGS;
                     return section;
                 default:
-                    if (!ans.equalsIgnoreCase("quit")) {
+                    if ("return".equalsIgnoreCase(ans)){
+                        return null;
+                    }else if (!ans.equalsIgnoreCase("quit")) {
                         System.out.println("THERE IS NO OTHER OPTION! Please input something else!");
                         break;
                     } else {

@@ -100,6 +100,9 @@ public class Request {
 
     public static void createRequest(NeoBank neoBank, SimpleUser user){
         RequestSection section1 = createRequestSection();
+        if (section1==null){
+            return;
+        }
         System.out.println("Please Enter your problem.");
         String text = Input.inputNextLine();
         if ("return".equalsIgnoreCase(text)) {
