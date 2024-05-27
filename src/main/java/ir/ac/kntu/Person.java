@@ -69,4 +69,12 @@ public class Person {
             }while(!"no".equalsIgnoreCase(ans));
         }
     }
+
+    @Override
+    public String toString() {
+        return "Person{" +
+                "name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                '}';
+    }
 }

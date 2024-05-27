@@ -68,11 +68,23 @@ public class NeoBank {
         }
         for (SimpleUser user : this.simpleUsers) {
             if (user.getSecurityNumber().equals(securityNumber)) {
-                System.out.println("SomeBody with this social security number already an account! Please try again!");
+                System.out.println("SomeBody with this social security number already has an account! Please try again!");
                 return false;
             }
         }
         return true;
+    }
+
+    public boolean checkSSN(String securityNumber){
+        if (this.simpleUsers.isEmpty()) {
+            return true;
+        }
+        for (SimpleUser user : this.simpleUsers) {
+            if (user.getSecurityNumber().equals(securityNumber)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean existsPhoneNumber(String phoneNumber) {
