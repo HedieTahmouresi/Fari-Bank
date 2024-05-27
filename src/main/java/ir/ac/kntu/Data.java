@@ -16,6 +16,14 @@ public class Data {
         this.users = new ArrayList<>();
     }
 
+    public int usersSize(){
+        return this.users.size();
+    }
+
+    public SimpleUser getUser(int index){
+        return this.users.get(index);
+    }
+
     public void addAuthentication(String securityNumber) {
         this.authentications.put(securityNumber, new Authentication());
     }
@@ -403,5 +411,7 @@ public class Data {
         }while(!"return".equalsIgnoreCase(ans));
         return ans;
     }
+
+
 
 }

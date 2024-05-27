@@ -367,4 +367,13 @@ public class SimpleUser extends Person {
                 ", Phone Number : " + phoneNumber +
                 "} ";
     }
+
+    public void showUserInfo(NeoBank neoBank){
+        System.out.println("Name : " + this.getName());
+        System.out.println("Last Name : " + this.getSurname());
+        System.out.println("Phone Number : " + this.getPhoneNumber());
+        System.out.println("Account Id : " + this.getAccount().getAccountId());
+        System.out.println("Transactions : ");
+        this.getAccount().showTransaction(neoBank);
+    }
 }

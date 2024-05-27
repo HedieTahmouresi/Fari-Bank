@@ -191,7 +191,7 @@ public class Menu {
                     neoBank.getData().showRequest(neoBank);
                     break;
                 case "3", "Users":
-                    //list of users
+                    Admin.searchUsers(neoBank);
                     break;
                 case "4", "Return":
                     return;
