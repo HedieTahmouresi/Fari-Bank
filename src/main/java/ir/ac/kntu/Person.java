@@ -26,54 +26,47 @@ public class Person {
         setSurname(surame);
     }
 
-    public void changeName(){
-        System.out.println("Would you like to change the name? (previous name : " + this.getName() + ")");
+    public void changeName() {
+        System.out.println(ColorConsole.CYAN + "Would you like to change the name? (previous name : " + ColorConsole.PURPLE + this.getName() + ColorConsole.CYAN + ")" + ColorConsole.RESET);
         String ans = Input.inputNextLine();
-        if (!"no".equalsIgnoreCase(ans)){
+        if (!"no".equalsIgnoreCase(ans)) {
             do {
-                if("return".equalsIgnoreCase(ans)){
+                if (!Input.checkInput(ans)) {
                     return;
-                }else if("quit".equalsIgnoreCase(ans)){
-                    System.out.println("Thanks for trusting our bank! Bye Bye");
-                    System.exit(0);
-                } else if("yes".equalsIgnoreCase(ans)){
-                    System.out.println("Write the name you like!");
+                } else if ("yes".equalsIgnoreCase(ans)) {
+                    System.out.println(ColorConsole.CYAN + "Write the name you like!" + ColorConsole.RESET);
                     this.setName(Input.inputNextLine());
                     return;
-                }else{
-                    System.out.println("wrong input! try again");
+                } else {
+                    System.out.println(ColorConsole.RED + "wrong input! try again" + ColorConsole.RESET);
                 }
                 ans = Input.inputNextLine();
-            }while(!"no".equalsIgnoreCase(ans));
+            } while (!"no".equalsIgnoreCase(ans));
         }
     }
 
-    public void changeLastName(){
-        System.out.println("Would you like to change the Last name? (previous last name : " + this.getSurname() + ")");
+    public void changeLastName() {
+        System.out.println(ColorConsole.CYAN + "Would you like to change the Last name? (previous last name : " + ColorConsole.PURPLE + this.getSurname() + ColorConsole.CYAN + ")" + ColorConsole.RESET);
         String ans = Input.inputNextLine();
-        if (!"no".equalsIgnoreCase(ans)){
+        if (!"no".equalsIgnoreCase(ans)) {
             do {
-                if("return".equalsIgnoreCase(ans)){
+                if (!Input.checkInput(ans)) {
                     return;
-                }else if("quit".equalsIgnoreCase(ans)){
-                    System.out.println("Thanks for trusting our bank! Bye Bye");
-                    System.exit(0);
-                } else if("yes".equalsIgnoreCase(ans)){
-                    System.out.println("Write the last name you like!");
+                } else if ("yes".equalsIgnoreCase(ans)) {
+                    System.out.println(ColorConsole.CYAN + "Write the last name you like!" + ColorConsole.RESET);
                     this.setSurname(Input.inputNextLine());
                     return;
-                }else{
-                    System.out.println("wrong input! try again");
+                } else {
+                    System.out.println(ColorConsole.RED + "wrong input! try again" + ColorConsole.RESET);
                 }
                 ans = Input.inputNextLine();
-            }while(!"no".equalsIgnoreCase(ans));
+            } while (!"no".equalsIgnoreCase(ans));
         }
     }
 
     @Override
     public String toString() {
-        return "Name : " + this.getName() +
-                ", Last Name : " + this.getSurname()
-                ;
+        return ColorConsole.PURPLE_BOLD + "Name : " + ColorConsole.PINK + this.getName() +
+                ColorConsole.PURPLE_BOLD + ", Last Name : " + ColorConsole.PINK + this.getSurname();
     }
 }

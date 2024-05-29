@@ -16,11 +16,15 @@ public class Data {
         this.users = new ArrayList<>();
     }
 
-    public int usersSize(){
+    public void addSimpleUser(SimpleUser user){
+        this.users.add(user);
+    }
+
+    public int usersSize() {
         return this.users.size();
     }
 
-    public SimpleUser getUser(int index){
+    public SimpleUser getUser(int index) {
         return this.users.get(index);
     }
 
@@ -36,20 +40,16 @@ public class Data {
         this.requests.add(request);
     }
 
-    public void removeRequest(Request request) {
-        this.requests.remove(request);
-    }
-
     public List<String> displayAuthentications() {
         int index = 1;
         List<String> securityNumbers = new ArrayList<>();
         if (this.authentications.isEmpty()) {
-            System.out.println("There are no authentication requests");
+            System.out.println(ColorConsole.PINK + "There are no authentication requests" + ColorConsole.RESET);
             return null;
         }
         for (Map.Entry<String, Authentication> entry : this.authentications.entrySet()) {
             String key = entry.getKey();
-            System.out.println(index + ". SSN: " + key);
+            System.out.println(ColorConsole.PINK + index + ". SSN: " + ColorConsole.PURPLE + key + ColorConsole.RESET);
             securityNumbers.add(key);
             index++;
         }
@@ -65,13 +65,10 @@ public class Data {
                 return;
             }
             input = Input.inputNextLine();
-            if ("quit".equalsIgnoreCase(input)) {
-                System.out.println("Thanks for trusting our bank! Bye Bye!");
-                System.exit(0);
-            } else if ("return".equalsIgnoreCase(input)) {
+            if (!Input.checkInput(input)) {
                 return;
             } else if (!input.matches("-?\\d+(\\.\\d+)?")) {
-                System.out.println("Wrong input try again!");
+                System.out.println(ColorConsole.RED + "Wrong input try again!" + ColorConsole.RESET);
             } else if (Integer.parseInt(input) > 0 && Integer.parseInt(input) < securityNumbers.size() + 1) {
                 for (int index = 1; index < securityNumbers.size() + 1; index++) {
                     if (input.equals(Integer.toString(index))) {
@@ -80,35 +77,38 @@ public class Data {
                     }
                 }
             } else {
-                System.out.println("Wrong input try again!");
+                System.out.println(ColorConsole.RED + "Wrong input try again!" + ColorConsole.RESET);
             }
         } while (!"retrun".equalsIgnoreCase(input));
     }
 
     public void printUserInfo(SimpleUser user) {
-        System.out.println("name : " + user.getName());
-        System.out.println("last name : " + user.getSurname());
-        System.out.println("phone number : " + user.getPhoneNumber());
-        System.out.println("social security number : " + user.getSecurityNumber());
-        System.out.println("password : " + user.getPassword());
+        System.out.println(ColorConsole.BLUE + "name : " + ColorConsole.CYAN_BOLD + user.getName());
+        System.out.println(ColorConsole.BLUE + "last name : " + ColorConsole.CYAN_BOLD + user.getSurname());
+        System.out.println(ColorConsole.BLUE + "phone number : " + ColorConsole.CYAN_BOLD + user.getPhoneNumber());
+        System.out.println(ColorConsole.BLUE + "social security number : " + ColorConsole.CYAN_BOLD + user.getSecurityNumber());
+        System.out.println(ColorConsole.BLUE + "password : " + ColorConsole.CYAN_BOLD + user.getPassword() + ColorConsole.RESET);
     }
 
     public void authenticateUser(NeoBank neoBank, String securityNumber) {
         int userIndex = neoBank.getSpecificUserBySSN(securityNumber);
         SimpleUser user = neoBank.getSpecificUser(userIndex);
         this.printUserInfo(user);
-        System.out.println("would you like to authenticate this user?");
+        System.out.println(ColorConsole.GREEN_BOLD + "would you like to authenticate this user?" + ColorConsole.RESET);
         String answer = Input.inputNextLine();
         if ("yes".equalsIgnoreCase(answer)) {
             user.getAuthenticated().acceptAuthentication();
             this.removeAuthentication(securityNumber);
-            System.out.println("User successfully authenticated!");
+            System.out.println(ColorConsole.GREEN_BOLD + "User successfully authenticated!" + ColorConsole.RESET);
+            this.addSimpleUser(user);
             user.setAccount(new Account(user, neoBank));
         } else if ("quit".equalsIgnoreCase(answer)) {
-            System.out.println("Thanks for trusting our Bank! Bye Bye!");
+            System.out.println(ColorConsole.PURPLE + "Thanks for trusting our Bank! Bye Bye!" + ColorConsole.RESET);
             System.exit(0);
         } else if ("no".equalsIgnoreCase(answer)) {
             user.getAuthenticated().rejectAuthentication();
+        } else {
+            System.out.println(ColorConsole.RED + "Wrong input" + ColorConsole.RESET);
         }
     }
 
@@ -116,11 +116,11 @@ public class Data {
         List<Request> list = new ArrayList<>();
         int index = 1;
         if (this.requests.isEmpty()) {
-            System.out.println("There are no requests");
+            System.out.println(ColorConsole.RED + "There are no requests" + ColorConsole.RESET);
             return null;
         }
         for (Request request : this.requests) {
-            System.out.println(index + ". SSN : " + request.getSecurityNumber() + " " + request.toString());
+            System.out.println(ColorConsole.PURPLE + index + ". SSN : " + ColorConsole.PINK + request.getSecurityNumber() + " " + request.toString() + ColorConsole.RESET);
             list.add(request);
             index++;
         }
@@ -133,15 +133,15 @@ public class Data {
         List<Request> list = new ArrayList<>();
         int index = 1;
         if (this.requests.isEmpty()) {
-            System.out.println("There are no requests");
+            System.out.println(ColorConsole.RED + "There are no requests" + ColorConsole.RESET);
             return null;
         }
-        if (section==null){
+        if (section == null) {
             return null;
         }
         for (Request request : this.requests) {
             if (request.getSection().equals(section)) {
-                System.out.println(index + ". SSN : " + request.getSecurityNumber() + " " + request.toString());
+                System.out.println(ColorConsole.PURPLE + index + ". SSN : " + ColorConsole.PINK + request.getSecurityNumber() + " " + request.toString() + ColorConsole.RESET);
                 list.add(request);
                 index++;
             }
@@ -154,15 +154,15 @@ public class Data {
         List<Request> list = new ArrayList<>();
         String securityNumber = choosePerson(neoBank);
         if (this.requests.isEmpty()) {
-            System.out.println("There are no requests");
+            System.out.println(ColorConsole.RED + "There are no requests" + ColorConsole.RESET);
             return null;
         }
-        if (securityNumber==null){
+        if (securityNumber == null) {
             return null;
         }
         for (Request request : this.requests) {
             if (request.getSecurityNumber().equals(securityNumber)) {
-                System.out.println(index + ". SSN : " + request.getSecurityNumber() + " " + request.toString());
+                System.out.println(ColorConsole.PURPLE + index + ". SSN : " + ColorConsole.PINK + request.getSecurityNumber() + " " + request.toString() + ColorConsole.RESET);
                 list.add(request);
                 index++;
             }
@@ -175,15 +175,15 @@ public class Data {
         List<Request> list = new ArrayList<>();
         int index = 1;
         if (this.requests.isEmpty()) {
-            System.out.println("There are no requests");
+            System.out.println(ColorConsole.RED + "There are no requests" + ColorConsole.RESET);
             return null;
         }
-        if (status==null){
+        if (status == null) {
             return null;
         }
         for (Request request : this.requests) {
             if (request.getStatus().equals(status)) {
-                System.out.println(index + ". SSN : " + request.getSecurityNumber() + " " + request.toString());
+                System.out.println(ColorConsole.PURPLE + index + ". SSN : " + ColorConsole.PINK + request.getSecurityNumber() + " " + request.toString() + ColorConsole.RESET);
                 list.add(request);
                 index++;
             }
@@ -194,23 +194,20 @@ public class Data {
     public void selectRequest(NeoBank neoBank, List<Request> requestsList) {
         String input;
         input = Input.inputNextLine();
-        if (requestsList==null){
+        if (requestsList == null) {
             return;
         }
-        if ("quit".equalsIgnoreCase(input)) {
-            System.out.println("Thanks for trusting our bank! Bye Bye!");
-            System.exit(0);
-        } else if ("return".equalsIgnoreCase(input)) {
+        if (!Input.checkInput(input)) {
             return;
-        } else if (!input.matches("-?\\d+(\\.\\d+)?")) {
-            System.out.println("Wrong input try again!");
+        } else if (!input.matches("-?\\d+(\\.\\d+)?") && Input.checkInput(input)) {
+            System.out.println(ColorConsole.RED + "Wrong input try again!" + ColorConsole.RESET);
         } else if (Integer.parseInt(input) > 0 && Integer.parseInt(input) < requestsList.size() + 1) {
             for (int index = 1; index < requestsList.size() + 1; index++) {
                 if (input.equals(Integer.toString(index))) {
-                    if (RequestStatus.IN_PROCESS.equals(requestsList.get(index-1).getStatus())){
-                        this.closingRequest(requestsList.get(index-1));
+                    if (RequestStatus.IN_PROCESS.equals(requestsList.get(index - 1).getStatus())) {
+                        this.closingRequest(requestsList.get(index - 1));
                         return;
-                    } else if (RequestStatus.NOTED.equals(requestsList.get(index-1).getStatus())) {
+                    } else if (RequestStatus.NOTED.equals(requestsList.get(index - 1).getStatus())) {
                         processRequest(neoBank, requestsList.get(index - 1));
                         return;
                     }
@@ -218,15 +215,14 @@ public class Data {
                 }
             }
         } else {
-            System.out.println("Wrong input try again!");
+            System.out.println(ColorConsole.RED + "Wrong input try again!" + ColorConsole.RESET);
         }
 
     }
 
     public void processRequest(NeoBank neoBank, Request request) {
-        SimpleUser user = neoBank.getSpecificUser(neoBank.getSpecificUserBySSN(request.getSecurityNumber()));
         request.showRequestInfo();
-        System.out.println("Would you like to process this request?");
+        System.out.println(ColorConsole.BLUE + "Would you like to process this request?" + ColorConsole.RESET);
         String answer = Input.inputNextLine();
         switch (answer) {
             case "yes":
@@ -239,10 +235,10 @@ public class Data {
                 if ("return".equalsIgnoreCase(answer)) {
                     return;
                 } else if (!"quit".equalsIgnoreCase(answer)) {
-                    System.out.println("THERE IS NO OTHER OPTION! Please input something else!");
+                    System.out.println(ColorConsole.RED + "THERE IS NO OTHER OPTION! Please input something else!" + ColorConsole.RESET);
                     break;
                 } else {
-                    System.out.println("Thanks for trusting our bank! Bye Bye!");
+                    System.out.println(ColorConsole.PURPLE + "Thanks for trusting our bank! Bye Bye!" + ColorConsole.RESET);
                     System.exit(0);
                 }
                 break;
@@ -250,17 +246,14 @@ public class Data {
     }
 
     public void closingRequest(Request request) {
-        System.out.println("Would you like to answer this request?");
+        System.out.println(ColorConsole.BLUE + "Would you like to answer this request?" + ColorConsole.RESET);
         String input = Input.inputNextLine();
         switch (input) {
             case "yes":
-                System.out.println("Please enter your answer!");
+                System.out.println(ColorConsole.BLUE + "Please enter your answer!" + ColorConsole.RESET);
                 String answer = Input.inputNextLine();
-                if ("return".equalsIgnoreCase(answer)) {
+                if (!Input.checkInput(answer)) {
                     return;
-                } else if ("quit".equalsIgnoreCase(answer)) {
-                    System.out.println("Thanks for trusting our bank! Bye Bye!");
-                    System.exit(0);
                 }
                 request.setStatus(RequestStatus.PROCESSED);
                 request.setAnswer(answer);
@@ -268,150 +261,118 @@ public class Data {
             case "no":
                 return;
             default:
-                if ("return".equalsIgnoreCase(input)) {
-                    return;
-                } else if (!"quit".equalsIgnoreCase(input)) {
-                    System.out.println("THERE IS NO OTHER OPTION! Please input something else!");
+                if (Input.checkInput(input)) {
+                    System.out.println(ColorConsole.RED + "THERE IS NO OTHER OPTION! Please input something else!" + ColorConsole.RESET);
                     break;
-                } else {
-                    System.out.println("Thanks for trusting our bank! Bye Bye!");
-                    System.exit(0);
                 }
-                break;
         }
     }
 
     public void showRequest(NeoBank neoBank) {
         String answer;
-        do {
-            displayRequestMenu();
-            answer = Input.inputNextLine();
-            switch (answer) {
-                case "1", "Show All requests":
-                    this.selectRequest(neoBank, this.displayRequests());
-                    break;
-                case "2", "Show requests by Person":
-                    this.selectRequest(neoBank, this.displayRequestsByPerson(neoBank));
-                    break;
-                case "3", "Show requests by Section":
-                    this.selectRequest(neoBank, this.displayRequestsBySection());
-                    break;
-                case "4", "Show requests by Status":
-                    this.selectRequest(neoBank, this.displayRequestsByStatus());
-                    break;
-                case "5", "Return":
-                    return;
-                default:
-                    if (!answer.equalsIgnoreCase("quit")) {
-                        System.out.println("THERE IS NO OTHER OPTION! Please input something else!");
-                    } else {
-                        System.out.println("Thanks for trusting our bank! Bye Bye!");
-                        System.exit(0);
-                    }
-            }
-        } while (!"quit".equalsIgnoreCase(answer));
+        displayRequestMenu();
+        answer = Input.inputNextLine();
+        switch (answer) {
+            case "1", "Show All requests":
+                this.selectRequest(neoBank, this.displayRequests());
+                break;
+            case "2", "Show requests by Person":
+                this.selectRequest(neoBank, this.displayRequestsByPerson(neoBank));
+                break;
+            case "3", "Show requests by Section":
+                this.selectRequest(neoBank, this.displayRequestsBySection());
+                break;
+            case "4", "Show requests by Status":
+                this.selectRequest(neoBank, this.displayRequestsByStatus());
+                break;
+            case "5", "Return":
+                return;
+            default:
+                if (Input.checkInput(answer)) {
+                    System.out.println(ColorConsole.RED + "THERE IS NO OTHER OPTION! Please input something else!" + ColorConsole.RESET);
+                }
+                break;
+        }
+        showRequest(neoBank);
     }
 
     public void displayRequestMenu() {
-        System.out.println("What would you like to do?");
+        System.out.println(ColorConsole.CYAN + "What would you like to do?");
         System.out.println("   1.Show All requests");
         System.out.println("   2.Show requests by Person");
         System.out.println("   3.Show requests by Section");
         System.out.println("   4.Show requests by Status");
-        System.out.println("   5.Return");
+        System.out.println("   5.Return" + ColorConsole.RESET);
     }
 
-    public RequestSection chooseSection(){
-        RequestSection section = RequestSection.MANAGEMENT;
-        System.out.println("Choose");
-        System.out.println("   1.Management");
-        System.out.println("   2.Contacts");
-        System.out.println("   3.Transfer");
-        System.out.println("   4.Settings");
+    public RequestSection chooseSection() {
+        System.out.println(ColorConsole.BLUE + "Choose");
+        System.out.println("   1.Management\n   2.Contacts\n   3.Transfer\n   4.Settings" + ColorConsole.RESET);
         String ans;
-        do{
+        do {
             ans = Input.inputNextLine();
-            switch(ans){
+            switch (ans) {
                 case "1", "Management":
-                    return section;
+                    return RequestSection.MANAGEMENT;
                 case "2", "Contacts":
-                    section = RequestSection.CONTACTS;
-                    return section;
+                    return RequestSection.CONTACTS;
                 case "3", "Administer":
-                    section = RequestSection.TRANSFER;
-                    return section;
+                    return RequestSection.TRANSFER;
                 case "4", "Settings":
-                    section = RequestSection.SETTINGS;
-                    return section;
+                    return RequestSection.SETTINGS;
                 default:
-                    if ("return".equalsIgnoreCase(ans)){
+                    if (!Input.checkInput(ans)) {
                         return null;
-                    }else if (!ans.equalsIgnoreCase("quit")) {
-                        System.out.println("THERE IS NO OTHER OPTION! Please input something else!");
-                        break;
                     } else {
-                        System.out.println("Thanks for trusting our bank! Bye Bye!");
-                        System.exit(0);
+                        System.out.println(ColorConsole.RED + "THERE IS NO OTHER OPTION! Please input something else!" + ColorConsole.RESET);
+                        break;
                     }
-                    break;
             }
         } while (!"quit".equalsIgnoreCase(ans));
-        return section;
+        return null;
     }
 
-    public RequestStatus chooseStatus(){
-        RequestStatus status= RequestStatus.NOTED;
-        System.out.println("Choose");
-        System.out.println("   1.Noted");
-        System.out.println("   2.In Process");
-        System.out.println("   3.Processed");
+    public RequestStatus chooseStatus() {
+        System.out.println(ColorConsole.CYAN + "Choose:\n   1.Noted\n   2.In Process\n   3.Processed" + ColorConsole.RESET);
         String ans;
-        do{
+        do {
             ans = Input.inputNextLine();
-            switch(ans){
+            switch (ans) {
                 case "1", "Noted":
-                    return status;
+                    return RequestStatus.NOTED;
                 case "2", "In Process":
-                    status = RequestStatus.IN_PROCESS;
-                    return status;
+                    return RequestStatus.IN_PROCESS;
                 case "3", "Processed":
-                    status = RequestStatus.PROCESSED;
-                    return status;
+                    return RequestStatus.PROCESSED;
                 default:
-                    if ("return".equalsIgnoreCase(ans)){
+                    if (!Input.checkInput(ans)) {
                         return null;
-                    }else if (!ans.equalsIgnoreCase("quit")) {
-                        System.out.println("THERE IS NO OTHER OPTION! Please input something else!");
-                        break;
                     } else {
-                        System.out.println("Thanks for trusting our bank! Bye Bye!");
-                        System.exit(0);
+                        System.out.println(ColorConsole.RED + "THERE IS NO OTHER OPTION! Please input something else!" + ColorConsole.RESET);
+                        break;
                     }
-                    break;
             }
         } while (!"quit".equalsIgnoreCase(ans));
-        return status;
+        return null;
     }
 
-    public String choosePerson(NeoBank neoBank){
-        System.out.println("Please enter the social security number of the person");
+    public String choosePerson(NeoBank neoBank) {
+        System.out.println(ColorConsole.BLUE + "Please enter the social security number of the person" + ColorConsole.RESET);
         String ans;
-        do{
-            ans =Input.inputNextLine();
-            if ("return".equalsIgnoreCase(ans)){
+        do {
+            ans = Input.inputNextLine();
+            if(!Input.checkInput(ans)){
                 return null;
-            }else if (!neoBank.checkSSN(ans)){
-                System.out.println("This user doesn't exist");
-            }else if (!ans.equalsIgnoreCase("quit")) {
-                System.out.println("THERE IS NO OTHER OPTION! Please input something else!");
-                break;
-            } else {
-                break;
+            }else if (!neoBank.checkSSN(ans)) {
+                System.out.println(ColorConsole.RED + "This user doesn't exist" + ColorConsole.RESET);
+            } else if(neoBank.checkSSN(ans)){
+                return ans;
+            }else{
+                System.out.println(ColorConsole.RED + "THERE IS NO OTHER OPTION! Please input something else!" + ColorConsole.RESET);
             }
-        }while(!"return".equalsIgnoreCase(ans));
-        return ans;
+        } while (!"return".equalsIgnoreCase(ans));
+        return null;
     }
-
 
 
 }

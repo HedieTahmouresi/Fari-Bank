@@ -17,9 +17,9 @@ public class ChargeTransaction extends Transaction {
         ZonedDateTime zonedDateTime = this.getDateAndTime().atZone(ZoneId.systemDefault());
         LocalDate datePart = zonedDateTime.toLocalDate();
         LocalTime timePart = zonedDateTime.toLocalTime();
-        System.out.println("Charge Transaction : ");
-        System.out.println("Value: +" + this.getValue());
-        System.out.println("Date: " + datePart  + "Time: "+ timePart);
-        System.out.println("Tracing Number: " + this.getTracingNumber());
+        System.out.println(ColorConsole.PURPLE + "Charge Transaction : ");
+        System.out.println("Value: " + this.getSign() + this.getValue() + ColorConsole.RESET);
+        System.out.println(ColorConsole.PURPLE + "Date: " + datePart + "Time: " + timePart);
+        System.out.println("Tracing Number: " + this.getTracingNumber() + ColorConsole.RESET);
     }
 }

@@ -1,7 +1,5 @@
 package ir.ac.kntu;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 public class Request {
@@ -52,7 +50,7 @@ public class Request {
         this.section = section;
     }
 
-    public Request(String request, RequestSection section, String securityNumber){
+    public Request(String request, RequestSection section, String securityNumber) {
         setRequest(request);
         setSection(section);
         setAnswer("No answer");
@@ -60,21 +58,21 @@ public class Request {
         setSecurityNumber(securityNumber);
     }
 
-    public static void displaySections(){
-        System.out.println("What section is your problem?");
+    public static void displaySections() {
+        System.out.println(ColorConsole.CYAN + "What section is your problem?");
         System.out.println("   1. Account Management");
         System.out.println("   2. Contacts");
         System.out.println("   3. Transfer");
         System.out.println("   4. Settings");
-        System.out.println("   5. Return");
+        System.out.println("   5. Return" + ColorConsole.RESET);
     }
 
-    public static RequestSection createRequestSection(){
+    public static RequestSection createRequestSection() {
         String answer;
         do {
             displaySections();
             answer = Input.inputNextLine();
-            switch(answer){
+            switch (answer) {
                 case "1", "Account Management":
                     return RequestSection.MANAGEMENT;
                 case "2", "Contacts":
@@ -86,91 +84,86 @@ public class Request {
                 case "5", "Return":
                     return null;
                 default:
-                    if (!answer.equalsIgnoreCase("quit")) {
-                        System.out.println("THERE IS NO OTHER OPTION! Please input something else!");
-                    } else{
-                        System.out.println("Thanks for trusting our bank! Bye Bye!");
-                        System.exit(0);
+                    if (Input.checkInput(answer)) {
+                        System.out.println(ColorConsole.RED + "THERE IS NO OTHER OPTION! Please input something else!" + ColorConsole.RESET);
                     }
                     break;
             }
-        }while (!"quit".equalsIgnoreCase(answer));
+        } while (!"quit".equalsIgnoreCase(answer));
         return null;
     }
 
-    public static void createRequest(NeoBank neoBank, SimpleUser user){
+    public static void createRequest(NeoBank neoBank, SimpleUser user) {
         RequestSection section1 = createRequestSection();
-        if (section1==null){
+        if (section1 == null) {
             return;
         }
-        System.out.println("Please Enter your problem.");
+        System.out.println(ColorConsole.BLUE_BOLD + "Please Enter your problem." + ColorConsole.RESET);
         String text = Input.inputNextLine();
-        if ("return".equalsIgnoreCase(text)) {
+        if (!Input.checkInput(text)) {
             return;
-        } else if ("quit".equalsIgnoreCase(text)){
-            System.out.println("Thanks for trusting our bank! Bye Bye!");
-            System.exit(0);
         }
         Request newRequest = new Request(text, section1, user.getSecurityNumber());
         neoBank.getData().addRequest(newRequest);
         user.addRequest(newRequest);
-        System.out.println("Request successfully noted!");
+        System.out.println(ColorConsole.GREEN + "Request successfully noted!" + ColorConsole.RESET);
     }
 
     @Override
     public String toString() {
-        return "Request{" +
+        return ColorConsole.PURPLE + "Request{" +
                 " Section=" + this.getSection() +
                 ", Status=" + this.getStatus() +
-                '}';
+                '}' + ColorConsole.RESET;
     }
 
-    public static void showRequests(SimpleUser user){
-        for (int index = 1 ; index < user.requestSize()+1 ; index++){
-            System.out.println(index + ". " + user.getRequest(index-1).toString());
+    public static void showRequests(SimpleUser user) {
+        for (int index = 1; index < user.requestSize() + 1; index++) {
+            System.out.println(index + ". " + user.getRequest(index - 1).toString());
         }
     }
 
 
-    public static void selectRequest(NeoBank neoBank, SimpleUser user){
+    public static void selectRequest(NeoBank neoBank, SimpleUser user) {
         String input;
-        do{
+        do {
             showRequests(user);
-            if (user.requestSize()==0){
+            if (user.requestSize() == 0) {
                 return;
             }
-            input=Input.inputNextLine();
-            if ("quit".equalsIgnoreCase(input)) {
-                System.out.println("Thanks for trusting our bank! Bye Bye!");
-                System.exit(0);
-            } else if ("return".equalsIgnoreCase(input)){
+            input = Input.inputNextLine();
+            if (!Input.checkInput(input)) {
                 return;
-            }else if (!input.matches("[0-9]+")){
-                System.out.println("Wrong input try again!");
-            }else if (Integer.parseInt(input)>0 && Integer.parseInt(input)<user.requestSize()+1){
-                for (int index = 1 ; index < user.requestSize() + 1 ; index++){
-                    if (input.equals(Integer.toString(index))){
-                        user.getRequest(index-1).showRequestInfo();
+            } else if (!input.matches("[0-9]+")) {
+                System.out.println(ColorConsole.RED + "Wrong input try again!" + ColorConsole.RESET);
+            } else if (Integer.parseInt(input) > 0 && Integer.parseInt(input) < user.requestSize() + 1) {
+                for (int index = 1; index < user.requestSize() + 1; index++) {
+                    if (input.equals(Integer.toString(index))) {
+                        user.getRequest(index - 1).showRequestInfo();
                         return;
                     }
                 }
-            } else{
-                System.out.println("Wrong input try again!");
+            } else {
+                System.out.println(ColorConsole.RED + "Wrong input try again!" + ColorConsole.RESET);
             }
-        }while (!"retrun".equalsIgnoreCase(input));
+        } while (!"return".equalsIgnoreCase(input));
     }
 
-    public void showRequestInfo(){
-        System.out.println("Request Section : "+ this.getSection());
-        System.out.println("Problem : " + this.getRequest());
-        System.out.println("Request Status : " + this.getStatus());
-        System.out.println("Admins Answer : " + this.getAnswer());
+    public void showRequestInfo() {
+        System.out.println(ColorConsole.PURPLE + "Request Section : " + ColorConsole.CYAN + this.getSection());
+        System.out.println(ColorConsole.PURPLE + "Problem : " + ColorConsole.CYAN + this.getRequest());
+        System.out.println(ColorConsole.PURPLE + "Request Status : " + ColorConsole.CYAN + this.getStatus());
+        System.out.println(ColorConsole.PURPLE + "Admins Answer : " + ColorConsole.CYAN + this.getAnswer());
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Request request1)) return false;
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof Request request1)) {
+            return false;
+        }
         return Objects.equals(request, request1.request) && Objects.equals(answer, request1.answer) && status == request1.status && section == request1.section;
     }
 

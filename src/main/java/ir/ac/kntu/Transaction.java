@@ -11,7 +11,10 @@ public class Transaction {
     private String sign;
 
     public String getSign() {
-        return sign;
+        if ("+".equalsIgnoreCase(sign)) {
+            return ColorConsole.GREEN + sign;
+        }
+        return ColorConsole.RED + sign;
     }
 
     public void setSign(String sign) {
@@ -49,14 +52,14 @@ public class Transaction {
         setSign(sign);
     }
 
-    public void showInfo(NeoBank neoBank){
+    public void showInfo(NeoBank neoBank) {
         ZonedDateTime zonedDateTime = dateAndTime.atZone(ZoneId.systemDefault());
         LocalDate datePart = zonedDateTime.toLocalDate();
         LocalTime timePart = zonedDateTime.toLocalTime();
-        System.out.println("Transaction : ");
-        System.out.println("Value: "+this.getSign() + this.getValue());
-        System.out.println("Date: " + datePart  + "Time: "+ timePart);
-        System.out.println("Tracing Number: " + this.getTracingNumber());
+        System.out.println(ColorConsole.BLUE + "Transaction : " + ColorConsole.RESET);
+        System.out.println(ColorConsole.BLUE + "Value: " + this.getSign() + this.getValue() + ColorConsole.RESET);
+        System.out.println(ColorConsole.BLUE + "Date: " + datePart + "Time: " + timePart + ColorConsole.RESET);
+        System.out.println(ColorConsole.BLUE + "Tracing Number: " + this.getTracingNumber() + ColorConsole.RESET);
     }
 
     @Override
@@ -64,5 +67,9 @@ public class Transaction {
         return ", Date and Time " + this.getDateAndTime() +
                 ", Value : " + this.getValue() +
                 ", Tracing Number : " + this.getTracingNumber();
+    }
+
+    public boolean dateIsBetween(Instant start, Instant end) {
+        return this.getDateAndTime().isAfter(start) && this.getDateAndTime().isBefore(end);
     }
 }

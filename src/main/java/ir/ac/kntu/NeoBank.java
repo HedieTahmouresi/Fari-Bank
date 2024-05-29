@@ -68,14 +68,14 @@ public class NeoBank {
         }
         for (SimpleUser user : this.simpleUsers) {
             if (user.getSecurityNumber().equals(securityNumber)) {
-                System.out.println("SomeBody with this social security number already has an account! Please try again!");
+                System.out.println(ColorConsole.RED + "SomeBody with this social security number already has an account! Please try again!" + ColorConsole.RESET);
                 return false;
             }
         }
         return true;
     }
 
-    public boolean checkSSN(String securityNumber){
+    public boolean checkSSN(String securityNumber) {
         if (this.simpleUsers.isEmpty()) {
             return true;
         }
@@ -93,7 +93,7 @@ public class NeoBank {
         }
         for (SimpleUser user : this.simpleUsers) {
             if (user.getPhoneNumber().equals(phoneNumber)) {
-                System.out.println("SomeBody with this phone number already exists! Please try again!");
+                System.out.println(ColorConsole.RED + "SomeBody with this phone number already exists! Please try again!" + ColorConsole.RESET);
                 return false;
             }
         }
@@ -111,7 +111,7 @@ public class NeoBank {
         return true;
     }
 
-    public SimpleUser getUserByAccountId(String accountID){
+    public SimpleUser getUserByAccountId(String accountID) {
         for (int index = 0; index < this.simpleUsers.size(); index++) {
             if (this.simpleUsers.get(index).getAccount() != null) {
                 if (this.simpleUsers.get(index).getAccount().getAccountId().equals(accountID)) {
@@ -123,7 +123,7 @@ public class NeoBank {
     }
 
     public boolean existsCreditCard(String creditCardId) {
-        for (int index = 0; index < this.simpleUsers.size() ; index++) {
+        for (int index = 0; index < this.simpleUsers.size(); index++) {
             if (this.simpleUsers.get(index).getAccount() != null) {
                 if (this.simpleUsers.get(index).getAccount().getCreditCard().getCreditCardId().equals(creditCardId)) {
                     return false;
@@ -131,10 +131,6 @@ public class NeoBank {
             }
         }
         return true;
-    }
-
-    public int getUsersSize() {
-        return this.simpleUsers.size();
     }
 
     public Admin getSpecificAdmin(String userName) {

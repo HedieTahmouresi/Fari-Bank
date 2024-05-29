@@ -1,8 +1,6 @@
 package ir.ac.kntu;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 public class CreditCard {
@@ -49,20 +47,20 @@ public class CreditCard {
         setHavePassword(false);
     }
 
-    public void changeCreditCardPassword(){
-        System.out.println("Enter the passcode you want.");
+    public void changeCreditCardPassword() {
+        System.out.println(ColorConsole.BLUE + "Enter the passcode you want." + ColorConsole.RESET);
         String input;
-        do{
+        do {
             input = Input.inputNextLine();
-            if ("quit".equalsIgnoreCase(input)){
-                System.out.println("Thanks for trusting our bank! Bye Bye!");
+            if ("quit".equalsIgnoreCase(input)) {
+                System.out.println(ColorConsole.PURPLE + "Thanks for trusting our bank! Bye Bye!" + ColorConsole.RESET);
                 System.exit(0);
-            } else if ("return".equalsIgnoreCase(input)){
+            } else if ("return".equalsIgnoreCase(input)) {
                 return;
-            }else if (!input.matches("[0-9]{4}")){
-                System.out.println("Invalid passcode!");
+            } else if (!input.matches("[0-9]{4}")) {
+                System.out.println(ColorConsole.RED + "Invalid passcode!" + ColorConsole.RESET);
             }
-        }while(!input.matches("[0-9]{4}"));
+        } while (!input.matches("[0-9]{4}"));
         this.setPassword(Integer.parseInt(input));
     }
 

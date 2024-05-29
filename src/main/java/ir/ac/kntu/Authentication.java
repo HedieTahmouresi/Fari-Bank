@@ -20,26 +20,26 @@ public class Authentication {
         this.answer = answer;
     }
 
-    public Authentication(){
+    public Authentication() {
         setAuthenticated(false);
-        setAnswer("Hasn't been checked");
+        setAnswer(ColorConsole.PINK + "Hasn't been checked" + ColorConsole.RESET);
     }
 
-    public void acceptAuthentication(){
-        this.setAnswer("accepted!");
+    public void acceptAuthentication() {
+        this.setAnswer(ColorConsole.GREEN + "accepted!" + ColorConsole.RESET);
         this.setAuthenticated(true);
     }
 
-    public void rejectAuthentication(){
+    public void rejectAuthentication() {
         this.setAuthenticated(false);
-        System.out.println("Please enter the reason of rejection!");
+        System.out.println(ColorConsole.PINK + "Please enter the reason of rejection!" + ColorConsole.RESET);
         String input;
-        do{
+        do {
             input = Input.inputNextLine();
-            if(input.matches("[0-9]+")){
-                System.out.println("Wrong format");
+            if (input.matches("[0-9]+")) {
+                System.out.println(ColorConsole.RED + "Wrong format" + ColorConsole.RESET);
             }
-        }while(input.matches("[0-9]+"));
+        } while (input.matches("[0-9]+"));
         setAnswer(input);
     }
 }
