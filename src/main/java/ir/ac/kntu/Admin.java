@@ -221,7 +221,7 @@ public class Admin extends Person {
 
     public static List<SimpleUser> search(NeoBank neoBank) {
         List<SimpleUser> result = new ArrayList<>();
-        for (int index = 0; index < neoBank.getData().usersSize()+1; index++) {
+        for (int index = 0; index < neoBank.getData().usersSize() + 1; index++) {
             result.add(neoBank.getData().getUser(index));
         }
         String name = gettingSearchName();
@@ -249,8 +249,7 @@ public class Admin extends Person {
     public static void showUsers(List<SimpleUser> users) {
         int index = 1;
         for (SimpleUser user : users) {
-            System.out.println("haha");
-            System.out.println(index + ". " + user);
+            System.out.println(ColorConsole.CYAN + index + ". " + ColorConsole.BLUE + user + ColorConsole.RESET);
             index++;
         }
     }
@@ -287,7 +286,6 @@ public class Admin extends Person {
         List<SimpleUser> allUsers = new ArrayList<>();
         for (int index = 0; index < neoBank.getData().usersSize(); index++) {
             allUsers.add(neoBank.getData().getUser(index));
-            System.out.println("haha" + neoBank.getData().getUser(index));
         }
         return allUsers;
     }

@@ -16,7 +16,7 @@ public class Data {
         this.users = new ArrayList<>();
     }
 
-    public void addSimpleUser(SimpleUser user){
+    public void addSimpleUser(SimpleUser user) {
         this.users.add(user);
     }
 
@@ -361,13 +361,13 @@ public class Data {
         String ans;
         do {
             ans = Input.inputNextLine();
-            if(!Input.checkInput(ans)){
+            if (!Input.checkInput(ans)) {
                 return null;
-            }else if (!neoBank.checkSSN(ans)) {
+            } else if (!neoBank.checkSSN(ans)) {
                 System.out.println(ColorConsole.RED + "This user doesn't exist" + ColorConsole.RESET);
-            } else if(neoBank.checkSSN(ans)){
+            } else if (neoBank.checkSSN(ans)) {
                 return ans;
-            }else{
+            } else {
                 System.out.println(ColorConsole.RED + "THERE IS NO OTHER OPTION! Please input something else!" + ColorConsole.RESET);
             }
         } while (!"return".equalsIgnoreCase(ans));
