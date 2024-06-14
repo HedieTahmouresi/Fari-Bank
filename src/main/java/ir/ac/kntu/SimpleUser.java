@@ -2,45 +2,18 @@ package ir.ac.kntu;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-public class SimpleUser extends Person {
-    private String phoneNumber;
+public class SimpleUser extends UserPerson {
     private String securityNumber;
     private String password;
     private Account account;
-    private List<Contact> contacts;
-    private List<Request> requests;
     private boolean contactOption;
     private Authentication authenticated;
+    private List<Contact> contacts;
+    private List<Request> requests;
 
-
-    public void addRequest(Request request) {
-        this.requests.add(request);
-    }
-
-    public int requestSize() {
-        return this.requests.size();
-    }
-
-    public Request getRequest(int index) {
-        return this.requests.get(index);
-    }
-
-    public int contactSize() {
-        return this.contacts.size();
-    }
-
-    public void removeContact(Contact contact) {
-        this.contacts.remove(contact);
-    }
-
-    public Contact getSpecificContact(int index) {
-        return this.contacts.get(index);
-    }
-
-    public void addContact(Contact newContact) {
-        this.contacts.add(newContact);
-    }
+    private final Input input = new Input();
 
     public String getSecurityNumber() {
         return securityNumber;
@@ -74,204 +47,257 @@ public class SimpleUser extends Person {
         this.contactOption = contactOption;
     }
 
-    public boolean isAuthenticated() {
-        return authenticated.isAuthenticated();
-    }
-
     public Authentication getAuthenticated() {
-        return this.authenticated;
+        return authenticated;
     }
 
     public void setAuthenticated(Authentication authenticated) {
         this.authenticated = authenticated;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public SimpleUser(String name, String lastName, String phoneNumber, String securityNumber, String password) {
-        super(name, lastName);
+    public SimpleUser(String name, String lastName, String phoneNumber, String securityNumber, String password, Authentication authentication) {
+        super(name, lastName, phoneNumber);
         setSecurityNumber(securityNumber);
         setPassword(password);
-        setPhoneNumber(phoneNumber);
-        this.contacts = new ArrayList<>();
         this.requests = new ArrayList<>();
+        this.contacts = new ArrayList<>();
         setContactOption(true);
-        setAuthenticated(new Authentication());
+        setAuthenticated(authentication);
     }
 
-    public static void signUp(NeoBank neoBank, Data data) {
-        System.out.println(ColorConsole.BLUE + "Please Enter your name!" + ColorConsole.RESET);
-        String name = Input.inputNextLine();
-        if (!Input.checkInput(name)) {
-            return;
-        }
-        System.out.println(ColorConsole.BLUE + "Please Enter your lastname!" + ColorConsole.RESET);
-        String lastName = Input.inputNextLine();
-        if (!Input.checkInput(lastName)) {
-            return;
-        }
-        System.out.println(ColorConsole.BLUE + "Please Enter your phone number!" + ColorConsole.RESET);
-        String phoneNumber = Input.takePhoneNumber(neoBank);
-        if (phoneNumber == null) {
-            return;
-        }
-        System.out.println(ColorConsole.BLUE + "Please Enter your social security number!" + ColorConsole.RESET);
-        String securityNumber = Input.takeSecurityNumber(neoBank);
-        if (securityNumber == null) {
-            return;
-        }
-        System.out.println(ColorConsole.BLUE + "Please Enter your password!" + ColorConsole.RESET);
-        String password = Input.takePassword();
-        if (password == null) {
-            return;
-        }
-        neoBank.addSimpleUsers(new SimpleUser(name, lastName, phoneNumber, securityNumber, password));
-        data.addAuthentication(securityNumber);
-        System.out.println(ColorConsole.GREEN + "You have successfully signed up! Please sign in to access your account!\n" + ColorConsole.RESET);
-    }
-
-    public static SimpleUser getUserByPhone(NeoBank neoBank) {
-        System.out.println(ColorConsole.BLUE + "Please Enter the phoneNumber!" + ColorConsole.RESET);
-        String phoneNumber;
-        int userIndex;
-        do {
-            phoneNumber = Input.inputNextLine();
-            userIndex = neoBank.getSpecificUser(phoneNumber);
-            if (!Input.checkInput(phoneNumber)) {
-                return null;
-            } else if (userIndex == -1) {
-                System.out.println(ColorConsole.RED + "This phone number doesn't exist in our database!" + ColorConsole.RESET);
+    public boolean contactExistence(Contact currentContact) {
+        for (Contact contact : contacts) {
+            if (contact.equals(currentContact)) {
+                return true;
             }
-        } while (userIndex == -1);
-        return neoBank.getSpecificUser(userIndex);
+        }
+        return false;
     }
 
-    public static SimpleUser signIn(NeoBank neoBank, Data data) {
-        SimpleUser wantedUser = getUserByPhone(neoBank);
-        if (wantedUser == null) {
+    public void addContact(Contact newContact) {
+        contacts.add(newContact);
+    }
+
+    public void addRequest(Request newRequest) {
+        requests.add(newRequest);
+    }
+
+    public void removeContact(Contact contact) {
+        this.contacts.remove(contact);
+    }
+
+    public boolean showContacts() {
+        if (contacts.isEmpty()) {
+            return false;
+        }
+        for (int index = 0; index < this.contacts.size(); index++) {
+            int num = index + 1;
+            System.out.println(ColorConsole.PINK + num + ColorConsole.PURPLE + this.contacts.get(index).toString() + ColorConsole.RESET);
+        }
+        return true;
+    }
+
+    public void selectContact(NeoBank neoBank) {
+        if (!this.showContacts()) {
+            return;
+        }
+        String answer = input.nextLine();
+        if (!input.exitPoint(answer)) {
+            return;
+        } else if (!answer.matches("-?\\d+(\\.\\d+)?")) {
+            System.out.println(ColorConsole.RED + "Wrong format! Try again!" + ColorConsole.RESET);
+        } else if (Integer.parseInt(answer) > 0 && Integer.parseInt(answer) < contacts.size() + 1) {
+            for (int index = 1; index < contacts.size() + 1; index++) {
+                if (answer.equals(Integer.toString(index))) {
+                    Contact currentContact = this.contacts.get(index - 1);
+                    currentContact.contactListOptions(neoBank, this);
+                    break;
+                }
+            }
+        } else {
+            System.out.println(ColorConsole.RED + "Index Out of Bound! Try again!" + ColorConsole.RESET);
+        }
+        selectContact(neoBank);
+    }
+
+    public Contact getContact(NeoBank neoBank) {
+        if (!this.showContacts()) {
             return null;
         }
-        String password;
-        System.out.println(ColorConsole.BLUE + "Enter your password!" + ColorConsole.RESET);
-        do {
-            password = Input.inputNextLine();
-            if (!Input.checkInput(password)) {
-                return null;
-            } else if (!password.equals(wantedUser.getPassword())) {
-                System.out.println(ColorConsole.RED + "Wrong password! if you would like to change the phone number return to the previous menu!" + ColorConsole.RESET);
+        String answer = input.nextLine();
+        if (!input.exitPoint(answer)) {
+            return null;
+        } else if (!answer.matches("-?\\d+(\\.\\d+)?")) {
+            System.out.println(ColorConsole.RED + "Wrong format! Try again!" + ColorConsole.RESET);
+        } else if (Integer.parseInt(answer) > 0 && Integer.parseInt(answer) < contacts.size() + 1) {
+            for (int index = 1; index < contacts.size() + 1; index++) {
+                if (answer.equals(Integer.toString(index))) {
+                    return this.contacts.get(index - 1);
+                }
             }
-        } while (!password.equals(wantedUser.getPassword()));
-        return wantedUser;
-    }
-
-    public void changePhoneNumber(NeoBank neoBank) {
-        System.out.println(ColorConsole.CYAN + "Would you like to change your phone number? (previous phone number : " + ColorConsole.PURPLE + this.getPhoneNumber() + ColorConsole.CYAN + ")");
-        String ans = Input.inputNextLine();
-        if ("no".equalsIgnoreCase(ans)) {
-            return;
+        } else {
+            System.out.println(ColorConsole.RED + "Index Out of Bound! Try again!" + ColorConsole.RESET);
         }
-        do {
-            if (!Input.checkInput(ans)) {
-                return;
-            } else if ("yes".equalsIgnoreCase(ans)) {
-                System.out.println(ColorConsole.CYAN + "Write the phone number you have!" + ColorConsole.RESET);
-                String phoneNumber;
-                do {
-                    phoneNumber = Input.inputNextLine();
-                    if (!Input.checkInput(ans)) {
-                        return;
-                    }
-                } while (!neoBank.existsPhoneNumber(phoneNumber) || !Input.checkPhoneNumber(phoneNumber));
-                this.setPhoneNumber(phoneNumber);
-                return;
-            }
-            System.out.println(ColorConsole.RED + "wrong input! try again" + ColorConsole.RESET);
-            ans = Input.inputNextLine();
-        } while (!"no".equalsIgnoreCase(ans));
-
+        return getContact(neoBank);
     }
 
     public void changeSecurityNumber(NeoBank neoBank) {
-        System.out.println(ColorConsole.CYAN + "Would you like to change your Social security number? (previous social security number : " + ColorConsole.PURPLE + this.getSecurityNumber() + ColorConsole.CYAN + ")");
-        String ans = Input.inputNextLine();
-        if ("no".equalsIgnoreCase(ans)) {
+        System.out.println(ColorConsole.CYAN_BOLD + "Would you like to change your social security number? (previous phone number : " + ColorConsole.PURPLE + this.getSecurityNumber() + ColorConsole.CYAN_BOLD + ")" + ColorConsole.RESET);
+        String answer = input.nextLine();
+        if ("no".equalsIgnoreCase(answer) || !input.exitPoint(answer)) {
             return;
-        }
-        do {
-            if (!Input.checkInput(ans)) {
-                return;
-            } else if ("yes".equalsIgnoreCase(ans)) {
-                System.out.println(ColorConsole.CYAN + "Write the Social security number you have!" + ColorConsole.RESET);
-                String securityNumber;
-                do {
-                    securityNumber = Input.inputNextLine();
-                    if (!Input.checkInput(ans)) {
-                        return;
-                    }
-                } while (!neoBank.existsPhoneNumber(securityNumber) && !Input.checkPhoneNumber(securityNumber));
+        } else if ("yes".equalsIgnoreCase(answer)) {
+            String securityNumber = input.nextSecurityNumber(neoBank.getBankData());
+            if (securityNumber != null) {
                 this.setSecurityNumber(securityNumber);
-                break;
-            } else {
-                System.out.println(ColorConsole.RED + "wrong input! try again" + ColorConsole.RESET);
             }
-            ans = Input.inputNextLine();
-        } while (!"no".equalsIgnoreCase(ans));
-
+            return;
+        } else {
+            System.out.println(ColorConsole.RED + "Wrong input! Try again" + ColorConsole.RESET);
+        }
+        this.changeSecurityNumber(neoBank);
     }
 
     public void changePassword() {
-        System.out.println(ColorConsole.CYAN + "Would you like to change your password? (previous password : " + ColorConsole.PURPLE + this.getPassword() + ColorConsole.CYAN + ")");
-        String ans = Input.inputNextLine();
-        if ("no".equalsIgnoreCase(ans)) {
+        System.out.println(ColorConsole.CYAN_BOLD + "Would you like to change your password? (previous phone number : " + ColorConsole.PURPLE + this.getPassword() + ColorConsole.CYAN_BOLD + ")" + ColorConsole.RESET);
+        String answer = input.nextLine();
+        if ("no".equalsIgnoreCase(answer) || !input.exitPoint(answer)) {
             return;
-        }
-        do {
-            if (!Input.checkInput(ans)) {
-                return;
-            } else if ("yes".equalsIgnoreCase(ans)) {
-                System.out.println(ColorConsole.CYAN + "Write the last password you like!" + ColorConsole.RESET);
-                String password;
-                do {
-                    password = Input.inputNextLine();
-                    if (!Input.checkInput(ans)) {
-                        return;
-                    }
-                } while (!Input.checkPassword(password));
+        } else if ("yes".equalsIgnoreCase(answer)) {
+            String password = input.nextPassword();
+            if (password != null) {
                 this.setPassword(password);
-                break;
-            } else {
-                System.out.println(ColorConsole.RED + "wrong input! try again" + ColorConsole.RESET);
             }
-            ans = Input.inputNextLine();
-        } while (!"no".equalsIgnoreCase(ans));
-
+            return;
+        } else {
+            System.out.println(ColorConsole.RED + "Wrong input! Try again" + ColorConsole.RESET);
+        }
+        this.changePassword();
     }
 
     public void editSignUpInfo(NeoBank neoBank) {
-        neoBank.getData().removeAuthentication(this.getSecurityNumber());
+        neoBank.getBankData().removeAuthentication(this);
         this.changeName();
         this.changeLastName();
-        this.changePhoneNumber(neoBank);
+        this.changePhoneNumber(neoBank, this, "user");
         this.changeSecurityNumber(neoBank);
         this.changePassword();
-        neoBank.getData().addAuthentication(this.getSecurityNumber());
-        this.setAuthenticated(new Authentication());
+        neoBank.getBankData().addAuthentication(new Authentication(this.getPhoneNumber()));
+        this.setAuthenticated(new Authentication(this.getPhoneNumber()));
         System.out.println(ColorConsole.GREEN + "Sign Up info changed!" + ColorConsole.RESET);
     }
 
-    public void showContacts() {
-        for (int index = 1; index <= this.contacts.size() + 1; index++) {
-            if (index == this.contacts.size() + 1) {
-                break;
+    public void changeInfo(NeoBank neoBank) {
+        System.out.println(ColorConsole.BLUE + "Do you want to change your information?" + ColorConsole.RESET);
+        String answer = input.nextLine();
+        if ("no".equalsIgnoreCase(answer) || !input.exitPoint(answer)) {
+            return;
+        } else if ("yes".equalsIgnoreCase(answer)) {
+            this.editSignUpInfo(neoBank);
+            return;
+        } else {
+            System.out.println(ColorConsole.RED + "Wrong input! Try again!" + ColorConsole.RESET);
+        }
+        this.changeInfo(neoBank);
+    }
+
+    public void transferByAccountID(NeoBank neoBank) {
+        String accountID = input.nextAccountID(neoBank);
+        if (accountID == null) {
+            return;
+        }
+        SimpleUser receiver = neoBank.getBankData().getUserByAccountID(accountID);
+        String value = input.nextValue(neoBank, receiver);
+        if (value == null) {
+            return;
+        }
+        boolean confirmed = input.nextConfirmation(receiver, value);
+        if (!confirmed) {
+            System.out.println(ColorConsole.RED + "Transfer failed!" + ColorConsole.RESET);
+            return;
+        }
+        this.getAccount().transfer(neoBank, value, receiver, false);
+    }
+
+    public void transferByContact(NeoBank neoBank) {
+        Contact receiverContact = getContact(neoBank);
+        if (receiverContact == null) {
+            return;
+        }
+        SimpleUser receiver = neoBank.getBankData().getUserByPhone(receiverContact.getPhoneNumber());
+        if (!this.checkContactForTransfer(receiver)) {
+            return;
+        }
+        String value = input.nextValue(neoBank, receiver);
+        if (value == null) {
+            return;
+        }
+        boolean confirmed = input.nextConfirmation(receiver, value);
+        if (!confirmed) {
+            System.out.println(ColorConsole.RED + "Transfer failed!" + ColorConsole.RESET);
+            return;
+        }
+        this.getAccount().transfer(neoBank, value, receiver, true);
+    }
+
+    public void transferByRecent(NeoBank neoBank) {
+        Map<SimpleUser, Boolean> map = this.getAccount().selectRecent(neoBank);
+        if (map == null) {
+            return;
+        }
+        SimpleUser receiver = null;
+        boolean byContact = false;
+        for (Map.Entry<SimpleUser, Boolean> entry : map.entrySet()) {
+            receiver = entry.getKey();
+            byContact = entry.getValue();
+        }
+        if (byContact) {
+            if (!checkContactForTransfer(receiver)) {
+                return;
             }
-            System.out.print(index);
-            System.out.println(this.contacts.get(index - 1).toString());
+        }
+        String value = input.nextValue(neoBank, receiver);
+        if (value == null) {
+            return;
+        }
+        boolean confirmed = input.nextConfirmation(receiver, value);
+        if (!confirmed) {
+            System.out.println(ColorConsole.RED + "Transfer failed!" + ColorConsole.RESET);
+            return;
+        }
+        this.getAccount().transfer(neoBank, value, receiver, byContact);
+    }
+
+    public boolean checkContactForTransfer(SimpleUser receiver) {
+        if (!receiver.contactExistence(new Contact(" ", " ", this.getPhoneNumber()))) {
+            System.out.println(ColorConsole.RED + "You can't transfer to a contact if they don't have you as a contact!" + ColorConsole.RESET);
+            return false;
+        } else if (!receiver.isContactOption()) {
+            System.out.println(ColorConsole.RED + "You can't transfer money to this user by contact!" + ColorConsole.RESET);
+            return false;
+        }
+        return true;
+    }
+
+    public Contact findContact(String phoneNumber) {
+        for (Contact contact : contacts) {
+            if (contact.getPhoneNumber().equals(phoneNumber)) {
+                return contact;
+            }
+        }
+        return null;
+    }
+
+    public void showAccountInfo() {
+        System.out.println(ColorConsole.PINK + "Your Account ID : " + ColorConsole.PURPLE + this.getAccount().getAccountId() + ColorConsole.RESET);
+        System.out.println(ColorConsole.PINK + "Your Credit Card ID : " + ColorConsole.PURPLE + this.getAccount().getCreditCard().getCreditCardId() + ColorConsole.RESET);
+    }
+
+    public void changeOrSetPassCode() {
+        if (this.getAccount().getCreditCard().hasSetPassword()) {
+            this.getAccount().getCreditCard().changePassCode();
+        } else {
+            this.getAccount().getCreditCard().setPassCode();
         }
     }
 
@@ -283,29 +309,73 @@ public class SimpleUser extends Person {
             changeCondition = "on";
         }
         System.out.println(ColorConsole.BLUE + "Would you like to turn it " + ColorConsole.PURPLE_BOLD + changeCondition + ColorConsole.BLUE + "?" + ColorConsole.RESET);
-        String ans = Input.inputNextLine();
-        if (!Input.checkInput(ans)) {
+        String answer = input.nextLine();
+        if (!input.exitPoint(answer)) {
             return;
-        } else if ("yes".equalsIgnoreCase(ans) && this.isContactOption()) {
+        } else if ("yes".equalsIgnoreCase(answer) && this.isContactOption()) {
             this.setContactOption(false);
-        } else if ("yes".equalsIgnoreCase(ans)) {
+            return;
+        } else if ("yes".equalsIgnoreCase(answer)) {
             this.setContactOption(true);
+            return;
+        } else if ("no".equalsIgnoreCase(answer)) {
+            return;
+        }
+        System.out.println(ColorConsole.RED + "Please enter yes or no! I can't understand this!" + ColorConsole.RESET);
+        this.changeContactOption();
+    }
+
+    public void addRequest(NeoBank neoBank) {
+        RequestSection section = input.nextRequestSection();
+        if (section == null) {
+            return;
+        }
+        System.out.println(ColorConsole.BLUE_BOLD + "Please Enter your problem." + ColorConsole.RESET);
+        String text = input.nextLine();
+        if (!input.exitPoint(text)) {
+            return;
+        }
+        Request newRequest = new Request(text, section, this.getPhoneNumber());
+        this.addRequest(newRequest);
+        neoBank.getBankData().addRequest(newRequest);
+        System.out.println(ColorConsole.GREEN + "Request successfully noted!" + ColorConsole.RESET);
+    }
+
+    public void showRequests() {
+        for (int index = 1; index <= this.requests.size(); index++) {
+            System.out.println(ColorConsole.PINK + index + ". " + ColorConsole.PURPLE + this.requests.get(index - 1) + ColorConsole.RESET);
         }
     }
 
-    @Override
-    public String toString() {
-        return ColorConsole.PURPLE + "SimpleUser{" + super.toString() +
-                ", Phone Number : " + phoneNumber +
-                "} " + ColorConsole.RESET;
+    public void selectRequest(NeoBank neoBank) {
+        this.showRequests();
+        String answer = input.nextLine();
+        if (requests.isEmpty()) {
+            return;
+        }
+        if (!input.exitPoint(answer)) {
+            return;
+        } else if (!answer.matches("[0-9]+")) {
+            System.out.println(ColorConsole.RED + "Wrong input try again!" + ColorConsole.RESET);
+        } else if (Integer.parseInt(answer) > 0 && Integer.parseInt(answer) <= this.requests.size()) {
+            for (int index = 1; index <= this.requests.size(); index++) {
+                if (answer.equals(Integer.toString(index))) {
+                    this.requests.get(index - 1).showInfo();
+                }
+            }
+        } else {
+            System.out.println(ColorConsole.RED + "Wrong input try again!" + ColorConsole.RESET);
+        }
+        this.selectRequest(neoBank);
     }
+
 
     public void showUserInfo(NeoBank neoBank) {
         System.out.println(ColorConsole.PURPLE + "Name : " + ColorConsole.BLUE_BOLD + this.getName() + ColorConsole.RESET);
-        System.out.println(ColorConsole.PURPLE + "Last Name : " + ColorConsole.BLUE_BOLD + this.getSurname() + ColorConsole.RESET);
+        System.out.println(ColorConsole.PURPLE + "Last Name : " + ColorConsole.BLUE_BOLD + this.getLastName() + ColorConsole.RESET);
         System.out.println(ColorConsole.PURPLE + "Phone Number : " + ColorConsole.BLUE_BOLD + this.getPhoneNumber() + ColorConsole.RESET);
         System.out.println(ColorConsole.PURPLE + "Account Id : " + ColorConsole.BLUE_BOLD + this.getAccount().getAccountId() + ColorConsole.RESET);
         System.out.println(ColorConsole.PURPLE + "Transactions : " + ColorConsole.RESET);
-        this.getAccount().showTransaction(neoBank);
+        this.getAccount().showAllTransactions(neoBank);
     }
 }

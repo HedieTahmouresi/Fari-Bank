@@ -5,44 +5,44 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Input {
-    private static Scanner scn;
+    private Scanner input;
 
-    public static String inputNextLine() {
-        scn = new Scanner(System.in);
-        System.out.print(ColorConsole.YELLOW);
-        String input = scn.nextLine().trim();
-        System.out.print(ColorConsole.RESET);
+    public Scanner getInput() {
         return input;
     }
 
-    public static boolean checkSecurityNumber(String securityNumber) {
-        String numberRegEx = "^[0-9]{10}$";
-        Pattern numberPattern = Pattern.compile(numberRegEx);
-        Matcher numberMatcher = numberPattern.matcher(securityNumber);
-        if (!numberMatcher.matches()) {
-            System.out.println(ColorConsole.RED_BOLD + "Invalid Social Security Number Please try again" + ColorConsole.RESET);
-            return false;
-        }
-        return true;
+    public void setInput(Scanner input) {
+        this.input = input;
     }
 
-
-    public static boolean checkPhoneNumber(String phoneNumber) {
-        String phoneRegEx = "^09[0-9]{9}$";
-        Pattern phonePattern = Pattern.compile(phoneRegEx);
-        Matcher phoneMatcher = phonePattern.matcher(phoneNumber);
-        if (!phoneMatcher.matches()) {
-            System.out.println(ColorConsole.RED_BOLD + "Invalid phone number Please try again" + ColorConsole.RESET);
-            return false;
-        }
-        return true;
+    public Input() {
+        setInput(new Scanner(System.in));
     }
 
+    public String nextLine() {
+        System.out.print(ColorConsole.YELLOW + "~");
+        String returnValue = this.input.nextLine().trim();
+        System.out.print(ColorConsole.RESET);
+        return returnValue;
+    }
 
-    public static boolean checkPassword(String password) {
+    public boolean exitPoint(String userInput) {
+        if ("quit".equalsIgnoreCase(userInput)) {
+            System.out.println(ColorConsole.PURPLE + "*Thanks for trusting our Bank!*" + ColorConsole.RESET);
+            System.exit(0);
+        }
+        return !"return".equalsIgnoreCase(userInput);
+    }
+
+    public String nextPassword() {
+        System.out.println(ColorConsole.BLUE + "Please enter your password" + ColorConsole.RESET);
+        String password = this.nextLine();
+        if (!this.exitPoint(password)) {
+            return null;
+        }
         if (password.length() < 8) {
             System.out.println(ColorConsole.RED_BOLD + "your password is less than 8 letters!" + ColorConsole.RESET);
-            return false;
+            return this.nextPassword();
         }
         String numRegEx = "[0-9]";
         Pattern numPattern = Pattern.compile(numRegEx);
@@ -57,71 +57,249 @@ public class Input {
         Pattern uniquePattern = Pattern.compile(uniqueRegEx);
         Matcher uniqueMatcher = uniquePattern.matcher(password);
         if (numMatcher.find() && capitalMatcher.find() && smallMatcher.find() && uniqueMatcher.find()) {
-            return true;
+            return password;
         }
-        System.out.println(ColorConsole.RED_BOLD + "weak password! Please try again!" + ColorConsole.RESET);
-        System.out.println(ColorConsole.RED + "your password must contain 8 characters, a unique character, at least one capital letter and one small letter and ofcourse at least one number!" + ColorConsole.RESET);
-        return false;
+        System.out.println(ColorConsole.RED_BOLD + "weak password! Please try again!" + ColorConsole.RED + "\nyour password must contain at least one unique character at, one capital letter and one small letter and absolutely at least one number!" + ColorConsole.RESET);
+        return this.nextPassword();
     }
 
-    public static boolean checkAccountID(String accountID) {
-        String regexID = "[0-9]{13}";
-        Pattern patternID = Pattern.compile(regexID);
-        Matcher matcherID = patternID.matcher(accountID);
-        return matcherID.matches();
-    }
-
-    public static boolean checkInput(String input) {
-        if ("return".equalsIgnoreCase(input)) {
-            return false;
-        } else if ("quit".equalsIgnoreCase(input)) {
-            System.out.println(ColorConsole.PURPLE + "Thanks for trusting our bank! Bye Bye!" + ColorConsole.RESET);
-            System.exit(0);
-        }
-        return true;
-    }
-
-    public static String takePassword() {
-        String password;
-        do {
-            password = Input.inputNextLine();
-            if (!checkInput(password)) {
-                return null;
-            }
-        } while (!checkPassword(password));
-        return password;
-    }
-
-    public static String takeSecurityNumber(NeoBank neoBank) {
-        String securityNumber;
-        do {
-            securityNumber = Input.inputNextLine();
-            if (!Input.checkInput(securityNumber)) {
-                return null;
-            }
-        } while (!Input.checkSecurityNumber(securityNumber) || !neoBank.existsSecurityNumber(securityNumber));
-        return securityNumber;
-    }
-
-    public static String takePhoneNumber(NeoBank neoBank) {
+    public String nextPhoneNumber(Data data, String need) {
+        System.out.println(ColorConsole.BLUE + "Please enter the phone number" + ColorConsole.RESET);
         String phoneNumber;
         do {
-            phoneNumber = Input.inputNextLine();
-            if (!Input.checkInput(phoneNumber)) {
+            phoneNumber = this.nextLine();
+            if (!this.exitPoint(phoneNumber)) {
                 return null;
             }
-        } while (!Input.checkPhoneNumber(phoneNumber) || !neoBank.existsPhoneNumber(phoneNumber));
+        } while (!data.checkPhoneNumber(phoneNumber, need));
         return phoneNumber;
     }
 
-    public static boolean checkDate(String date) {
+    public String nextSecurityNumber(Data data) {
+        String securityNumber;
+        System.out.println(ColorConsole.BLUE + "Please enter your social security number" + ColorConsole.RESET);
+        do {
+            securityNumber = this.nextLine();
+            if (!this.exitPoint(securityNumber)) {
+                return null;
+            }
+        } while (!data.checkSecurityNumber(securityNumber));
+        return securityNumber;
+    }
+
+    public boolean checkDate(String date) {
         String regex = "[0-9]{4}-[0-9]{2}-[0-9]{2}";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(date);
         if (!matcher.matches()) {
-            System.out.println(ColorConsole.RED_BOLD + "Invalid date format please enter byk this pattern yyyy-mm-dd" + ColorConsole.RESET);
+            System.out.println(ColorConsole.RED_BOLD + "Invalid date format! please enter by this pattern yyyy-mm-dd" + ColorConsole.RESET);
             return false;
         }
         return true;
+    }
+
+    public void nextContact(NeoBank neoBank, SimpleUser currentUser) {
+        System.out.println(ColorConsole.BLUE + "Please Enter the name of your new contact" + ColorConsole.RESET);
+        String name = this.nextLine();
+        if (!this.exitPoint(name)) {
+            return;
+        }
+        System.out.println(ColorConsole.BLUE + "Please Enter the last name of your new contact" + ColorConsole.RESET);
+        String lastName = input.nextLine();
+        if (!this.exitPoint(lastName)) {
+            return;
+        }
+        String phoneNumber = this.nextPhoneNumber(neoBank.getBankData(), "should exist");
+        if (phoneNumber == null) {
+            return;
+        }
+        Contact newContact = new Contact(name, lastName, phoneNumber);
+        newContact.addContact(neoBank, currentUser);
+    }
+
+    public String nextAccountID(NeoBank neoBank) {
+        System.out.println(ColorConsole.BLUE + "Please enter the account Id of the person you would like to transfer money to!" + ColorConsole.RESET);
+        String answer = this.nextLine();
+        String regexID = "[0-9]{13}";
+        Pattern patternID = Pattern.compile(regexID);
+        Matcher matcherID = patternID.matcher(answer);
+        if (!this.exitPoint(answer)) {
+            return null;
+        } else if (!matcherID.matches()) {
+            System.out.println(ColorConsole.RED + "Wrong format! Please try again! each account ID involves 13 digits!" + ColorConsole.RESET);
+        } else if (!neoBank.getBankData().existsAccountID(answer)) {
+            System.out.println(ColorConsole.RED + "No account with this ID exists! Try again!" + ColorConsole.RESET);
+        } else {
+            return answer;
+        }
+        return this.nextAccountID(neoBank);
+    }
+
+    public String nextValue(NeoBank neoBank, SimpleUser receiver) {
+        System.out.println(ColorConsole.PURPLE + "How much would you like to transfer to " + ColorConsole.PINK + receiver.getName() + " " + receiver.getLastName() + ColorConsole.PURPLE + "?" + ColorConsole.RESET);
+        String answer = this.nextLine();
+        if (!this.exitPoint(answer)) {
+            return null;
+        } else if (!answer.matches("[0-9]+\\.?[0-9]*")) {
+            System.out.println(ColorConsole.RED_BOLD + "Wrong Format! Try again! Please Enter a number!" + ColorConsole.RESET);
+        } else {
+            return answer;
+        }
+        return this.nextValue(neoBank, receiver);
+    }
+
+    public boolean nextConfirmation(SimpleUser receiver, String value) {
+        System.out.println(ColorConsole.GREEN + "Receiver {Name : " + ColorConsole.YELLOW + receiver.getName() + ColorConsole.GREEN + ", Last Name : " + ColorConsole.YELLOW + receiver.getLastName() + "}" + ColorConsole.RESET);
+        System.out.println(ColorConsole.GREEN + "Value : " + ColorConsole.YELLOW + value + "$" + ColorConsole.RESET);
+        System.out.println(ColorConsole.GREEN + "Are you sure?" + ColorConsole.RESET);
+        String answer = this.nextLine();
+        if (!this.exitPoint(answer)) {
+            return false;
+        }
+        return "yes".equalsIgnoreCase(answer);
+    }
+
+    private void displaySections() {
+        System.out.println(ColorConsole.CYAN + "Choose a section :");
+        System.out.println("   1. Account Management");
+        System.out.println("   2. Contacts");
+        System.out.println("   3. Transfer");
+        System.out.println("   4. Settings");
+        System.out.println("   5. Return" + ColorConsole.RESET);
+    }
+
+    public RequestSection nextRequestSection() {
+        this.displaySections();
+        String answer = this.nextLine();
+        switch (answer) {
+            case "1", "Account Management":
+                return RequestSection.MANAGEMENT;
+            case "2", "Contacts":
+                return RequestSection.CONTACTS;
+            case "3", "Transfer":
+                return RequestSection.TRANSFER;
+            case "4", "Settings":
+                return RequestSection.SETTINGS;
+            case "5", "Return":
+                return null;
+            default:
+                if (!this.exitPoint(answer)) {
+                    return null;
+                }
+                System.out.println(ColorConsole.RED + "THERE IS NO OTHER OPTION! Please input something else!" + ColorConsole.RESET);
+
+        }
+        return this.nextRequestSection();
+    }
+
+
+    public RequestStatus nextRequestStatus() {
+        System.out.println(ColorConsole.CYAN + "Choose a status:\n   1.Noted\n   2.In Process\n   3.Processed" + ColorConsole.RESET);
+        String answer = this.nextLine();
+        switch (answer) {
+            case "1", "Noted":
+                return RequestStatus.NOTED;
+            case "2", "In Process":
+                return RequestStatus.IN_PROCESS;
+            case "3", "Processed":
+                return RequestStatus.PROCESSED;
+            default:
+                if (!this.exitPoint(answer)) {
+                    return null;
+                }
+                System.out.println(ColorConsole.RED + "THERE IS NO OTHER OPTION! Please input something else!" + ColorConsole.RESET);
+        }
+        return this.nextRequestStatus();
+    }
+
+    public String nextRequestPerson(NeoBank neoBank) {
+        System.out.println(ColorConsole.BLUE + "Please enter the phone number of the person" + ColorConsole.RESET);
+        String answer = this.nextLine();
+        if (!this.exitPoint(answer)) {
+            return null;
+        } else if (!answer.matches("^09[0-9]{9}$")) {
+            System.out.println(ColorConsole.RED + "Wrong format! Please try again!");
+        } else if (neoBank.getBankData().getUserByPhone(answer) == null) {
+            System.out.println(ColorConsole.RED + "This user doesn't exist" + ColorConsole.RESET);
+        } else {
+            return answer;
+        }
+        return this.nextRequestPerson(neoBank);
+    }
+
+    public String nextSearchName() {
+        System.out.println(ColorConsole.BLUE + "Do you want to enter a name?" + ColorConsole.RESET);
+        String answer = this.nextLine();
+        switch (answer) {
+            case "yes":
+                System.out.println(ColorConsole.BLUE + "Enter the name you are looking for!" + ColorConsole.RESET);
+                String name = this.nextLine();
+                if (!this.exitPoint(name)) {
+                    return null;
+                } else {
+                    return name;
+                }
+            case "no":
+                return null;
+            default:
+                if (!this.exitPoint(answer)) {
+                    return null;
+                }
+                System.out.println(ColorConsole.RED + "THERE IS NO OTHER OPTION! Please input something else!" + ColorConsole.RESET);
+
+        }
+        return nextSearchName();
+
+    }
+
+    public String nextSearchLastName() {
+        System.out.println(ColorConsole.BLUE + "Do you want to enter a last name?" + ColorConsole.RESET);
+        String answer = this.nextLine();
+        switch (answer) {
+            case "yes":
+                System.out.println(ColorConsole.BLUE + "Please enter the last name you are looking for" + ColorConsole.RESET);
+                String lastName = this.nextLine();
+                if (!this.exitPoint(answer)) {
+                    return null;
+                } else {
+                    return lastName;
+                }
+            case "no":
+                return null;
+            default:
+                if (!this.exitPoint(answer)) {
+                    return null;
+                }
+                System.out.println(ColorConsole.RED_BOLD + "THERE IS NO OTHER OPTION! Please input something else!" + ColorConsole.RESET);
+
+        }
+        return nextSearchLastName();
+    }
+
+
+    public String nextSearchPhoneNumber() {
+        System.out.println(ColorConsole.BLUE + "Do you want to enter a Phone number?" + ColorConsole.RESET);
+        String answer = this.nextLine();
+        switch (answer) {
+            case "yes":
+                System.out.println(ColorConsole.BLUE + "Please enter the phone number you are looking for" + ColorConsole.RESET);
+                String phoneNumber = this.nextLine();
+                if (!this.exitPoint(phoneNumber)) {
+                    return null;
+                } else if (phoneNumber.matches("^09[0-9]{9}$")) {
+                    return phoneNumber;
+                } else {
+                    System.out.println(ColorConsole.RED + "Wrong format!" + ColorConsole.RESET);
+                }
+            case "no":
+                return null;
+            default:
+                if (!this.exitPoint(answer)) {
+                    return null;
+                }
+                System.out.println(ColorConsole.RED_BOLD + "THERE IS NO OTHER OPTION! Please input something else!" + ColorConsole.RESET);
+
+        }
+        return nextSearchPhoneNumber();
     }
 }

@@ -1,116 +1,208 @@
 package ir.ac.kntu;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Data {
     private List<Request> requests;
-    private Map<String, Authentication> authentications;
+    private List<Authentication> authentications;
     private List<SimpleUser> users;
+
+    private final Input input = new Input();
 
     public Data() {
         this.requests = new ArrayList<>();
-        this.authentications = new HashMap<>();
+        this.authentications = new ArrayList<>();
         this.users = new ArrayList<>();
-    }
-
-    public void addSimpleUser(SimpleUser user) {
-        this.users.add(user);
-    }
-
-    public int usersSize() {
-        return this.users.size();
-    }
-
-    public SimpleUser getUser(int index) {
-        return this.users.get(index);
-    }
-
-    public void addAuthentication(String securityNumber) {
-        this.authentications.put(securityNumber, new Authentication());
-    }
-
-    public void removeAuthentication(String securityNumber) {
-        this.authentications.remove(securityNumber);
     }
 
     public void addRequest(Request request) {
         this.requests.add(request);
     }
 
-    public List<String> displayAuthentications() {
-        int index = 1;
-        List<String> securityNumbers = new ArrayList<>();
-        if (this.authentications.isEmpty()) {
-            System.out.println(ColorConsole.PINK + "There are no authentication requests" + ColorConsole.RESET);
-            return null;
+    public void addAuthentication(Authentication authentication) {
+        this.authentications.add(authentication);
+    }
+
+    public void removeAuthentication(SimpleUser user) {
+        this.authentications.remove(user.getAuthenticated());
+    }
+
+    public void addUser(SimpleUser user) {
+        this.users.add(user);
+    }
+
+    public boolean checkPhoneNumber(String phoneNumber, String need) {
+        String phoneRegEx = "^09[0-9]{9}$";
+        Pattern phonePattern = Pattern.compile(phoneRegEx);
+        Matcher phoneMatcher = phonePattern.matcher(phoneNumber);
+        if (!phoneMatcher.matches()) {
+            System.out.println(ColorConsole.RED_BOLD + "Invalid phone number Please try again" + ColorConsole.RESET);
+            return false;
         }
-        for (Map.Entry<String, Authentication> entry : this.authentications.entrySet()) {
-            String key = entry.getKey();
-            System.out.println(ColorConsole.PINK + index + ". SSN: " + ColorConsole.PURPLE + key + ColorConsole.RESET);
-            securityNumbers.add(key);
+        for (SimpleUser user : this.users) {
+            if (phoneNumber.equalsIgnoreCase(user.getPhoneNumber()) && "shouldn't exist".equals(need)) {
+                System.out.println(ColorConsole.RED_BOLD + "a user with this phone number already exists" + ColorConsole.RESET);
+                return false;
+            } else if (phoneNumber.equalsIgnoreCase(user.getPhoneNumber())) {
+                return true;
+            }
+        }
+        if ("should exist".equals(need)) {
+            System.out.println(ColorConsole.RED_BOLD + "No user with this phone number exists" + ColorConsole.RESET);
+            return false;
+        }
+        return true;
+    }
+
+    public boolean checkSecurityNumber(String securityNumber) {
+        String ssnRegEx = "^[0-9]{10}$";
+        Pattern ssnPattern = Pattern.compile(ssnRegEx);
+        Matcher ssnMatcher = ssnPattern.matcher(securityNumber);
+        if (!ssnMatcher.matches()) {
+            System.out.println(ColorConsole.RED_BOLD + "Invalid phone number Please try again" + ColorConsole.RESET);
+            return false;
+        }
+        for (SimpleUser user : this.users) {
+            if (securityNumber.equalsIgnoreCase(user.getSecurityNumber())) {
+                System.out.println(ColorConsole.RED_BOLD + "This phone number already exists" + ColorConsole.RESET);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public SimpleUser getUserByPhone(String phoneNumber) {
+        for (SimpleUser user : this.users) {
+            if (user.getPhoneNumber().equalsIgnoreCase(phoneNumber)) {
+                return user;
+            }
+        }
+        return null;
+    }
+
+    public SimpleUser getUserByAccountID(String accountID) {
+        for (SimpleUser user : this.users) {
+            if (user.getAccount().getAccountId().equalsIgnoreCase(accountID)) {
+                return user;
+            }
+        }
+        return null;
+    }
+
+    public void signUp() {
+        String name, lastName, phoneNumber, securityNumber, password;
+        System.out.println(ColorConsole.BLUE_BOLD + "Please enter your name" + ColorConsole.RESET);
+        name = input.nextLine();
+        if (!input.exitPoint(name)) {
+            return;
+        }
+        System.out.println(ColorConsole.BLUE_BOLD + "Please enter your last name" + ColorConsole.RESET);
+        lastName = input.nextLine();
+        if (!input.exitPoint(lastName)) {
+            return;
+        }
+        phoneNumber = input.nextPhoneNumber(this, "shouldn't exist");
+        if (phoneNumber == null) {
+            return;
+        }
+        securityNumber = input.nextSecurityNumber(this);
+        if (securityNumber == null) {
+            return;
+        }
+        password = input.nextPassword();
+        if (password == null) {
+            return;
+        }
+        Authentication newAuthentication = new Authentication(phoneNumber);
+        this.addUser(new SimpleUser(name, lastName, phoneNumber, securityNumber, password, newAuthentication));
+        this.addAuthentication(newAuthentication);
+        System.out.println(ColorConsole.GREEN + "You have successfully signed in!" + ColorConsole.RESET);
+    }
+
+    public SimpleUser signInUser() {
+        System.out.println(ColorConsole.BLUE_BOLD + "Please enter your phone number :" + ColorConsole.RESET);
+        String phoneNumber;
+        do {
+            phoneNumber = input.nextLine();
+            if (!input.exitPoint(phoneNumber)) {
+                return null;
+            }
+            if (this.getUserByPhone(phoneNumber) == null) {
+                System.out.println(ColorConsole.RED_BOLD + "this user doesn't exist! " + ColorConsole.BLUE + "if you want you can return and sign up!" + ColorConsole.RESET);
+            }
+        } while (this.getUserByPhone(phoneNumber) == null);
+        SimpleUser currentUser = this.getUserByPhone(phoneNumber);
+        String password;
+        System.out.println(ColorConsole.BLUE + "Please enter your password" + ColorConsole.RESET);
+        do {
+            password = input.nextLine();
+            if (!input.exitPoint(password)) {
+                return null;
+            }
+            if (!password.equals(currentUser.getPassword())) {
+                System.out.println(ColorConsole.RED_BOLD + "this phone number and password don't match" + ColorConsole.BLUE + "if you want you can return and try to sign in with a different number" + ColorConsole.RESET);
+            }
+        } while (!password.equals(currentUser.getPassword()));
+        return currentUser;
+    }
+
+    public int showAuthentications() {
+        int index = 1;
+        for (Authentication authentication : authentications) {
+            System.out.println(ColorConsole.PINK + index + ". " + ColorConsole.PURPLE + authentication.getPhoneNumber() + ColorConsole.RESET);
             index++;
         }
-        return securityNumbers;
+        return index;
     }
 
-    public void selectUser(NeoBank neoBank) {
-        String input;
-        List<String> securityNumbers = new ArrayList<>();
-        do {
-            securityNumbers = this.displayAuthentications();
-            if (securityNumbers == null) {
+    public void authenticateUser(NeoBank neoBank, int index) {
+        SimpleUser currentUser = this.getUserByPhone(authentications.get(index).getPhoneNumber());
+        currentUser.getAuthenticated().showInfo(this);
+        System.out.println(ColorConsole.BLUE + "Would you like to authenticate this user?" + ColorConsole.PURPLE + "(1. yes, 2. no)" + ColorConsole.RESET);
+        String answer = input.nextLine();
+        switch (answer) {
+            case "1", "yes":
+                this.authentications.remove(index);
+                currentUser.getAuthenticated().authenticateUser(neoBank, currentUser);
                 return;
-            }
-            input = Input.inputNextLine();
-            if (!Input.checkInput(input)) {
+            case "2", "no":
+                currentUser.getAuthenticated().rejectUser();
                 return;
-            } else if (!input.matches("-?\\d+(\\.\\d+)?")) {
-                System.out.println(ColorConsole.RED + "Wrong input try again!" + ColorConsole.RESET);
-            } else if (Integer.parseInt(input) > 0 && Integer.parseInt(input) < securityNumbers.size() + 1) {
-                for (int index = 1; index < securityNumbers.size() + 1; index++) {
-                    if (input.equals(Integer.toString(index))) {
-                        this.authenticateUser(neoBank, securityNumbers.get(index - 1));
-                        break;
-                    }
+            default:
+                if (!input.exitPoint(answer)) {
+                    return;
+                } else {
+                    System.out.println(ColorConsole.RED + "Wrong Input" + ColorConsole.RESET);
                 }
-            } else {
-                System.out.println(ColorConsole.RED + "Wrong input try again!" + ColorConsole.RESET);
-            }
-        } while (!"retrun".equalsIgnoreCase(input));
-    }
-
-    public void printUserInfo(SimpleUser user) {
-        System.out.println(ColorConsole.BLUE + "name : " + ColorConsole.CYAN_BOLD + user.getName());
-        System.out.println(ColorConsole.BLUE + "last name : " + ColorConsole.CYAN_BOLD + user.getSurname());
-        System.out.println(ColorConsole.BLUE + "phone number : " + ColorConsole.CYAN_BOLD + user.getPhoneNumber());
-        System.out.println(ColorConsole.BLUE + "social security number : " + ColorConsole.CYAN_BOLD + user.getSecurityNumber());
-        System.out.println(ColorConsole.BLUE + "password : " + ColorConsole.CYAN_BOLD + user.getPassword() + ColorConsole.RESET);
-    }
-
-    public void authenticateUser(NeoBank neoBank, String securityNumber) {
-        int userIndex = neoBank.getSpecificUserBySSN(securityNumber);
-        SimpleUser user = neoBank.getSpecificUser(userIndex);
-        this.printUserInfo(user);
-        System.out.println(ColorConsole.GREEN_BOLD + "would you like to authenticate this user?" + ColorConsole.RESET);
-        String answer = Input.inputNextLine();
-        if ("yes".equalsIgnoreCase(answer)) {
-            user.getAuthenticated().acceptAuthentication();
-            this.removeAuthentication(securityNumber);
-            System.out.println(ColorConsole.GREEN_BOLD + "User successfully authenticated!" + ColorConsole.RESET);
-            this.addSimpleUser(user);
-            user.setAccount(new Account(user, neoBank));
-        } else if ("quit".equalsIgnoreCase(answer)) {
-            System.out.println(ColorConsole.PURPLE + "Thanks for trusting our Bank! Bye Bye!" + ColorConsole.RESET);
-            System.exit(0);
-        } else if ("no".equalsIgnoreCase(answer)) {
-            user.getAuthenticated().rejectAuthentication();
-        } else {
-            System.out.println(ColorConsole.RED + "Wrong input" + ColorConsole.RESET);
         }
+        this.authenticateUser(neoBank, index);
     }
+
+    public boolean existsCreditCard(String creditCardString) {
+        for (int index = 0; index < this.users.size(); index++) {
+            if (this.users.get(index).getAccount() != null) {
+                if (this.users.get(index).getAccount().getCreditCard().getCreditCardId().equals(creditCardString)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean existsAccountID(String accountIDString) {
+        for (int index = 0; index < this.users.size(); index++) {
+            if (this.users.get(index).getAccount() != null) {
+                if (this.users.get(index).getAccount().getAccountId().equals(accountIDString)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
 
     public List<Request> displayRequests() {
         List<Request> list = new ArrayList<>();
@@ -120,7 +212,7 @@ public class Data {
             return null;
         }
         for (Request request : this.requests) {
-            System.out.println(ColorConsole.PURPLE + index + ". SSN : " + ColorConsole.PINK + request.getSecurityNumber() + " " + request.toString() + ColorConsole.RESET);
+            System.out.println(ColorConsole.PURPLE + index + ". SSN : " + ColorConsole.PINK + request.getPhoneNumber() + " " + request.toString() + ColorConsole.RESET);
             list.add(request);
             index++;
         }
@@ -129,19 +221,19 @@ public class Data {
 
 
     public List<Request> displayRequestsBySection() {
-        RequestSection section = chooseSection();
+        RequestSection section = input.nextRequestSection();
+        if (section==null){
+            return null;
+        }
         List<Request> list = new ArrayList<>();
         int index = 1;
         if (this.requests.isEmpty()) {
             System.out.println(ColorConsole.RED + "There are no requests" + ColorConsole.RESET);
             return null;
         }
-        if (section == null) {
-            return null;
-        }
         for (Request request : this.requests) {
             if (request.getSection().equals(section)) {
-                System.out.println(ColorConsole.PURPLE + index + ". SSN : " + ColorConsole.PINK + request.getSecurityNumber() + " " + request.toString() + ColorConsole.RESET);
+                System.out.println(ColorConsole.PURPLE + index + ". Phone Number : " + ColorConsole.PINK + request.getPhoneNumber() + " " + request.toString() + ColorConsole.RESET);
                 list.add(request);
                 index++;
             }
@@ -152,17 +244,16 @@ public class Data {
     public List<Request> displayRequestsByPerson(NeoBank neoBank) {
         int index = 1;
         List<Request> list = new ArrayList<>();
-        String securityNumber = choosePerson(neoBank);
-        if (this.requests.isEmpty()) {
+        String phoneNumber = input.nextRequestPerson(neoBank);
+        if (phoneNumber == null) {
+            return null;
+        }else if (this.requests.isEmpty()) {
             System.out.println(ColorConsole.RED + "There are no requests" + ColorConsole.RESET);
             return null;
         }
-        if (securityNumber == null) {
-            return null;
-        }
         for (Request request : this.requests) {
-            if (request.getSecurityNumber().equals(securityNumber)) {
-                System.out.println(ColorConsole.PURPLE + index + ". SSN : " + ColorConsole.PINK + request.getSecurityNumber() + " " + request.toString() + ColorConsole.RESET);
+            if (request.getPhoneNumber().equals(phoneNumber)) {
+                System.out.println(ColorConsole.PURPLE + index + ". Phone Number : " + ColorConsole.PINK + request.getPhoneNumber() + " " + request.toString() + ColorConsole.RESET);
                 list.add(request);
                 index++;
             }
@@ -171,19 +262,18 @@ public class Data {
     }
 
     public List<Request> displayRequestsByStatus() {
-        RequestStatus status = chooseStatus();
+        RequestStatus status = input.nextRequestStatus();
         List<Request> list = new ArrayList<>();
         int index = 1;
-        if (this.requests.isEmpty()) {
-            System.out.println(ColorConsole.RED + "There are no requests" + ColorConsole.RESET);
-            return null;
-        }
         if (status == null) {
+            return null;
+        }else if (this.requests.isEmpty()) {
+            System.out.println(ColorConsole.RED + "There are no requests" + ColorConsole.RESET);
             return null;
         }
         for (Request request : this.requests) {
             if (request.getStatus().equals(status)) {
-                System.out.println(ColorConsole.PURPLE + index + ". SSN : " + ColorConsole.PINK + request.getSecurityNumber() + " " + request.toString() + ColorConsole.RESET);
+                System.out.println(ColorConsole.PURPLE + index + ". Phone Number : " + ColorConsole.PINK + request.getPhoneNumber() + " " + request.toString() + ColorConsole.RESET);
                 list.add(request);
                 index++;
             }
@@ -191,188 +281,72 @@ public class Data {
         return list;
     }
 
-    public void selectRequest(NeoBank neoBank, List<Request> requestsList) {
-        String input;
-        input = Input.inputNextLine();
-        if (requestsList == null) {
-            return;
+    public List<SimpleUser> search(NeoBank neoBank) {
+        List<SimpleUser> result = new ArrayList<>(this.users);
+        String name = input.nextSearchName();
+        String lastName = input.nextSearchLastName();
+        String phoneNumber = input.nextSearchPhoneNumber();
+        if (name == null && lastName == null && phoneNumber == null) {
+            return null;
         }
-        if (!Input.checkInput(input)) {
-            return;
-        } else if (!input.matches("-?\\d+(\\.\\d+)?") && Input.checkInput(input)) {
-            System.out.println(ColorConsole.RED + "Wrong input try again!" + ColorConsole.RESET);
-        } else if (Integer.parseInt(input) > 0 && Integer.parseInt(input) < requestsList.size() + 1) {
-            for (int index = 1; index < requestsList.size() + 1; index++) {
-                if (input.equals(Integer.toString(index))) {
-                    if (RequestStatus.IN_PROCESS.equals(requestsList.get(index - 1).getStatus())) {
-                        this.closingRequest(requestsList.get(index - 1));
-                        return;
-                    } else if (RequestStatus.NOTED.equals(requestsList.get(index - 1).getStatus())) {
-                        processRequest(neoBank, requestsList.get(index - 1));
-                        return;
-                    }
-                    return;
-                }
+        if (name != null) {
+            result = fuzzySearchName(name, result);
+        }
+        if (lastName != null) {
+            result = fuzzySearchLastName(lastName, result);
+        }
+        if (phoneNumber != null) {
+            result = fuzzySearchPhone(phoneNumber, result);
+        }
+        if (result.isEmpty()) {
+            System.out.println(ColorConsole.RED + "no user found matching those descriptions!" + ColorConsole.RESET);
+        }
+        return result;
+    }
+
+    public List<SimpleUser> fuzzySearchName(String name, List<SimpleUser> list) {
+        List<SimpleUser> result = new ArrayList<>();
+        for (SimpleUser user : list) {
+            Fuzzy similarity = new Fuzzy(name, user.getName());
+            if (similarity.getSimilarity() >= 0.6) {
+                result.add(user);
             }
-        } else {
-            System.out.println(ColorConsole.RED + "Wrong input try again!" + ColorConsole.RESET);
         }
-
+        return result;
     }
 
-    public void processRequest(NeoBank neoBank, Request request) {
-        request.showRequestInfo();
-        System.out.println(ColorConsole.BLUE + "Would you like to process this request?" + ColorConsole.RESET);
-        String answer = Input.inputNextLine();
-        switch (answer) {
-            case "yes":
-                request.setStatus(RequestStatus.IN_PROCESS);
-                this.closingRequest(request);
-                break;
-            case "no":
-                return;
-            default:
-                if ("return".equalsIgnoreCase(answer)) {
-                    return;
-                } else if (!"quit".equalsIgnoreCase(answer)) {
-                    System.out.println(ColorConsole.RED + "THERE IS NO OTHER OPTION! Please input something else!" + ColorConsole.RESET);
-                    break;
-                } else {
-                    System.out.println(ColorConsole.PURPLE + "Thanks for trusting our bank! Bye Bye!" + ColorConsole.RESET);
-                    System.exit(0);
-                }
-                break;
-        }
-    }
-
-    public void closingRequest(Request request) {
-        System.out.println(ColorConsole.BLUE + "Would you like to answer this request?" + ColorConsole.RESET);
-        String input = Input.inputNextLine();
-        switch (input) {
-            case "yes":
-                System.out.println(ColorConsole.BLUE + "Please enter your answer!" + ColorConsole.RESET);
-                String answer = Input.inputNextLine();
-                if (!Input.checkInput(answer)) {
-                    return;
-                }
-                request.setStatus(RequestStatus.PROCESSED);
-                request.setAnswer(answer);
-                break;
-            case "no":
-                return;
-            default:
-                if (Input.checkInput(input)) {
-                    System.out.println(ColorConsole.RED + "THERE IS NO OTHER OPTION! Please input something else!" + ColorConsole.RESET);
-                    break;
-                }
-        }
-    }
-
-    public void showRequest(NeoBank neoBank) {
-        String answer;
-        displayRequestMenu();
-        answer = Input.inputNextLine();
-        switch (answer) {
-            case "1", "Show All requests":
-                this.selectRequest(neoBank, this.displayRequests());
-                break;
-            case "2", "Show requests by Person":
-                this.selectRequest(neoBank, this.displayRequestsByPerson(neoBank));
-                break;
-            case "3", "Show requests by Section":
-                this.selectRequest(neoBank, this.displayRequestsBySection());
-                break;
-            case "4", "Show requests by Status":
-                this.selectRequest(neoBank, this.displayRequestsByStatus());
-                break;
-            case "5", "Return":
-                return;
-            default:
-                if (Input.checkInput(answer)) {
-                    System.out.println(ColorConsole.RED + "THERE IS NO OTHER OPTION! Please input something else!" + ColorConsole.RESET);
-                }
-                break;
-        }
-        showRequest(neoBank);
-    }
-
-    public void displayRequestMenu() {
-        System.out.println(ColorConsole.CYAN + "What would you like to do?");
-        System.out.println("   1.Show All requests");
-        System.out.println("   2.Show requests by Person");
-        System.out.println("   3.Show requests by Section");
-        System.out.println("   4.Show requests by Status");
-        System.out.println("   5.Return" + ColorConsole.RESET);
-    }
-
-    public RequestSection chooseSection() {
-        System.out.println(ColorConsole.BLUE + "Choose");
-        System.out.println("   1.Management\n   2.Contacts\n   3.Transfer\n   4.Settings" + ColorConsole.RESET);
-        String ans;
-        do {
-            ans = Input.inputNextLine();
-            switch (ans) {
-                case "1", "Management":
-                    return RequestSection.MANAGEMENT;
-                case "2", "Contacts":
-                    return RequestSection.CONTACTS;
-                case "3", "Administer":
-                    return RequestSection.TRANSFER;
-                case "4", "Settings":
-                    return RequestSection.SETTINGS;
-                default:
-                    if (!Input.checkInput(ans)) {
-                        return null;
-                    } else {
-                        System.out.println(ColorConsole.RED + "THERE IS NO OTHER OPTION! Please input something else!" + ColorConsole.RESET);
-                        break;
-                    }
+    public static List<SimpleUser> fuzzySearchLastName(String lastName, List<SimpleUser> list) {
+        List<SimpleUser> result = new ArrayList<>();
+        for (SimpleUser user : list) {
+            Fuzzy similarity = new Fuzzy(lastName, user.getLastName());
+            if (similarity.getSimilarity() >= 0.6) {
+                result.add(user);
             }
-        } while (!"quit".equalsIgnoreCase(ans));
-        return null;
+        }
+        return result;
     }
 
-    public RequestStatus chooseStatus() {
-        System.out.println(ColorConsole.CYAN + "Choose:\n   1.Noted\n   2.In Process\n   3.Processed" + ColorConsole.RESET);
-        String ans;
-        do {
-            ans = Input.inputNextLine();
-            switch (ans) {
-                case "1", "Noted":
-                    return RequestStatus.NOTED;
-                case "2", "In Process":
-                    return RequestStatus.IN_PROCESS;
-                case "3", "Processed":
-                    return RequestStatus.PROCESSED;
-                default:
-                    if (!Input.checkInput(ans)) {
-                        return null;
-                    } else {
-                        System.out.println(ColorConsole.RED + "THERE IS NO OTHER OPTION! Please input something else!" + ColorConsole.RESET);
-                        break;
-                    }
+    public static List<SimpleUser> fuzzySearchPhone(String phoneNumber, List<SimpleUser> list) {
+        List<SimpleUser> result = new ArrayList<>();
+        for (SimpleUser user : list) {
+            Fuzzy similarity = new Fuzzy(phoneNumber, user.getPhoneNumber());
+            if (similarity.getSimilarity() >= 0.6) {
+                result.add(user);
             }
-        } while (!"quit".equalsIgnoreCase(ans));
-        return null;
-    }
-
-    public String choosePerson(NeoBank neoBank) {
-        System.out.println(ColorConsole.BLUE + "Please enter the social security number of the person" + ColorConsole.RESET);
-        String ans;
-        do {
-            ans = Input.inputNextLine();
-            if (!Input.checkInput(ans)) {
-                return null;
-            } else if (!neoBank.checkSSN(ans)) {
-                System.out.println(ColorConsole.RED + "This user doesn't exist" + ColorConsole.RESET);
-            } else if (neoBank.checkSSN(ans)) {
-                return ans;
-            } else {
-                System.out.println(ColorConsole.RED + "THERE IS NO OTHER OPTION! Please input something else!" + ColorConsole.RESET);
-            }
-        } while (!"return".equalsIgnoreCase(ans));
-        return null;
+        }
+        return result;
     }
 
 
+    public void showUsers(List<SimpleUser> userList) {
+        int index = 1;
+        for (SimpleUser user : userList) {
+            System.out.println(ColorConsole.CYAN + index + ". " + ColorConsole.BLUE + user + ColorConsole.RESET);
+            index++;
+        }
+    }
+
+    public List<SimpleUser> getAllUsers(NeoBank neoBank) {
+        return new ArrayList<>(this.users);
+    }
 }

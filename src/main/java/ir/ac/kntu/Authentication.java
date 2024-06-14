@@ -1,8 +1,11 @@
 package ir.ac.kntu;
 
 public class Authentication {
+    private String phoneNumber;
     private boolean authenticated;
-    private String answer;
+    private String reason;
+
+    private final Input input = new Input();
 
     public boolean isAuthenticated() {
         return authenticated;
@@ -12,34 +15,57 @@ public class Authentication {
         this.authenticated = authenticated;
     }
 
-    public String getAnswer() {
-        return answer;
+    public String getReason() {
+        return reason;
     }
 
-    public void setAnswer(String answer) {
-        this.answer = answer;
+    public void setReason(String reason) {
+        this.reason = reason;
     }
 
-    public Authentication() {
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public Authentication(String phoneNumber) {
+        setPhoneNumber(phoneNumber);
         setAuthenticated(false);
-        setAnswer(ColorConsole.PINK + "Hasn't been checked" + ColorConsole.RESET);
+        setReason("Hasn't been checked yet!");
     }
 
-    public void acceptAuthentication() {
-        this.setAnswer(ColorConsole.GREEN + "accepted!" + ColorConsole.RESET);
+    public void showRejection() {
+        System.out.println(ColorConsole.YELLOW_BOLD + "you haven't been authenticated!");
+        System.out.println("The reason :" + this.getReason() + ColorConsole.RESET);
+    }
+
+    public void showInfo(Data data) {
+        SimpleUser currentUser = data.getUserByPhone(phoneNumber);
+        System.out.println(ColorConsole.PINK + "***" + ColorConsole.RESET);
+        System.out.println(ColorConsole.PINK + "Name : " + ColorConsole.PURPLE + currentUser.getName() + ColorConsole.RESET);
+        System.out.println(ColorConsole.PINK + "Last Name : " + ColorConsole.PURPLE + currentUser.getLastName() + ColorConsole.RESET);
+        System.out.println(ColorConsole.PINK + "Social Security Number : " + ColorConsole.PURPLE + currentUser.getSecurityNumber() + ColorConsole.RESET);
+        System.out.println(ColorConsole.PINK + "Phone Number : " + ColorConsole.PURPLE + currentUser.getPhoneNumber() + ColorConsole.RESET);
+        System.out.println(ColorConsole.PINK + "Password : " + ColorConsole.PURPLE + currentUser.getPassword() + ColorConsole.RESET);
+        System.out.println(ColorConsole.PINK + "***" + ColorConsole.RESET);
+    }
+
+    public void authenticateUser(NeoBank neoBank, SimpleUser user) {
         this.setAuthenticated(true);
+        this.setReason("Accepted!");
+        user.setAccount(new Account(user, neoBank));
     }
 
-    public void rejectAuthentication() {
+    public void rejectUser() {
+        System.out.println(ColorConsole.BLUE + "Why are you rejecting this user?" + ColorConsole.RESET);
+        String answer = input.nextLine();
+        if (!input.exitPoint(answer)) {
+            return;
+        }
         this.setAuthenticated(false);
-        System.out.println(ColorConsole.PINK + "Please enter the reason of rejection!" + ColorConsole.RESET);
-        String input;
-        do {
-            input = Input.inputNextLine();
-            if (input.matches("[0-9]+")) {
-                System.out.println(ColorConsole.RED + "Wrong format" + ColorConsole.RESET);
-            }
-        } while (input.matches("[0-9]+"));
-        setAnswer(input);
+        this.setReason(answer);
     }
 }

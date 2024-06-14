@@ -1,372 +1,312 @@
 package ir.ac.kntu;
 
-
 public class Menu {
-    public static void mainMenu(NeoBank neoBank) {
-        System.out.println(ColorConsole.PURPLE + "Welcome to Fery Bank!" + ColorConsole.RESET);
-        String answer;
-        do {
-            displayMainMenu();
-            answer = Input.inputNextLine();
-            switch (answer) {
-                case "1", "Simple User":
-                    userMenu(neoBank);
-                    break;
-                case "2", "Admin":
-                    adminMenu(neoBank);
-                    break;
-                default:
-                    if (!"quit".equalsIgnoreCase(answer)) {
-                        System.out.println(ColorConsole.RED + "THERE IS NO OTHER ROLE! Please retry!" + ColorConsole.RESET);
-                        break;
-                    }
-                    break;
-            }
-        } while (!"quit".equalsIgnoreCase(answer));
-        System.out.println(ColorConsole.PURPLE + "Thanks for trusting our bank! Bye Bye!" + ColorConsole.RESET);
-        System.exit(0);
-    }
 
-    public static void displayMainMenu() {
-        System.out.println(ColorConsole.CYAN + "Please Enter your role!");
-        System.out.println("   1.Simple User");
-        System.out.println("   2.Admin" + ColorConsole.RESET);
-    }
+    private final Input input = new Input();
 
-    public static void userMenu(NeoBank neoBank) {
-        String answer;
-        do {
-            displayUsersMenu();
-            answer = Input.inputNextLine();
-            switch (answer) {
-                case "1", "Sign Up":
-                    SimpleUser.signUp(neoBank, neoBank.getData());
-                    break;
-                case "2", "Sign In":
-                    SimpleUser currentUser = SimpleUser.signIn(neoBank, neoBank.getData());
-                    signInMenu(currentUser, neoBank);
-                    break;
-                case "3", "Return":
-                    return;
-                default:
-                    if (!"quit".equalsIgnoreCase(answer)) {
-                        System.out.println(ColorConsole.RED + "THERE IS NO OTHER OPTION! Please input something else!" + ColorConsole.RESET);
-                        break;
-                    } else {
-                        System.out.println(ColorConsole.PURPLE + "Thanks for trusting our bank! Bye Bye!" + ColorConsole.RESET);
-                        System.exit(0);
-                    }
-            }
-        } while (!"return".equalsIgnoreCase(answer));
-    }
+    private final String main = ColorConsole.CYAN_BOLD + "Choose your role : \n" +
+            ColorConsole.PINK + "1. " + ColorConsole.CYAN + "Simple User\n" +
+            ColorConsole.PINK + "2. " + ColorConsole.CYAN + "Admin\n" + ColorConsole.RESET;
 
-    public static void displayUsersMenu() {
-        System.out.println(ColorConsole.CYAN + "Would you like to SignUp or SignIn?");
-        System.out.println("   1.Sign Up");
-        System.out.println("   2.Sign In");
-        System.out.println("   3.Return" + ColorConsole.RESET);
-    }
+    private final String userLog = ColorConsole.PINK + "1. " + ColorConsole.CYAN + "Sign In\n" +
+            ColorConsole.PINK + "2. " + ColorConsole.CYAN + "Sign Up\n" + ColorConsole.RESET;
 
-    public static void signInMenu(SimpleUser currentUser, NeoBank neoBank) {
-        if (currentUser == null) {
-            return;
-        }
-        System.out.println(ColorConsole.GREEN + "You have successfully signed in!\n" + ColorConsole.RESET);
-        if (currentUser.isAuthenticated()) {
-            serviceUserMenu(neoBank, currentUser);
-            return;
-        }
-        System.out.println(ColorConsole.RED + "You can't use any of our services because you have not been authenticated!" + ColorConsole.RESET);
-        System.out.println(ColorConsole.RED + "The reason : " + ColorConsole.YELLOW + currentUser.getAuthenticated().getAnswer() + ColorConsole.RESET);
-        System.out.println(ColorConsole.BLUE + "Would you like to edit your info?\n   1.yes\n   2.no " + ColorConsole.RESET);
-        String input = Input.inputNextLine();
-        switch (input) {
-            case "1", "yes":
-                currentUser.editSignUpInfo(neoBank);
+    private final String adminLog = ColorConsole.PINK + "1. " + ColorConsole.CYAN + "Sign In\n" + ColorConsole.RESET;
+
+    private final String adminServiceMenu = ColorConsole.CYAN_BOLD + "How do you want to assist? \n" +
+            ColorConsole.PINK + "1. " + ColorConsole.CYAN + "Authentications\n" +
+            ColorConsole.PINK + "2. " + ColorConsole.CYAN + "Requests\n" +
+            ColorConsole.PINK + "3. " + ColorConsole.CYAN + "Users\n" +
+            ColorConsole.PINK + "4. " + ColorConsole.CYAN + "Return\n" + ColorConsole.RESET;
+
+    private final String userServiceMenu = ColorConsole.CYAN_BOLD + "How can we help you? \n" +
+            ColorConsole.PINK + "1. " + ColorConsole.CYAN + "Account Management\n" +
+            ColorConsole.PINK + "2. " + ColorConsole.CYAN + "Contacts\n" +
+            ColorConsole.PINK + "3. " + ColorConsole.CYAN + "Transferring Money\n" +
+            ColorConsole.PINK + "4. " + ColorConsole.CYAN + "Administer\n" +
+            ColorConsole.PINK + "5. " + ColorConsole.CYAN + "Settings\n" +
+            ColorConsole.PINK + "6. " + ColorConsole.CYAN + "Return\n" + ColorConsole.RESET;
+
+    private final String managementMenu = ColorConsole.CYAN_BOLD + "How can we help you? \n" +
+            ColorConsole.PINK + "1. " + ColorConsole.CYAN + "Charge Account\n" +
+            ColorConsole.PINK + "2. " + ColorConsole.CYAN + "Check Balance\n" +
+            ColorConsole.PINK + "3. " + ColorConsole.CYAN + "See Transactions\n" +
+            ColorConsole.PINK + "4. " + ColorConsole.CYAN + "Return\n" + ColorConsole.RESET;
+
+    private final String contactMenu = ColorConsole.CYAN_BOLD + "What do you want to do? \n" +
+            ColorConsole.PINK + "1. " + ColorConsole.CYAN + "Add Contact\n" +
+            ColorConsole.PINK + "2. " + ColorConsole.CYAN + "Show Contact List\n" +
+            ColorConsole.PINK + "3. " + ColorConsole.CYAN + "Return\n" + ColorConsole.RESET;
+
+    private final String transferMenu = ColorConsole.CYAN_BOLD + "How would you like to transfer money? \n" +
+            ColorConsole.PINK + "1. " + ColorConsole.CYAN + "by Account ID\n" +
+            ColorConsole.PINK + "2. " + ColorConsole.CYAN + "by Contact\n" +
+            ColorConsole.PINK + "3. " + ColorConsole.CYAN + "by Recent List\n" +
+            ColorConsole.PINK + "4. " + ColorConsole.CYAN + "Return\n" + ColorConsole.RESET;
+
+    private final String administerMenu = ColorConsole.CYAN_BOLD + "How can we help you? \n" +
+            ColorConsole.PINK + "1. " + ColorConsole.CYAN + "Add Request\n" +
+            ColorConsole.PINK + "2. " + ColorConsole.CYAN + "Show Request List\n" +
+            ColorConsole.PINK + "3. " + ColorConsole.CYAN + "Return\n" + ColorConsole.RESET;
+
+    private final String settings = ColorConsole.CYAN_BOLD + "What do you want to do? \n" +
+            ColorConsole.PINK + "1. " + ColorConsole.CYAN + "Change User Password\n" +
+            ColorConsole.PINK + "2. " + ColorConsole.CYAN + "Set/Change Credit Card Password\n" +
+            ColorConsole.PINK + "3. " + ColorConsole.CYAN + "Contact Option\n" +
+            ColorConsole.PINK + "4. " + ColorConsole.CYAN + "Show Account info\n" +
+            ColorConsole.PINK + "5. " + ColorConsole.CYAN + "Return\n" + ColorConsole.RESET;
+
+
+    public void mainMenu(NeoBank neoBank) {
+        System.out.println(main);
+        String answer = input.nextLine();
+        switch (answer) {
+            case "1", "Simple User":
+                this.userLog(neoBank);
                 break;
-            case "2", "no":
+            case "2", "Admin":
+                this.adminLog(neoBank);
                 break;
             default:
-                if (Input.checkInput(input)) {
-                    System.out.println(ColorConsole.RED + "Wrong input!" + ColorConsole.RESET);
+                if (input.exitPoint(answer)) {
+                    System.out.println(ColorConsole.RED + "There are no other roles." + ColorConsole.BLUE + " Please Try again!" + ColorConsole.RESET);
                 } else {
                     return;
                 }
                 break;
         }
+        this.mainMenu(neoBank);
     }
 
-    public static void adminMenu(NeoBank neoBank) {
-        String answer;
-        do {
-            displayAdminMenu();
-            answer = Input.inputNextLine();
-            switch (answer) {
-                case "1", "Sign In":
-                    Admin currAdmin = Admin.signIn(neoBank);
-                    if (currAdmin != null) {
-                        serviceAdminMenu(neoBank);
-                    }
-                    break;
-                case "2", "Return":
+    public void userLog(NeoBank neoBank) {
+        System.out.println(userLog);
+        String answer = input.nextLine();
+        switch (answer) {
+            case "1", "Sign In":
+                SimpleUser currentUser = neoBank.getBankData().signInUser();
+                if (currentUser != null && currentUser.getAuthenticated().isAuthenticated()) {
+                    this.userService(currentUser, neoBank);
+                } else if (currentUser != null) {
+                    currentUser.getAuthenticated().showRejection();
+                    currentUser.changeInfo(neoBank);
+                }
+                break;
+            case "2", "Sign Up":
+                neoBank.getBankData().signUp();
+                break;
+            default:
+                if (input.exitPoint(answer)) {
+                    System.out.println(ColorConsole.RED + "There are no other options on the menu." + ColorConsole.BLUE + " Please Try again!" + ColorConsole.RESET);
+                } else {
                     return;
-                default:
-                    if (!"quit".equalsIgnoreCase(answer)) {
-                        System.out.println(ColorConsole.RED + "THERE IS NO OTHER OPTION! Please input something else!" + ColorConsole.RESET);
-                        break;
-                    } else {
-                        System.out.println(ColorConsole.PURPLE + "Thanks for trusting our bank! Bye Bye!" + ColorConsole.RESET);
-                        System.exit(0);
-                    }
-            }
-        } while (!"return".equalsIgnoreCase(answer));
+                }
+                break;
+        }
+        this.userLog(neoBank);
     }
 
-    public static void displayAdminMenu() {
-        System.out.println(ColorConsole.CYAN + "What would you like to do?");
-        System.out.println("   1. Sign In");
-        System.out.println("   2. Return" + ColorConsole.RESET);
+    public void adminLog(NeoBank neoBank) {
+        System.out.println(adminLog);
+        String answer = input.nextLine();
+        switch (answer) {
+            case "1", "Sign In":
+                Admin currentAdmin = neoBank.signInAdmin();
+                if (currentAdmin != null) {
+                    this.adminService(currentAdmin, neoBank);
+                }
+                break;
+            default:
+                if (input.exitPoint(answer)) {
+                    System.out.println(ColorConsole.RED + "There are no other options on the menu." + ColorConsole.BLUE + " Please Try again!" + ColorConsole.RESET);
+                } else {
+                    return;
+                }
+                break;
+        }
+        this.adminLog(neoBank);
     }
 
-    public static void serviceUserMenu(NeoBank neoBank, SimpleUser user) {
-        String answer = displayServiceUserMenu();
+    public void userService(SimpleUser currentUser, NeoBank neoBank) {
+        System.out.println(userServiceMenu);
+        String answer = input.nextLine();
         switch (answer) {
             case "1", "Account Management":
-                managementMenu(user, neoBank);
+                managementMenu(neoBank, currentUser);
                 break;
             case "2", "Contacts":
-                contactMenu(neoBank, user);
+                contactMenu(neoBank, currentUser);
                 break;
             case "3", "Transferring Money":
-                user.getAccount().transferMoney(neoBank);
+                transferMenu(neoBank, currentUser);
                 break;
             case "4", "Administer":
-                administerMenu(neoBank, user);
+                administerMenu(neoBank, currentUser);
                 break;
             case "5", "Settings":
-                settingsMenu(user);
+                settingsMenu(neoBank, currentUser);
                 break;
-            case "6", "Return":
+            default:
+                if (!input.exitPoint(answer) || "6".equalsIgnoreCase(answer)) {
+                    return;
+                }
+                System.out.println(ColorConsole.RED + "THERE IS NO OTHER OPTION! Please input something else!" + ColorConsole.RESET);
+        }
+        this.userService(currentUser, neoBank);
+    }
+
+    public void adminService(Admin currentAdmin, NeoBank neoBank) {
+        System.out.println(adminServiceMenu);
+        String answer = input.nextLine();
+        switch (answer) {
+            case "1", "Authentications":
+                currentAdmin.selectAuthentication(neoBank);
+                break;
+            case "2", "Requests":
+                currentAdmin.showRequest(neoBank);
+                break;
+            case "3", "Users":
+                currentAdmin.searchUsers(neoBank);
+                break;
+            case "4", "Return":
                 return;
             default:
-                if (Input.checkInput(answer)) {
+                if (input.exitPoint(answer)) {
                     System.out.println(ColorConsole.RED + "THERE IS NO OTHER OPTION! Please input something else!" + ColorConsole.RESET);
+                } else {
+                    return;
                 }
         }
-        serviceUserMenu(neoBank, user);
+        this.adminService(currentAdmin, neoBank);
     }
 
-    public static String displayServiceUserMenu() {
-        System.out.println(ColorConsole.CYAN + "Choose : ");
-        System.out.println("   1.Account Management");
-        System.out.println("   2.Contacts");
-        System.out.println("   3.Transferring Money");
-        System.out.println("   4.Administer");
-        System.out.println("   5.Settings");
-        System.out.println("   6.Return" + ColorConsole.RESET);
-        return Input.inputNextLine();
-    }
-
-    public static void serviceAdminMenu(NeoBank neoBank) {
-        String answer;
-        do {
-            displayServiceAdminMenu();
-            answer = Input.inputNextLine();
-            switch (answer) {
-                case "1", "Authentications":
-                    neoBank.getData().selectUser(neoBank);
-                    break;
-                case "2", "Requests":
-                    neoBank.getData().showRequest(neoBank);
-                    break;
-                case "3", "Users":
-                    Admin.searchUsers(neoBank);
-                    break;
-                case "4", "Return":
+    public void managementMenu(NeoBank neoBank, SimpleUser currentUser) {
+        System.out.println(managementMenu);
+        String answer = input.nextLine();
+        switch (answer) {
+            case "1", "Charge Account":
+                currentUser.getAccount().chargeAccount(neoBank);
+                break;
+            case "2", "Check Balance":
+                currentUser.getAccount().showBalance();
+                break;
+            case "3", "See Transactions":
+                currentUser.getAccount().seeTransactions(neoBank);
+                break;
+            case "4", "Return":
+                return;
+            default:
+                if (input.exitPoint(answer)) {
+                    System.out.println(ColorConsole.RED + "THERE IS NO OTHER OPTION! Please input something else!" + ColorConsole.RESET);
+                } else {
                     return;
-                default:
-                    if (Input.checkInput(answer)) {
-                        System.out.println(ColorConsole.RED + "THERE IS NO OTHER OPTION! Please input something else!" + ColorConsole.RESET);
-                        break;
-                    }
-                    break;
-            }
-        } while (!"quit".equalsIgnoreCase(answer));
+                }
+        }
+        this.managementMenu(neoBank, currentUser);
     }
 
-    public static void displayServiceAdminMenu() {
-        System.out.println(ColorConsole.CYAN + "How would you like to assist!");
-        System.out.println("   1.Authentications");
-        System.out.println("   2.Requests");
-        System.out.println("   3.Users");
-        System.out.println("   4.Return" + ColorConsole.RESET);
-    }
-
-    public static void managementMenu(SimpleUser user, NeoBank neoBank) {
-        String answer;
-        do {
-            displayManagementMenu();
-            answer = Input.inputNextLine();
-            switch (answer) {
-                case "1", "Charge Account":
-                    user.getAccount().charge(neoBank);
-                    break;
-                case "2", "Check Balance":
-                    user.getAccount().showBalance();
-                    break;
-                case "3", "See Transactions":
-                    transactionsMenu(neoBank, user);
-                    break;
-                case "4", "Return":
-                    return;
-                default:
-                    if (Input.checkInput(answer)) {
-                        System.out.println(ColorConsole.RED + "THERE IS NO OTHER OPTION! Please input something else!" + ColorConsole.RESET);
-                    }
-                    break;
-            }
-        } while (!"quit".equalsIgnoreCase(answer));
-    }
-
-    public static void displayManagementMenu() {
-        System.out.println(ColorConsole.CYAN + "What do you want to do?");
-        System.out.println("   1.Charge Account");
-        System.out.println("   2.Check Balance");
-        System.out.println("   3.See Transactions");
-        System.out.println("   4.Return" + ColorConsole.RESET);
-    }
-
-    public static void transactionsMenu(NeoBank neoBank, SimpleUser user) {
-        String answer;
-        do {
-            System.out.println(ColorConsole.CYAN + "Choose : \n   1.All Transactions\n   2.Filter Transactions\n   3.Return" + ColorConsole.RESET);
-            answer = Input.inputNextLine();
-            switch (answer) {
-                case "1", "All Transactions":
-                    user.getAccount().selectTransaction(neoBank, "1");
-                    break;
-                case "2", "Filter Transactions":
-                    user.getAccount().selectTransaction(neoBank, "2");
-                    break;
-                case "3", "Return":
-                    return;
-                default:
-                    if (Input.checkInput(answer)) {
-                        System.out.println(ColorConsole.RED + "THERE IS NO OTHER OPTION! Please input something else!" + ColorConsole.RESET);
-                        break;
-                    }
-                    break;
-            }
-        } while (!"quit".equalsIgnoreCase(answer));
-    }
-
-    public static void contactMenu(NeoBank neoBank, SimpleUser user) {
-        if (!user.isContactOption()) {
+    public void contactMenu(NeoBank neoBank, SimpleUser currentUser) {
+        if (!currentUser.isContactOption()) {
             System.out.println(ColorConsole.RED + "You can't choose this option" + ColorConsole.RESET);
             return;
         }
-        String answer;
-        do {
-            displayContactMenu();
-            answer = Input.inputNextLine();
-            switch (answer) {
-                case "1", "Add Contact":
-                    Contact.addContacts(neoBank, user);
-                    break;
-                case "2", "Show Contact list":
-                    Contact currContact = Contact.selectContact(neoBank, user);
-                    if (currContact != null) {
-                        currContact.doContactStuff(neoBank, user);
-                    }
-                    break;
-                case "3", "Return":
+        System.out.println(contactMenu);
+        String answer = input.nextLine();
+        switch (answer) {
+            case "1", "Add Contact":
+                input.nextContact(neoBank, currentUser);
+                break;
+            case "2", "Show Contact List":
+                currentUser.selectContact(neoBank);
+                break;
+            case "3", "Return":
+                return;
+            default:
+                if (input.exitPoint(answer)) {
+                    System.out.println(ColorConsole.RED + "THERE IS NO OTHER OPTION! Please input something else!" + ColorConsole.RESET);
+                } else {
                     return;
-                default:
-                    if (Input.checkInput(answer)) {
-                        System.out.println(ColorConsole.RED + "THERE IS NO OTHER OPTION! Please input something else!" + ColorConsole.RESET);
-                        break;
-                    }
-                    break;
-            }
-        } while (!"quit".equalsIgnoreCase(answer));
+                }
+        }
+        this.contactMenu(neoBank, currentUser);
     }
 
-    public static void displayContactMenu() {
-        System.out.println(ColorConsole.CYAN + "What do you want to do?");
-        System.out.println("   1.Add Contact");
-        System.out.println("   2.Show Contact list");
-        System.out.println("   3.Return" + ColorConsole.RESET);
-    }
-
-    public static void administerMenu(NeoBank neoBank, SimpleUser user) {
-        String answer;
-        do {
-            displayAdministerMenu();
-            answer = Input.inputNextLine();
-            switch (answer) {
-                case "1", "Add Request":
-                    Request.createRequest(neoBank, user);
-                    break;
-                case "2", "Show Request list":
-                    Request.selectRequest(neoBank, user);
-                    break;
-                case "3", "Return":
+    public void transferMenu(NeoBank neoBank, SimpleUser currentUser) {
+        System.out.println(transferMenu);
+        String answer = input.nextLine();
+        switch (answer) {
+            case "1", "by Account ID":
+                currentUser.transferByAccountID(neoBank);
+                break;
+            case "2", "by Contact":
+                if (currentUser.isContactOption()) {
+                    currentUser.transferByContact(neoBank);
+                } else {
+                    System.out.println(ColorConsole.RED + "You can't choose this option! You have turned off your contact option!" + ColorConsole.RESET);
+                }
+                break;
+            case "3", "by Recent List":
+                currentUser.transferByRecent(neoBank);
+                break;
+            case "4", "Return":
+                return;
+            default:
+                if (!input.exitPoint(answer)) {
                     return;
-                default:
-                    if (!"quit".equalsIgnoreCase(answer)) {
-                        System.out.println(ColorConsole.RED + "THERE IS NO OTHER OPTION! Please input something else!" + ColorConsole.RESET);
-                        break;
-                    } else {
-                        System.out.println(ColorConsole.PURPLE + "Thanks for trusting our bank! Bye Bye!" + ColorConsole.RESET);
-                        System.exit(0);
-                    }
+                } else {
+                    System.out.println(ColorConsole.RED + "THERE IS NO OTHER OPTION! Please input something else!" + ColorConsole.RESET);
+                }
+        }
+        this.transferMenu(neoBank, currentUser);
+    }
+
+    public void administerMenu(NeoBank neoBank, SimpleUser currentUser) {
+        System.out.println(administerMenu);
+        String answer = input.nextLine();
+        switch (answer) {
+            case "1", "Add Request":
+                currentUser.addRequest(neoBank);
+                break;
+            case "2", "Show Request list":
+                currentUser.selectRequest(neoBank);
+                break;
+            case "3", "Return":
+                return;
+            default:
+                if (!input.exitPoint(answer)) {
+                    return;
+                } else {
+                    System.out.println(ColorConsole.RED + "THERE IS NO OTHER OPTION! Please input something else!" + ColorConsole.RESET);
                     break;
-            }
-        } while (!"quit".equalsIgnoreCase(answer));
+                }
+        }
+        this.administerMenu(neoBank, currentUser);
     }
 
-    public static void displayAdministerMenu() {
-        System.out.println(ColorConsole.CYAN + "How can we help you?");
-        System.out.println("   1. Add Request");
-        System.out.println("   2. Show Request list");
-        System.out.println("   3. Return" + ColorConsole.RESET);
-    }
-
-    public static void settingsMenu(SimpleUser user) {
-        String answer = Input.inputNextLine();
-        displaySettings();
+    public void settingsMenu(NeoBank neoBank, SimpleUser currentUser) {
+        System.out.println(settings);
+        String answer = input.nextLine();
         switch (answer) {
             case "1", "Change User Password":
-                user.changePassword();
+                currentUser.changePassword();
                 break;
             case "2", "Set Credit Card Password":
-                user.getAccount().getCreditCard().changeCreditCardPassword();
+                currentUser.changeOrSetPassCode();
                 break;
             case "3", "Contact Option":
-                user.changeContactOption();
+                currentUser.changeContactOption();
                 break;
             case "4", "Show Account info":
-                user.getAccount().showAccountInfo();
+                currentUser.showAccountInfo();
                 break;
             case "5", "Return":
                 return;
             default:
-                if (Input.checkInput(answer)) {
-                    System.out.println(ColorConsole.RED + "THERE IS NO OTHER OPTION! Please input something else!" + ColorConsole.RESET);
-                    break;
+                if (input.exitPoint(answer)) {
+                    return;
                 }
-                break;
+                System.out.println(ColorConsole.RED + "THERE IS NO OTHER OPTION! Please input something else!" + ColorConsole.RESET);
         }
-        settingsMenu(user);
-    }
-
-    public static void displaySettings() {
-        System.out.println(ColorConsole.CYAN + "What do you want to do?");
-        System.out.println("   1. Change User Password");
-        System.out.println("   2. Set Credit Card Password");
-        System.out.println("   3. Contact Option");
-        System.out.println("   4.Show Account info");
-        System.out.println("   5. Return" + ColorConsole.RESET);
+        this.settingsMenu(neoBank, currentUser);
     }
 
 

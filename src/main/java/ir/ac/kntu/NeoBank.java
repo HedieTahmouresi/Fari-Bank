@@ -5,145 +5,27 @@ import java.util.List;
 import java.util.Random;
 
 public class NeoBank {
-    private List<SimpleUser> simpleUsers;
+    private Data bankData;
     private List<Admin> admins;
-    private Data data;
     private int tracingNumber;
-    private final double wage = 1.5;
+    private double wage;
 
-    public void addSimpleUsers(SimpleUser user) {
-        this.simpleUsers.add(user);
-    }
-
-    public SimpleUser getSpecificUser(int index) {
-        return this.simpleUsers.get(index);
-    }
-
-    public int getSpecificUser(String phoneNumber) {
-        for (int index = 0; index < this.simpleUsers.size(); index++) {
-            if (this.getSpecificUser(index).getPhoneNumber().equals(phoneNumber)) {
-                return index;
-            }
-        }
-        return -1;
-    }
-
-    public int getSpecificUserBySSN(String securityNumber) {
-        for (int index = 0; index < this.simpleUsers.size(); index++) {
-            if (this.getSpecificUser(index).getSecurityNumber().equals(securityNumber)) {
-                return index;
-            }
-        }
-        return -1;
-    }
-
-
-    public Data getData() {
-        return data;
-    }
-
-    public void setData(Data data) {
-        this.data = data;
-    }
+    private final Input input = new Input();
 
     public NeoBank() {
-        simpleUsers = new ArrayList<>();
         admins = new ArrayList<>();
+        setBankData(new Data());
         Random random = new Random();
-        tracingNumber = random.nextInt(8999999);
-        data = new Data();
+        setTracingNumber(random.nextInt(8999999) + 1000000);
+        setWage(2.5);
     }
 
-    public void addAdmin(Admin admin) {
-        this.admins.add(admin);
+    public double getWage() {
+        return wage;
     }
 
-    public void bank() {
-        Menu.mainMenu(this);
-    }
-
-    public boolean existsSecurityNumber(String securityNumber) {
-        if (this.simpleUsers.isEmpty()) {
-            return true;
-        }
-        for (SimpleUser user : this.simpleUsers) {
-            if (user.getSecurityNumber().equals(securityNumber)) {
-                System.out.println(ColorConsole.RED + "SomeBody with this social security number already has an account! Please try again!" + ColorConsole.RESET);
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public boolean checkSSN(String securityNumber) {
-        if (this.simpleUsers.isEmpty()) {
-            return true;
-        }
-        for (SimpleUser user : this.simpleUsers) {
-            if (user.getSecurityNumber().equals(securityNumber)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean existsPhoneNumber(String phoneNumber) {
-        if (this.simpleUsers.isEmpty()) {
-            return true;
-        }
-        for (SimpleUser user : this.simpleUsers) {
-            if (user.getPhoneNumber().equals(phoneNumber)) {
-                System.out.println(ColorConsole.RED + "SomeBody with this phone number already exists! Please try again!" + ColorConsole.RESET);
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public boolean existsAccountId(String accountID) {
-        for (int index = 0; index < this.simpleUsers.size(); index++) {
-            if (this.simpleUsers.get(index).getAccount() != null) {
-                if (this.simpleUsers.get(index).getAccount().getAccountId().equals(accountID)) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    public SimpleUser getUserByAccountId(String accountID) {
-        for (int index = 0; index < this.simpleUsers.size(); index++) {
-            if (this.simpleUsers.get(index).getAccount() != null) {
-                if (this.simpleUsers.get(index).getAccount().getAccountId().equals(accountID)) {
-                    return this.getSpecificUser(index);
-                }
-            }
-        }
-        return null;
-    }
-
-    public boolean existsCreditCard(String creditCardId) {
-        for (int index = 0; index < this.simpleUsers.size(); index++) {
-            if (this.simpleUsers.get(index).getAccount() != null) {
-                if (this.simpleUsers.get(index).getAccount().getCreditCard().getCreditCardId().equals(creditCardId)) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    public Admin getSpecificAdmin(String userName) {
-        for (int index = 0; index < this.admins.size(); index++) {
-            if (this.admins.get(index).getSurname().equals(userName)) {
-                return this.getSpecificAdmin(index);
-            }
-        }
-        return null;
-    }
-
-    public Admin getSpecificAdmin(int index) {
-        return this.admins.get(index);
+    public void setWage(double wage) {
+        this.wage = wage;
     }
 
     public int getTracingNumber() {
@@ -154,7 +36,62 @@ public class NeoBank {
         this.tracingNumber = tracingNumber;
     }
 
-    public double getWage() {
-        return wage;
+    public Input getInput() {
+        return input;
     }
+
+    public Data getBankData() {
+        return bankData;
+    }
+
+    public void setBankData(Data bankData) {
+        this.bankData = bankData;
+    }
+
+    public Admin getSpecificAdmin(String userName) {
+        for (Admin admin : admins) {
+            if (admin.getUserName().equals(userName)) {
+                return admin;
+            }
+        }
+        return null;
+    }
+
+    public void addAdmin(Admin admin) {
+        this.admins.add(admin);
+    }
+
+    public Admin signInAdmin() {
+        System.out.println(ColorConsole.BLUE + "Please Enter your username" + ColorConsole.RESET);
+        String userName;
+        Admin wantedAdmin;
+        do {
+            userName = input.nextLine();
+            if (!input.exitPoint(userName)) {
+                return null;
+            }
+            wantedAdmin = this.getSpecificAdmin(userName);
+            if (wantedAdmin == null) {
+                System.out.println(ColorConsole.RED_BOLD + "Username not available!" + ColorConsole.RESET);
+            }
+        } while (wantedAdmin == null);
+        System.out.println(ColorConsole.BLUE + "Please Enter your password" + ColorConsole.RESET);
+        String password;
+        do {
+            password = input.nextLine();
+            if (!input.exitPoint(password)) {
+                return null;
+            } else if (!password.equals(wantedAdmin.getPassword())) {
+                System.out.println(ColorConsole.RED_BOLD + "Wrong Password! If you would like to change the user name return to the previous menu" + ColorConsole.RESET);
+            }
+        } while (!password.equals(wantedAdmin.getPassword()));
+        return wantedAdmin;
+    }
+
+    public void launchBank() {
+        Menu menu = new Menu();
+        menu.mainMenu(this);
+    }
+
+
 }

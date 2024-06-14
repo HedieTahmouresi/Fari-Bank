@@ -1,9 +1,6 @@
 package ir.ac.kntu;
 
 public class ColorConsole {
-    /*
-     this class is used for making the outputs colorful
-    */
     // Reset
     public static final String RESET = "\033[0m";  // Text Reset
 
@@ -27,5 +24,4 @@ public class ColorConsole {
     public static final String PURPLE_BOLD = "\033[1;35m"; // PURPLE
     public static final String CYAN_BOLD = "\033[1;36m";   // CYAN
     public static final String WHITE_BOLD = "\033[1;37m";  // WHITE
-
 }
