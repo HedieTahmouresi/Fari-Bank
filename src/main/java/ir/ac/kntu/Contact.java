@@ -31,7 +31,9 @@ public class Contact extends UserPerson {
     }
 
     public void changeContactInfo(NeoBank neoBank, SimpleUser user) {
-        System.out.println("Do you want to change this contact info?");
+        System.out.println(ColorConsole.BLUE + "Would you like to change your contact info?");
+        System.out.println("   1.yes");
+        System.out.println("   2.no" + ColorConsole.RESET);
         String answer = input.nextLine();
         switch (answer) {
             case "yes":

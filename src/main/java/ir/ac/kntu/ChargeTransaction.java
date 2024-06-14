@@ -23,4 +23,9 @@ public class ChargeTransaction extends Transaction {
         System.out.println(ColorConsole.PURPLE + "Tracing Number: " + ColorConsole.PINK + this.getTracingNumber() + ColorConsole.RESET);
         System.out.println(ColorConsole.PURPLE + "***" + ColorConsole.RESET);
     }
+
+    @Override
+    public String toString() {
+        return ColorConsole.PURPLE + "Transaction Type :" + ColorConsole.CYAN + "Charge" +super.toString();
+    }
 }

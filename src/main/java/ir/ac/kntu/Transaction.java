@@ -61,9 +61,9 @@ public class Transaction {
 
     @Override
     public String toString() {
-        return ColorConsole.PURPLE + ", Date and Time " + ColorConsole.CYAN + this.getDateAndTime() +
+        return ColorConsole.PURPLE + ", Date and Time :" + ColorConsole.CYAN + this.getDateAndTime() +
                 ColorConsole.PURPLE + ", Value : " + ColorConsole.CYAN + this.getValue() +
-                ColorConsole.PURPLE + ", Tracing Number : " + ColorConsole.CYAN + this.getTracingNumber();
+                ColorConsole.PURPLE + ", Tracing Number : " + ColorConsole.CYAN + this.getTracingNumber() + ColorConsole.RESET;
     }
 
     public boolean dateIsBetween(Instant start, Instant end) {

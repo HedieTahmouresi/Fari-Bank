@@ -18,6 +18,10 @@ public class Data {
         this.users = new ArrayList<>();
     }
 
+    public int authenticationsSize(){
+        return this.authentications.size();
+    }
+
     public void addRequest(Request request) {
         this.requests.add(request);
     }
@@ -149,13 +153,26 @@ public class Data {
         return currentUser;
     }
 
-    public int showAuthentications() {
-        int index = 1;
-        for (Authentication authentication : authentications) {
-            System.out.println(ColorConsole.PINK + index + ". " + ColorConsole.PURPLE + authentication.getPhoneNumber() + ColorConsole.RESET);
-            index++;
+    public void showAuthentications(NeoBank neoBank,Admin currentAdmin) {
+        if (this.authentications==null || this.authentications.isEmpty()){
+            return;
         }
-        return index;
+        Pagination authenticationList = new Pagination<>(this.authentications, 5);
+        String command;
+        do {
+            authenticationList.showPage();
+            System.out.println(ColorConsole.BLUE +"Enter 'next' to go to the next page, 'previous' to go back or the number of the transaction you want"+ ColorConsole.RESET);
+            command = input.nextLine();
+            if (!input.exitPoint(command)) {
+                return;
+            } else if (command.matches("[0-9]+")) {
+                currentAdmin.selectAuthentication(neoBank,command);
+            } else if ("next".equals(command) || "previous".equals(command)) {
+                authenticationList.changePage(command);
+            } else {
+                System.out.println(ColorConsole.RED + "No other option! Please try again!" + ColorConsole.RESET);
+            }
+        } while (!"return".equals(command));
     }
 
     public void authenticateUser(NeoBank neoBank, int index) {
@@ -204,45 +221,38 @@ public class Data {
     }
 
 
-    public List<Request> displayRequests() {
+    public List<Request> allRequests() {
         List<Request> list = new ArrayList<>();
-        int index = 1;
         if (this.requests.isEmpty()) {
             System.out.println(ColorConsole.RED + "There are no requests" + ColorConsole.RESET);
             return null;
         }
         for (Request request : this.requests) {
-            System.out.println(ColorConsole.PURPLE + index + ". SSN : " + ColorConsole.PINK + request.getPhoneNumber() + " " + request.toString() + ColorConsole.RESET);
             list.add(request);
-            index++;
         }
         return list;
     }
 
 
-    public List<Request> displayRequestsBySection() {
+    public List<Request> filteredRequestsBySection() {
         RequestSection section = input.nextRequestSection();
         if (section==null){
             return null;
         }
         List<Request> list = new ArrayList<>();
-        int index = 1;
         if (this.requests.isEmpty()) {
             System.out.println(ColorConsole.RED + "There are no requests" + ColorConsole.RESET);
             return null;
         }
         for (Request request : this.requests) {
             if (request.getSection().equals(section)) {
-                System.out.println(ColorConsole.PURPLE + index + ". Phone Number : " + ColorConsole.PINK + request.getPhoneNumber() + " " + request.toString() + ColorConsole.RESET);
                 list.add(request);
-                index++;
             }
         }
         return list;
     }
 
-    public List<Request> displayRequestsByPerson(NeoBank neoBank) {
-        int index = 1;
+    public List<Request> filteredRequestsByPerson(NeoBank neoBank) {
         List<Request> list = new ArrayList<>();
         String phoneNumber = input.nextRequestPerson(neoBank);
         if (phoneNumber == null) {
@@ -253,18 +263,15 @@ public class Data {
         }
         for (Request request : this.requests) {
             if (request.getPhoneNumber().equals(phoneNumber)) {
-                System.out.println(ColorConsole.PURPLE + index + ". Phone Number : " + ColorConsole.PINK + request.getPhoneNumber() + " " + request.toString() + ColorConsole.RESET);
                 list.add(request);
-                index++;
             }
         }
         return list;
     }
 
-    public List<Request> displayRequestsByStatus() {
+    public List<Request> filteredRequestsByStatus() {
         RequestStatus status = input.nextRequestStatus();
         List<Request> list = new ArrayList<>();
-        int index = 1;
         if (status == null) {
             return null;
         }else if (this.requests.isEmpty()) {
@@ -273,9 +280,7 @@ public class Data {
         }
         for (Request request : this.requests) {
             if (request.getStatus().equals(status)) {
-                System.out.println(ColorConsole.PURPLE + index + ". Phone Number : " + ColorConsole.PINK + request.getPhoneNumber() + " " + request.toString() + ColorConsole.RESET);
                 list.add(request);
-                index++;
             }
         }
         return list;

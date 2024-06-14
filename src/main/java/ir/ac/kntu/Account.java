@@ -13,7 +13,7 @@ public class Account {
     private SimpleUser owner;
     private double balance;
     private List<Map<String, Transaction>> transactions;
-    private List<Map<TransferTransaction, String>> recentList;
+    private List<Recent> recentList;
 
     private final Input input = new Input();
 
@@ -77,10 +77,8 @@ public class Account {
         this.transactions.add(0, map);
     }
 
-    public void addRecent(TransferTransaction transaction, String phoneNumber) {
-        Map<TransferTransaction, String> map = new HashMap<>();
-        map.put(transaction, phoneNumber);
-        recentList.add(map);
+    public void addRecent(TransferTransaction transaction, String phoneNumber, NeoBank neoBank) {
+        recentList.add(new Recent(neoBank.getBankData().getUserByPhone(phoneNumber), transaction.isByContact()));
     }
 
     public void chargeAccount(NeoBank neoBank) {
@@ -113,10 +111,10 @@ public class Account {
         String answer = input.nextLine();
         switch (answer) {
             case "1", "All transactions":
-                this.showAllTransactions(neoBank);
+                this.showTransactionList(neoBank, this.addAllTransactions(neoBank));
                 break;
             case "2", "Filtered transactions":
-                this.showFilteredTransactions(neoBank);
+                this.showTransactionList(neoBank, this.addFilteredTransactions(neoBank));
                 break;
             default:
                 if (input.exitPoint(answer)) {
@@ -128,34 +126,27 @@ public class Account {
         this.seeTransactions(neoBank);
     }
 
-    private void showFilteredTransactions(NeoBank neoBank) {
+    private List<Transaction> addFilteredTransactions(NeoBank neoBank) {
         Instant start = getStart();
         if (start == null) {
-            return;
+            return null;
         }
         Instant end = getEnd(start);
         if (end == null) {
-            return;
+            return null;
         }
         List<Transaction> transactionList = new ArrayList<>();
-        int index = 1;
         for (Map<String, Transaction> transaction : this.transactions) {
             for (Map.Entry<String, Transaction> entry : transaction.entrySet()) {
                 if (entry.getValue().dateIsBetween(start, end)) {
-                    System.out.println(ColorConsole.CYAN + index + ". Transaction Type: " + entry.getKey() + " " + entry.getValue().toString() + ColorConsole.RESET);
                     transactionList.add(entry.getValue());
-                    index++;
                 }
             }
         }
         if (transactionList.isEmpty()) {
             System.out.println(ColorConsole.RED + "No matching transaction!" + ColorConsole.RESET);
-            return;
         }
-        if (!selectTransaction(neoBank, transactionList)) {
-            return;
-        }
-        this.showFilteredTransactions(neoBank);
+        return transactionList;
     }
 
     private Instant getStart() {
@@ -205,46 +196,51 @@ public class Account {
         return end;
     }
 
-    public void showAllTransactions(NeoBank neoBank) {
+    public List<Transaction> addAllTransactions(NeoBank neoBank) {
         List<Transaction> transactionList = new ArrayList<>();
         int index = 1;
         for (Map<String, Transaction> transaction : transactions) {
             for (Map.Entry<String, Transaction> entry : transaction.entrySet()) {
-                System.out.println(ColorConsole.BLUE + index + ". Transaction Type: " + entry.getKey() + " " + entry.getValue().toString() + ColorConsole.RESET);
                 transactionList.add(entry.getValue());
                 index++;
             }
         }
         if (transactionList.isEmpty()) {
             System.out.println(ColorConsole.BLUE + "Transaction List is empty" + ColorConsole.RESET);
-            return;
         }
-        if (!selectTransaction(neoBank, transactionList)) {
-            return;
-        }
-        this.showAllTransactions(neoBank);
+        return transactionList;
     }
 
-    public boolean selectTransaction(NeoBank neoBank, List<Transaction> transactionList) {
+    public void showTransactionList(NeoBank neoBank, List<Transaction> transactionList) {
         if (transactionList == null || transactionList.isEmpty()) {
-            return true;
+            return;
         }
-        String answer = input.nextLine();
-        if (!input.exitPoint(answer)) {
-            return false;
-        } else if (!answer.matches("[0-9]+")) {
-            System.out.println(ColorConsole.RED_BOLD + "Wrong Format! Try again!" + ColorConsole.RESET);
-        } else if (Integer.parseInt(answer) > 0 && Integer.parseInt(answer) < transactionList.size() + 1) {
-            for (int index = 1; index < transactionList.size() + 1; index++) {
-                if (answer.equals(Integer.toString(index))) {
-                    transactionList.get(index - 1).showInfo(neoBank);
-                    return true;
-                }
+        Pagination transactions = new Pagination<>(transactionList, 5);
+        String command;
+        do {
+            transactions.showPage();
+            System.out.println(ColorConsole.BLUE + "Enter 'next' to go to the next page, 'previous' to go back or the number of the transaction you want"+ColorConsole.RESET);
+            command = input.nextLine();
+            if (!input.exitPoint(command)) {
+                return;
+            } else if (command.matches("[0-9]+")) {
+                this.selectTransaction(neoBank, transactionList, command);
+            } else if ("next".equals(command) || "previous".equals(command)) {
+                transactions.changePage(command);
+            } else {
+                System.out.println(ColorConsole.RED + "No other option! Please try again!"+ColorConsole.RESET);
             }
-        } else {
-            System.out.println(ColorConsole.RED_BOLD + "Index Out of Bound! Try again!" + ColorConsole.RESET);
+        } while (!"return".equals(command));
+
+    }
+
+    public void selectTransaction(NeoBank neoBank, List<Transaction> transactionList, String answer) {
+        if (Integer.parseInt(answer) > 0 && Integer.parseInt(answer) < transactionList.size() + 1) {
+            int index = Integer.parseInt(answer);
+            transactionList.get(index - 1).showInfo(neoBank);
+            return;
         }
-        return this.selectTransaction(neoBank, transactionList);
+        System.out.println(ColorConsole.RED_BOLD + "Index Out of Bound! Try again!" + ColorConsole.RESET);
     }
 
     public void transfer(NeoBank neoBank, String value, SimpleUser receiver, boolean isByContact) {
@@ -262,42 +258,39 @@ public class Account {
         this.addTransaction(newTransaction, "transfer");
         receiver.getAccount().addTransaction(new TransferTransaction(Double.parseDouble(value), neoBank.getTracingNumber() + 1, receiver, isByContact, info, "+", this.getOwner(), true), "transfer");
         neoBank.setTracingNumber(neoBank.getTracingNumber() + 2);
-        this.addRecent(newTransaction, receiver.getPhoneNumber());
+        this.addRecent(newTransaction, receiver.getPhoneNumber(), neoBank);
         System.out.println(ColorConsole.GREEN_BOLD + "Transfer Completed!" + ColorConsole.RESET);
     }
 
-    public void showRecentList() {
-        for (int index = 1; index < recentList.size() + 1; index++) {
-            for (Map.Entry<TransferTransaction, String> entry : recentList.get(index - 1).entrySet()) {
-                System.out.println(ColorConsole.PINK + index + ". " + ColorConsole.PURPLE + entry.getKey().getReceiver().getName() + " " + entry.getKey().getReceiver().getLastName());
-            }
+    public Recent showRecentList(NeoBank neoBank) {
+        if (this.recentList == null || this.recentList.isEmpty()) {
+            return null;
         }
+        Pagination recents = new Pagination<>(this.recentList, 5);
+        String command;
+        do {
+            recents.showPage();
+            System.out.println(ColorConsole.BLUE +"Enter 'next' to go to the next page, 'previous' to go back or the number of the transaction you want"+ ColorConsole.RESET);
+            command = input.nextLine();
+            if (!input.exitPoint(command)) {
+                return null;
+            } else if (command.matches("[0-9]+")) {
+                return this.selectRecent(neoBank, command);
+            } else if ("next".equals(command) || "previous".equals(command)) {
+                recents.changePage(command);
+            } else {
+                System.out.println(ColorConsole.RED + "No other option! Please try again!" + ColorConsole.RESET);
+            }
+        } while (!"return".equals(command));
+        return null;
     }
 
-    public Map<SimpleUser, Boolean> selectRecent(NeoBank neoBank) {
-        Map<SimpleUser, Boolean> map = new HashMap<>();
-        this.showRecentList();
-        if (this.recentList.isEmpty()) {
-            return null;
+    public Recent selectRecent(NeoBank neoBank, String answer) {
+        if (Integer.parseInt(answer) > 0 && Integer.parseInt(answer) <= this.recentList.size()) {
+            return this.recentList.get(Integer.parseInt(answer)-1);
         }
-        String answer = input.nextLine();
-        if (!input.exitPoint(answer)) {
-            return null;
-        } else if (!answer.matches("[0-9]+")) {
-            System.out.println(ColorConsole.RED_BOLD + "Wrong Format! Try again! Enter a number!" + ColorConsole.RESET);
-        } else if (Integer.parseInt(answer) > 0 && Integer.parseInt(answer) <= this.recentList.size()) {
-            for (int index = 1; index <= recentList.size(); index++) {
-                if (Integer.parseInt(answer) == index) {
-                    for (Map.Entry<TransferTransaction, String> entry : recentList.get(index - 1).entrySet()) {
-                        map.put(neoBank.getBankData().getUserByPhone(entry.getValue()), entry.getKey().isByContact());
-                        return map;
-                    }
+        System.out.println(ColorConsole.RED_BOLD + "Index Out of bound! Try again!" + ColorConsole.RESET);
+        return null;
 
-                }
-            }
-        } else {
-            System.out.println(ColorConsole.RED_BOLD + "Index Out of bound! Try again!" + ColorConsole.RESET);
-        }
-        return selectRecent(neoBank);
     }
 }

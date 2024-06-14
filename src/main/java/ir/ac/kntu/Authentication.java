@@ -43,7 +43,7 @@ public class Authentication {
     }
 
     public void showInfo(Data data) {
-        SimpleUser currentUser = data.getUserByPhone(phoneNumber);
+        SimpleUser currentUser = data.getUserByPhone(this.getPhoneNumber());
         System.out.println(ColorConsole.PINK + "***" + ColorConsole.RESET);
         System.out.println(ColorConsole.PINK + "Name : " + ColorConsole.PURPLE + currentUser.getName() + ColorConsole.RESET);
         System.out.println(ColorConsole.PINK + "Last Name : " + ColorConsole.PURPLE + currentUser.getLastName() + ColorConsole.RESET);
@@ -67,5 +67,13 @@ public class Authentication {
         }
         this.setAuthenticated(false);
         this.setReason(answer);
+    }
+
+    @Override
+    public String toString() {
+        return "Authentication{" +
+                "phoneNumber='" + phoneNumber + '\'' +
+                ", authenticated=" + authenticated +
+                '}';
     }
 }

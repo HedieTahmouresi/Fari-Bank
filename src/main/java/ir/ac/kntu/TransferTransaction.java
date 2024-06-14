@@ -120,4 +120,9 @@ public class TransferTransaction extends Transaction {
         }
         System.out.println("Account ID receiver : " + this.getReceiverInfo());
     }
+
+    @Override
+    public String toString() {
+        return ColorConsole.PURPLE + "Transaction Type :" + ColorConsole.CYAN + "Transfer" + super.toString();
+    }
 }

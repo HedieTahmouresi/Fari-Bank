@@ -159,7 +159,7 @@ public class Menu {
         String answer = input.nextLine();
         switch (answer) {
             case "1", "Authentications":
-                currentAdmin.selectAuthentication(neoBank);
+                currentAdmin.getData().showAuthentications(neoBank, currentAdmin);
                 break;
             case "2", "Requests":
                 currentAdmin.showRequest(neoBank);
@@ -216,7 +216,10 @@ public class Menu {
                 input.nextContact(neoBank, currentUser);
                 break;
             case "2", "Show Contact List":
-                currentUser.selectContact(neoBank);
+                Contact currentContact = currentUser.showContacts(neoBank);
+                if (currentContact!=null){
+                    currentContact.contactListOptions(neoBank,currentUser);
+                }
                 break;
             case "3", "Return":
                 return;
@@ -267,7 +270,7 @@ public class Menu {
                 currentUser.addRequest(neoBank);
                 break;
             case "2", "Show Request list":
-                currentUser.selectRequest(neoBank);
+                currentUser.showRequests();
                 break;
             case "3", "Return":
                 return;

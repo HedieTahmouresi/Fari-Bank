@@ -86,59 +86,35 @@ public class SimpleUser extends UserPerson {
         this.contacts.remove(contact);
     }
 
-    public boolean showContacts() {
-        if (contacts.isEmpty()) {
-            return false;
-        }
-        for (int index = 0; index < this.contacts.size(); index++) {
-            int num = index + 1;
-            System.out.println(ColorConsole.PINK + num + ColorConsole.PURPLE + this.contacts.get(index).toString() + ColorConsole.RESET);
-        }
-        return true;
-    }
-
-    public void selectContact(NeoBank neoBank) {
-        if (!this.showContacts()) {
-            return;
-        }
-        String answer = input.nextLine();
-        if (!input.exitPoint(answer)) {
-            return;
-        } else if (!answer.matches("-?\\d+(\\.\\d+)?")) {
-            System.out.println(ColorConsole.RED + "Wrong format! Try again!" + ColorConsole.RESET);
-        } else if (Integer.parseInt(answer) > 0 && Integer.parseInt(answer) < contacts.size() + 1) {
-            for (int index = 1; index < contacts.size() + 1; index++) {
-                if (answer.equals(Integer.toString(index))) {
-                    Contact currentContact = this.contacts.get(index - 1);
-                    currentContact.contactListOptions(neoBank, this);
-                    break;
-                }
-            }
-        } else {
-            System.out.println(ColorConsole.RED + "Index Out of Bound! Try again!" + ColorConsole.RESET);
-        }
-        selectContact(neoBank);
-    }
-
-    public Contact getContact(NeoBank neoBank) {
-        if (!this.showContacts()) {
+    public Contact showContacts(NeoBank neoBank) {
+        if (this.contacts == null || this.contacts.isEmpty()) {
             return null;
         }
-        String answer = input.nextLine();
-        if (!input.exitPoint(answer)) {
-            return null;
-        } else if (!answer.matches("-?\\d+(\\.\\d+)?")) {
-            System.out.println(ColorConsole.RED + "Wrong format! Try again!" + ColorConsole.RESET);
-        } else if (Integer.parseInt(answer) > 0 && Integer.parseInt(answer) < contacts.size() + 1) {
-            for (int index = 1; index < contacts.size() + 1; index++) {
-                if (answer.equals(Integer.toString(index))) {
-                    return this.contacts.get(index - 1);
-                }
+        Pagination contactList = new Pagination<>(this.contacts, 5);
+        String command;
+        do {
+            contactList.showPage();
+            System.out.println(ColorConsole.BLUE +"Enter 'next' to go to the next page, 'previous' to go back or the number of the transaction you want"+ ColorConsole.RESET);
+            command = input.nextLine();
+            if (!input.exitPoint(command)) {
+                return null;
+            } else if (command.matches("[0-9]+")) {
+                return this.selectContact(neoBank, command);
+            } else if ("next".equals(command) || "previous".equals(command)) {
+                contactList.changePage(command);
+            } else {
+                System.out.println(ColorConsole.RED + "No other option! Please try again!" + ColorConsole.RESET);
             }
-        } else {
-            System.out.println(ColorConsole.RED + "Index Out of Bound! Try again!" + ColorConsole.RESET);
+        } while (!"return".equals(command));
+        return null;
+    }
+
+    public Contact selectContact(NeoBank neoBank, String answer) {
+        if (Integer.parseInt(answer) > 0 && Integer.parseInt(answer) < contacts.size() + 1) {
+            return  this.contacts.get(Integer.parseInt(answer)-1);
         }
-        return getContact(neoBank);
+        System.out.println(ColorConsole.RED + "Index Out of Bound! Try again!" + ColorConsole.RESET);
+        return null;
     }
 
     public void changeSecurityNumber(NeoBank neoBank) {
@@ -220,7 +196,7 @@ public class SimpleUser extends UserPerson {
     }
 
     public void transferByContact(NeoBank neoBank) {
-        Contact receiverContact = getContact(neoBank);
+        Contact receiverContact = showContacts(neoBank);
         if (receiverContact == null) {
             return;
         }
@@ -241,16 +217,12 @@ public class SimpleUser extends UserPerson {
     }
 
     public void transferByRecent(NeoBank neoBank) {
-        Map<SimpleUser, Boolean> map = this.getAccount().selectRecent(neoBank);
-        if (map == null) {
+        Recent recent = this.getAccount().showRecentList(neoBank);
+        if (recent == null) {
             return;
         }
-        SimpleUser receiver = null;
-        boolean byContact = false;
-        for (Map.Entry<SimpleUser, Boolean> entry : map.entrySet()) {
-            receiver = entry.getKey();
-            byContact = entry.getValue();
-        }
+        SimpleUser receiver = recent.getPerson();
+        boolean byContact = recent.isByContact();
         if (byContact) {
             if (!checkContactForTransfer(receiver)) {
                 return;
@@ -342,31 +314,35 @@ public class SimpleUser extends UserPerson {
     }
 
     public void showRequests() {
-        for (int index = 1; index <= this.requests.size(); index++) {
-            System.out.println(ColorConsole.PINK + index + ". " + ColorConsole.PURPLE + this.requests.get(index - 1) + ColorConsole.RESET);
+        if (requests==null && requests.isEmpty()){
+            return;
         }
+        Pagination requestList = new Pagination<>(requests, 5);
+        String command;
+        do {
+            requestList.showPage();
+            System.out.println(ColorConsole.BLUE +"Enter 'next' to go to the next page, 'previous' to go back or the number of the transaction you want"+ ColorConsole.RESET);
+            command = input.nextLine();
+            if (!input.exitPoint(command)) {
+                return;
+            } else if (command.matches("[0-9]+")) {
+                this.selectRequest(command);
+            } else if ("next".equals(command) || "previous".equals(command)) {
+                requestList.changePage(command);
+            } else {
+                System.out.println(ColorConsole.RED + "No other option! Please try again!" + ColorConsole.RESET);
+            }
+        } while (!"return".equals(command));
     }
 
-    public void selectRequest(NeoBank neoBank) {
-        this.showRequests();
-        String answer = input.nextLine();
-        if (requests.isEmpty()) {
+    public void selectRequest( String answer) {
+        if (Integer.parseInt(answer) > 0 && Integer.parseInt(answer) <= this.requests.size()) {
+            int index = Integer.parseInt(answer)-1;
+            this.requests.get(index).showInfo();
             return;
         }
-        if (!input.exitPoint(answer)) {
-            return;
-        } else if (!answer.matches("[0-9]+")) {
             System.out.println(ColorConsole.RED + "Wrong input try again!" + ColorConsole.RESET);
-        } else if (Integer.parseInt(answer) > 0 && Integer.parseInt(answer) <= this.requests.size()) {
-            for (int index = 1; index <= this.requests.size(); index++) {
-                if (answer.equals(Integer.toString(index))) {
-                    this.requests.get(index - 1).showInfo();
-                }
-            }
-        } else {
-            System.out.println(ColorConsole.RED + "Wrong input try again!" + ColorConsole.RESET);
-        }
-        this.selectRequest(neoBank);
+
     }
 
 
@@ -376,6 +352,6 @@ public class SimpleUser extends UserPerson {
         System.out.println(ColorConsole.PURPLE + "Phone Number : " + ColorConsole.BLUE_BOLD + this.getPhoneNumber() + ColorConsole.RESET);
         System.out.println(ColorConsole.PURPLE + "Account Id : " + ColorConsole.BLUE_BOLD + this.getAccount().getAccountId() + ColorConsole.RESET);
         System.out.println(ColorConsole.PURPLE + "Transactions : " + ColorConsole.RESET);
-        this.getAccount().showAllTransactions(neoBank);
+        this.getAccount().showTransactionList(neoBank, this.getAccount().addAllTransactions(neoBank));
     }
 }
