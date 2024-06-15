@@ -34,16 +34,25 @@ public class BonusFund extends Fund {
         setExpiration(futureInstant);
     }
     @Override
-    public void dissolveFund() {
+    public void dissolveFund(NeoBank neoBank) {
         if (Calendar.now().isBefore(this.getExpiration())) {
             ZonedDateTime zonedDateTime = this.getExpiration().atZone(ZoneId.systemDefault());
             LocalDate datePart = zonedDateTime.toLocalDate();
+            ZonedDateTime nowZonedDateTime = Calendar.now().atZone(ZoneId.systemDefault());
+            LocalDate nowDate = nowZonedDateTime.toLocalDate();
             System.out.println(ColorConsole.PINK + "You can't do anything with this fund!" + ColorConsole.RESET);
             System.out.println(ColorConsole.CYAN + "The expiration date : " + ColorConsole.PURPLE + datePart + ColorConsole.RESET);
+            System.out.println(ColorConsole.CYAN + "Today : " + ColorConsole.PURPLE + nowDate + ColorConsole.RESET);
             return;
         }
         System.out.println(ColorConsole.RED + "The expiration is due!" + ColorConsole.RESET);
         this.getOwner().getAccount().setBalance(this.getOwner().getAccount().getBalance() + this.getBalance());
+        Transaction newTransaction = new TransferInsideTransaction(this.getBalance(), neoBank.getTracingNumber(), "Bonus Fund", "Account", this.getFundID());
+        this.getOwner().getAccount().addTransaction(newTransaction, "Inside Transfer");
+        double remains = this.getOwner().isHasRemainsFund()  ? this.getOwner().getRemainsFund().calculateRemains(Double.toString(this.getBalance())) : 0;
+        if (this.getOwner().isHasRemainsFund()) {
+            this.getOwner().getRemainsFund().saveRemains(remains, neoBank);
+        }
         this.getOwner().removeFund(this);
     }
 
@@ -54,6 +63,11 @@ public class BonusFund extends Fund {
 
     @Override
     public void manageFund(NeoBank neoBank) {
-        this.dissolveFund();
+        this.dissolveFund(neoBank);
+    }
+
+    @Override
+    public String toString() {
+        return ColorConsole.PURPLE + "Bonus " + super.toString();
     }
 }

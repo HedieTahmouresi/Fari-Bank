@@ -62,6 +62,7 @@ public class CreditCard {
         } else if (Integer.parseInt(answer) == this.getPassword()) {
             return true;
         }
+        System.out.println(ColorConsole.RED + "Wrong password!" + ColorConsole.RESET);
         return this.enterPreviousPassCode();
     }
 

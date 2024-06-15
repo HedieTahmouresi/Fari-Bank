@@ -101,7 +101,7 @@ public class Admin {
         if (requestsList == null || requestsList.isEmpty()) {
             return;
         }
-        Pagination requests = new Pagination<>(requestsList, 5);
+        Pagination<Request> requests = new Pagination<>(requestsList, 5);
         String command;
         do {
             requests.showPage();
@@ -143,13 +143,13 @@ public class Admin {
         String answer = input.nextLine();
         switch (answer) {
             case "yes":
-                List<SimpleUser> users = this.getData().search(neoBank);
+                List<SimpleUser> users = this.getData().search();
                 if (users != null) {
                     showUsers(neoBank, users);
                     return;
                 }
             case "no":
-                showUsers(neoBank, this.getData().getAllUsers(neoBank));
+                showUsers(neoBank, this.getData().getAllUsers());
                 return;
             default:
                 if (!input.exitPoint(answer)) {
@@ -166,7 +166,7 @@ public class Admin {
         if (users == null || users.isEmpty()) {
             return;
         }
-        Pagination userPages = new Pagination<>(users, 5);
+        Pagination<SimpleUser> userPages = new Pagination<>(users, 5);
         String command;
         do {
             userPages.showPage();

@@ -57,4 +57,8 @@ public class ManagerData {
     public void setBonusPercentage(int bonusPercentage) {
         this.bonusPercentage = bonusPercentage;
     }
+
+    public void addBonusFund(BonusFund fund){
+        this.bonusFunds.add(fund);
+    }
 }

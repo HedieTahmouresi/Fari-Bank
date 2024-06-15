@@ -104,7 +104,7 @@ public class Pagination<T> {
     public void selectUserService(Menu menu, NeoBank neoBank, String answer, SimpleUser currentUser) {
         switch (answer) {
             case "1", "Account Management" -> menu.managementMenu(neoBank, currentUser);
-            case "2", "Fund Management" -> System.out.println("haha");
+            case "2", "Fund Management" -> menu.fundManagement(neoBank, currentUser);
             case "3", "Contacts" -> menu.contactMenu(neoBank, currentUser);
             case "4", "Transferring Money" -> menu.transferMenu(neoBank, currentUser);
             case "5", "Administer" -> menu.administerMenu(neoBank, currentUser);
@@ -136,7 +136,7 @@ public class Pagination<T> {
         }
     }
 
-    public void selectAdminService(Menu menu, NeoBank neoBank, Admin currentAdmin, String answer) {
+    public void selectAdminService( NeoBank neoBank, Admin currentAdmin, String answer) {
         switch (answer) {
             case "1", "Authentications":
                 currentAdmin.getData().showAuthentications(neoBank, currentAdmin);
@@ -208,7 +208,7 @@ public class Pagination<T> {
                 input.nextContact(neoBank, currentUser);
                 break;
             case "2", "Show Contact List":
-                Contact currentContact = currentUser.showContacts(neoBank);
+                Contact currentContact = currentUser.showContacts();
                 if (currentContact != null) {
                     currentContact.contactListOptions(neoBank, currentUser);
                 }
@@ -257,6 +257,26 @@ public class Pagination<T> {
                 break;
             case "2", "Show Request list":
                 currentUser.showRequests();
+                break;
+            case "3", "Return":
+                return;
+            case "next", "previous":
+                this.changePage(answer);
+                break;
+            default:
+                System.out.println(ColorConsole.RED + "THERE IS NO OTHER OPTION! Please input something else!" + ColorConsole.RESET);
+                break;
+
+        }
+    }
+
+    public void selectFundManagement(NeoBank neoBank, SimpleUser currentUser, String answer) {
+        switch (answer) {
+            case "1", "Add Fund":
+                currentUser.addFund(neoBank);
+                break;
+            case "2", "Show Funds":
+                currentUser.showFunds(neoBank);
                 break;
             case "3", "Return":
                 return;

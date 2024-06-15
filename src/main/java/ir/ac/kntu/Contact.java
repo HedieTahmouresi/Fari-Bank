@@ -77,6 +77,7 @@ public class Contact extends UserPerson {
     }
 
     public void contactListOptions(NeoBank neoBank, SimpleUser currentUser) {
+        this.showInfo();
         this.changeContactInfo(neoBank, currentUser);
         this.deleteContact(currentUser);
     }

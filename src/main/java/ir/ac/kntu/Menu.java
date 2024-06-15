@@ -28,6 +28,8 @@ public class Menu {
 
     private final List<String> settings = new ArrayList<>(Arrays.asList(ColorConsole.CYAN + "Change User Password", ColorConsole.CYAN + "Set/Change Credit Card Password" + ColorConsole.RESET, ColorConsole.CYAN + "Contact Option", ColorConsole.CYAN + "Show Account info", ColorConsole.CYAN + "Return" + ColorConsole.RESET));
 
+    private final List<String> fundManagement = new ArrayList<>(Arrays.asList(ColorConsole.CYAN + "Add Fund", ColorConsole.CYAN + "Show Funds" + ColorConsole.RESET));
+
     public void mainMenu(NeoBank neoBank) {
         Pagination<String> menu = new Pagination<>(main, 5);
         String answer;
@@ -90,7 +92,7 @@ public class Menu {
             if (!input.exitPoint(answer) || "4".equals(answer)) {
                 return;
             }
-            menu.selectAdminService(this, neoBank, currentAdmin, answer);
+            menu.selectAdminService( neoBank, currentAdmin, answer);
         } while (!"quit".equals(answer));
 
     }
@@ -101,7 +103,7 @@ public class Menu {
         do {
             menu.showPage();
             answer = input.nextLine();
-            if (input.exitPoint(answer) || "4".equals(answer)) {
+            if (!input.exitPoint(answer) || "4".equals(answer)) {
                 return;
             }
             menu.selectAccountManagement(neoBank, currentUser, answer);
@@ -158,12 +160,23 @@ public class Menu {
         do {
             menu.showPage();
             answer = input.nextLine();
-            if (input.exitPoint(answer) || "5".equals(answer)) {
+            if (!input.exitPoint(answer) || "5".equals(answer)) {
                 return;
             }
             menu.selectSetting(currentUser, answer);
         } while (!"quit".equals(answer));
     }
 
-
+    public void fundManagement(NeoBank neoBank, SimpleUser currentUser){
+        Pagination<String> menu = new Pagination<>(fundManagement, 5);
+        String answer;
+        do {
+            menu.showPage();
+            answer = input.nextLine();
+            if (!input.exitPoint(answer) || "5".equals(answer)) {
+                return;
+            }
+            menu.selectFundManagement(neoBank, currentUser, answer);
+        } while (!"quit".equals(answer));
+    }
 }

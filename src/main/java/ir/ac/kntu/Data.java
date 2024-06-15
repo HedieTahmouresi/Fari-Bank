@@ -157,7 +157,7 @@ public class Data {
         if (this.authentications == null || this.authentications.isEmpty()) {
             return;
         }
-        Pagination authList = new Pagination<>(this.authentications, 5);
+        Pagination<Authentication> authList = new Pagination<>(this.authentications, 5);
         String command;
         do {
             if (this.authentications.isEmpty()) {
@@ -203,9 +203,9 @@ public class Data {
     }
 
     public boolean existsCreditCard(String creditCardString) {
-        for (int index = 0; index < this.users.size(); index++) {
-            if (this.users.get(index).getAccount() != null) {
-                if (this.users.get(index).getAccount().getCreditCard().getCreditCardId().equals(creditCardString)) {
+        for (SimpleUser user : this.users) {
+            if (user.getAccount() != null) {
+                if (user.getAccount().getCreditCard().getCreditCardId().equals(creditCardString)) {
                     return true;
                 }
             }
@@ -214,9 +214,9 @@ public class Data {
     }
 
     public boolean existsAccountID(String accountIDString) {
-        for (int index = 0; index < this.users.size(); index++) {
-            if (this.users.get(index).getAccount() != null) {
-                if (this.users.get(index).getAccount().getAccountId().equals(accountIDString)) {
+        for (SimpleUser user : this.users) {
+            if (user.getAccount() != null) {
+                if (user.getAccount().getAccountId().equals(accountIDString)) {
                     return true;
                 }
             }
@@ -226,15 +226,11 @@ public class Data {
 
 
     public List<Request> allRequests() {
-        List<Request> list = new ArrayList<>();
         if (this.requests.isEmpty()) {
             System.out.println(ColorConsole.RED + "There are no requests" + ColorConsole.RESET);
             return null;
         }
-        for (Request request : this.requests) {
-            list.add(request);
-        }
-        return list;
+        return new ArrayList<>(this.requests);
     }
 
 
@@ -290,7 +286,7 @@ public class Data {
         return list;
     }
 
-    public List<SimpleUser> search(NeoBank neoBank) {
+    public List<SimpleUser> search() {
         List<SimpleUser> result = new ArrayList<>(this.users);
         String name = input.nextSearchName();
         String lastName = input.nextSearchLastName();
@@ -347,15 +343,8 @@ public class Data {
     }
 
 
-    public void showUsers(List<SimpleUser> userList) {
-        int index = 1;
-        for (SimpleUser user : userList) {
-            System.out.println(ColorConsole.CYAN + index + ". " + ColorConsole.BLUE + user + ColorConsole.RESET);
-            index++;
-        }
-    }
 
-    public List<SimpleUser> getAllUsers(NeoBank neoBank) {
+    public List<SimpleUser> getAllUsers() {
         return new ArrayList<>(this.users);
     }
 }

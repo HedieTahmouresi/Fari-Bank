@@ -16,8 +16,10 @@ public class RemainsFund extends Fund {
         return Math.pow(10, len) - intValue;
     }
 
-    public void saveRemains(double value) {
+    public void saveRemains(double value, NeoBank neoBank) {
         this.setBalance(this.getBalance() + value);
+        Transaction newTransaction = new TransferInsideTransaction(this.getBalance(), neoBank.getTracingNumber(), "Account", "Remains Fund", this.getFundID());
+        this.getOwner().getAccount().addTransaction(newTransaction, "Inside Transfer");
     }
 
     @Override
@@ -49,8 +51,8 @@ public class RemainsFund extends Fund {
     }
 
     @Override
-    public void dissolveFund() {
-        super.dissolveFund();
+    public void dissolveFund(NeoBank neoBank) {
+        super.dissolveFund(neoBank);
         this.getOwner().setHasRemainsFund(false);
     }
 }

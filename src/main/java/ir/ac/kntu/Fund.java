@@ -67,22 +67,25 @@ public class Fund {
     }
 
     public void transferToFund(NeoBank neoBank, String fundType) {
-        System.out.println(ColorConsole.BLUE + "How much would you like to transfer to your " + fundType + "fund?" + ColorConsole.RESET);
+        System.out.println(ColorConsole.BLUE + "How much would you like to transfer to your " + fundType + "?" + ColorConsole.RESET);
         String value = input.nextLine();
         if (!input.exitPoint(value)) {
             return;
         } else if (!value.matches("\\d+\\.?\\d*")) {
             System.out.println(ColorConsole.RED + "Wrong format! Try again!" + ColorConsole.RESET);
         } else {
-            if (this.getOwner().getAccount().getBalance() > Double.parseDouble(value)) {
+            double remains = this.getOwner().isHasRemainsFund()  ? this.getOwner().getRemainsFund().calculateRemains(value) : 0;
+            if (this.getOwner().getAccount().getBalance() >= Double.parseDouble(value) + remains) {
                 if (input.nextConfirmation(fundType, "Account", value)) {
-                    double remains = this.getOwner().isHasRemainsFund() ? this.getOwner().getRemainsFund().calculateRemains(value) : 0;
-                    this.getOwner().getRemainsFund().saveRemains(remains);
                     this.setBalance(this.getBalance() + Double.parseDouble(value));
                     this.getOwner().getAccount().setBalance(this.getOwner().getAccount().getBalance() - Double.parseDouble(value) - remains);
                     Transaction newTransaction = new TransferInsideTransaction(Double.parseDouble(value), neoBank.getTracingNumber(), "Account", fundType, this.getFundID());
                     neoBank.setTracingNumber(neoBank.getTracingNumber() + 1);
                     this.getOwner().getAccount().addTransaction(newTransaction, "Inside Transfer");
+                    if (this.getOwner().isHasRemainsFund()) {
+                        this.getOwner().getRemainsFund().saveRemains(remains, neoBank);
+                    }
+                    System.out.println(ColorConsole.GREEN + "Transfer Completed" + ColorConsole.RESET);
                 } else {
                     System.out.println(ColorConsole.RED + "Transfer failed!" + ColorConsole.RESET);
                 }
@@ -101,15 +104,18 @@ public class Fund {
         } else if (!value.matches("\\d+\\.?\\d*")) {
             System.out.println(ColorConsole.RED + "Wrong format! Try again!" + ColorConsole.RESET);
         } else {
-            if (this.getBalance() > Double.parseDouble(value)) {
+            double remains = this.getOwner().isHasRemainsFund()  ? this.getOwner().getRemainsFund().calculateRemains(value) : 0;
+            if (this.getBalance() >= Double.parseDouble(value) + remains) {
                 if (input.nextConfirmation("Account", fundType, value)) {
-                    double remains = this.getOwner().isHasRemainsFund() ? this.getOwner().getRemainsFund().calculateRemains(value) : 0;
-                    this.getOwner().getRemainsFund().saveRemains(remains);
                     this.setBalance(this.getBalance() - Double.parseDouble(value) - remains);
                     this.getOwner().getAccount().setBalance(this.getOwner().getAccount().getBalance() + Double.parseDouble(value));
                     Transaction newTransaction = new TransferInsideTransaction(Double.parseDouble(value), neoBank.getTracingNumber(), fundType, "Account", this.getFundID());
                     neoBank.setTracingNumber(neoBank.getTracingNumber() + 1);
                     this.getOwner().getAccount().addTransaction(newTransaction, "Inside Transfer");
+                    if (this.getOwner().isHasRemainsFund()) {
+                        this.getOwner().getRemainsFund().saveRemains(remains, neoBank);
+                    }
+                    System.out.println(ColorConsole.GREEN + "Transfer Completed" + ColorConsole.RESET);
                 } else {
                     System.out.println(ColorConsole.RED + "Transfer failed!" + ColorConsole.RESET);
                 }
@@ -138,8 +144,8 @@ public class Fund {
                 this.checkBalance();
                 break;
             case "3", "Delete Fund":
-                this.dissolveFund();
-                break;
+                this.dissolveFund(neoBank);
+                return;
             default:
                 if (!input.exitPoint(answer)) {
                     return;
@@ -153,21 +159,28 @@ public class Fund {
     @Override
     public String toString() {
         return ColorConsole.PURPLE + "Fund{" +
-                "owner=" + ColorConsole.PINK + this.getOwner() +
+                ColorConsole.PINK + this.getOwner() +
                 ColorConsole.PURPLE + ", fundID='" + ColorConsole.PINK + this.getFundID() + '\'' + ColorConsole.PURPLE +
                 '}' + ColorConsole.RESET;
     }
 
-    public void dissolveFund(){
-        System.out.println("Are you sure?");
+    public void dissolveFund(NeoBank neoBank){
+        System.out.println(ColorConsole.PINK + "Are you sure?" + ColorConsole.RESET);
         String answer = input.nextLine();
         if ("no".equalsIgnoreCase(answer) || !input.exitPoint(answer)){
             return;
         }else if(!"yes".equalsIgnoreCase(answer)){
-            this.dissolveFund();
+            this.dissolveFund(neoBank);
         }
         this.getOwner().getAccount().setBalance(this.getOwner().getAccount().getBalance() + this.getBalance());
         this.getOwner().removeFund(this);
+        Transaction newTransaction = new TransferInsideTransaction(this.getBalance(), neoBank.getTracingNumber(), "Fund", "Account", this.getFundID());
+        this.getOwner().getAccount().addTransaction(newTransaction, "Inside Transfer");
+        neoBank.setTracingNumber(neoBank.getTracingNumber()+1);
+        double remains = this.getOwner().isHasRemainsFund()  ? this.getOwner().getRemainsFund().calculateRemains(Double.toString(this.getBalance())) : 0;
+        if (this.getOwner().isHasRemainsFund()) {
+            this.getOwner().getRemainsFund().saveRemains(remains, neoBank);
+        }
         System.out.println(ColorConsole.GREEN + "Fund successfully deleted" + ColorConsole.RESET);
     }
 }

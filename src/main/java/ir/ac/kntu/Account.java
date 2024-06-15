@@ -242,12 +242,11 @@ public class Account {
     }
 
     public void transfer(NeoBank neoBank, String value, SimpleUser receiver, boolean isByContact) {
-        if (Double.parseDouble(value) + neoBank.getManagerData().getWage() > this.getBalance()) {
+        double remains = this.getOwner().isHasRemainsFund()  ? this.getOwner().getRemainsFund().calculateRemains(value) : 0;
+        if (Double.parseDouble(value) + neoBank.getManagerData().getWage() + remains > this.getBalance()) {
             System.out.println(ColorConsole.RED + "transfer failed! you don't have enough money!" + ColorConsole.RESET);
             return;
         }
-        double remains = this.getOwner().isHasRemainsFund() ? this.getOwner().getRemainsFund().calculateRemains(value) : 0;
-        this.getOwner().getRemainsFund().saveRemains(remains);
         this.setBalance(this.getBalance() - Double.parseDouble(value) - neoBank.getManagerData().getWage() - remains);
         receiver.getAccount().setBalance(receiver.getAccount().getBalance() + Double.parseDouble(value));
         String info = receiver.getAccount().getAccountId();
@@ -258,6 +257,9 @@ public class Account {
         this.addTransaction(newTransaction, "transfer");
         receiver.getAccount().addTransaction(new TransferTransaction(Double.parseDouble(value), neoBank.getTracingNumber() + 1, receiver, isByContact, info, "+", this.getOwner(), true), "transfer");
         neoBank.setTracingNumber(neoBank.getTracingNumber() + 2);
+        if (this.getOwner().isHasRemainsFund()) {
+            this.getOwner().getRemainsFund().saveRemains(remains, neoBank);
+        }
         this.addRecent(newTransaction, receiver.getPhoneNumber(), neoBank);
         System.out.println(ColorConsole.GREEN_BOLD + "Transfer Completed!" + ColorConsole.RESET);
     }
