@@ -1,7 +1,6 @@
 package ir.ac.kntu;
 
 import java.text.DecimalFormat;
-import java.util.Random;
 
 public class Fund {
     private double balance;
@@ -37,9 +36,9 @@ public class Fund {
     public Fund(SimpleUser owner, NeoBank neoBank){
         String mask = "00000";
         DecimalFormat decimalFormat = new DecimalFormat(mask);
-        int id = neoBank.getBaseFundID();
+        int fundID1 = neoBank.getBaseFundID();
         neoBank.setBaseFundID(neoBank.getBaseFundID()+1);
-        String fundID = "9" + decimalFormat.format(id);
+        String fundID = "9" + decimalFormat.format(fundID1);
         setFundID(fundID);
         setBalance(0.0);
         setOwner(owner);

@@ -114,7 +114,7 @@ public class Account {
                 this.showTransactionList(neoBank, this.addAllTransactions(neoBank));
                 break;
             case "2", "Filtered transactions":
-                this.showTransactionList(neoBank, this.addFilteredTransactions(neoBank));
+                this.showTransactionList(neoBank, this.addFilteredTransactions());
                 break;
             default:
                 if (input.exitPoint(answer)) {
@@ -126,7 +126,7 @@ public class Account {
         this.seeTransactions(neoBank);
     }
 
-    private List<Transaction> addFilteredTransactions(NeoBank neoBank) {
+    private List<Transaction> addFilteredTransactions() {
         Instant start = getStart();
         if (start == null) {
             return null;
@@ -198,11 +198,9 @@ public class Account {
 
     public List<Transaction> addAllTransactions(NeoBank neoBank) {
         List<Transaction> transactionList = new ArrayList<>();
-        int index = 1;
         for (Map<String, Transaction> transaction : transactions) {
             for (Map.Entry<String, Transaction> entry : transaction.entrySet()) {
                 transactionList.add(entry.getValue());
-                index++;
             }
         }
         if (transactionList.isEmpty()) {

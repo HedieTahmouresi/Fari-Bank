@@ -157,14 +157,14 @@ public class Data {
         if (this.authentications==null || this.authentications.isEmpty()){
             return;
         }
-        Pagination authenticationList = new Pagination<>(this.authentications, 5);
+        Pagination authList = new Pagination<>(this.authentications, 5);
         String command;
         do {
             if (this.authentications.isEmpty()){
                 System.out.println(ColorConsole.RED + "No authentications!" + ColorConsole.RESET);
                 return;
             }
-            authenticationList.showPage();
+            authList.showPage();
             System.out.println(ColorConsole.BLUE +"Enter 'next' to go to the next page, 'previous' to go back or the number of the transaction you want"+ ColorConsole.RESET);
             command = input.nextLine();
             if (!input.exitPoint(command)) {
@@ -172,7 +172,7 @@ public class Data {
             } else if (command.matches("[0-9]+")) {
                 currentAdmin.selectAuthentication(neoBank,command);
             } else if ("next".equals(command) || "previous".equals(command)) {
-                authenticationList.changePage(command);
+                authList.changePage(command);
             } else {
                 System.out.println(ColorConsole.RED + "No other option! Please try again!" + ColorConsole.RESET);
             }
