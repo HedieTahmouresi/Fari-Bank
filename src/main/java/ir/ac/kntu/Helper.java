@@ -27,14 +27,14 @@ public class Helper {
 
     public static void initiateAdmins(NeoBank neoBank) {
         Admin first = new Admin("Mohsen Tahmouresi", "M.Tahmoures", "M@tah1345", neoBank.getBankData());
-        neoBank.addAdmin(first);
+        neoBank.getManagerData().addAdmin(first);
         Admin second = new Admin("Shahrzad Oroji", "Sh_Taji", "Sh@oroj1384", neoBank.getBankData());
-        neoBank.addAdmin(second);
+        neoBank.getManagerData().addAdmin(second);
         Admin third = new Admin("Mahdi Salman", "phoenix", "MS1384", neoBank.getBankData());
-        neoBank.addAdmin(third);
+        neoBank.getManagerData().addAdmin(third);
         Admin fourth = new Admin("Ghazale Roostaei", "Ghazal12", "GH9122562348", neoBank.getBankData());
-        neoBank.addAdmin(fourth);
+        neoBank.getManagerData().addAdmin(fourth);
         Admin fifth = new Admin("Toranj Ebrahimi", "Tori1397", "T.Eb1397", neoBank.getBankData());
-        neoBank.addAdmin(fifth);
+        neoBank.getManagerData().addAdmin(fifth);
     }
 }

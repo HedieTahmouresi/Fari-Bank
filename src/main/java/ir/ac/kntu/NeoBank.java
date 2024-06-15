@@ -6,30 +6,32 @@ import java.util.Random;
 
 public class NeoBank {
     private Data bankData;
-    private List<Admin> admins;
     private int tracingNumber;
-    private double wage;
+
     private int baseFundID;
-    private int bonusPercentage;
+    private ManagerData managerData;
 
     private final Input input = new Input();
 
     public NeoBank() {
-        admins = new ArrayList<>();
-        setBankData(new Data());
+        Data newData = new Data();
+        setManagerData(new ManagerData(newData));
+        setBankData(newData);
         Random random = new Random();
         setTracingNumber(random.nextInt(8999999) + 1000000);
         setBaseFundID(random.nextInt(999999999));
-        setWage(2.5);
+
     }
 
-    public int getBonusPercentage() {
-        return bonusPercentage;
+    public ManagerData getManagerData() {
+        return managerData;
     }
 
-    public void setBonusPercentage(int bonusPercentage) {
-        this.bonusPercentage = bonusPercentage;
+    public void setManagerData(ManagerData managerData) {
+        this.managerData = managerData;
     }
+
+
 
     public int getBaseFundID() {
         return baseFundID;
@@ -39,13 +41,6 @@ public class NeoBank {
         this.baseFundID = baseFundID;
     }
 
-    public double getWage() {
-        return wage;
-    }
-
-    public void setWage(double wage) {
-        this.wage = wage;
-    }
 
     public int getTracingNumber() {
         return tracingNumber;
@@ -67,18 +62,7 @@ public class NeoBank {
         this.bankData = bankData;
     }
 
-    public Admin getSpecificAdmin(String userName) {
-        for (Admin admin : admins) {
-            if (admin.getUserName().equals(userName)) {
-                return admin;
-            }
-        }
-        return null;
-    }
 
-    public void addAdmin(Admin admin) {
-        this.admins.add(admin);
-    }
 
     public Admin signInAdmin() {
         System.out.println(ColorConsole.BLUE + "Please Enter your username" + ColorConsole.RESET);
@@ -89,7 +73,7 @@ public class NeoBank {
             if (!input.exitPoint(userName)) {
                 return null;
             }
-            wantedAdmin = this.getSpecificAdmin(userName);
+            wantedAdmin = this.getManagerData().getSpecificAdmin(userName);
             if (wantedAdmin == null) {
                 System.out.println(ColorConsole.RED_BOLD + "Username not available!" + ColorConsole.RESET);
             }

@@ -48,7 +48,7 @@ public class BonusFund extends Fund {
     }
 
     public void transferBonus(NeoBank neoBank) {
-        double bonus = (this.getBalance() * neoBank.getBonusPercentage()) / 100;
+        double bonus = (this.getBalance() * neoBank.getManagerData().getBonusPercentage()) / 100;
         this.getOwner().getAccount().setBalance(this.getOwner().getAccount().getBalance() + bonus);
     }
 

@@ -242,13 +242,13 @@ public class Account {
     }
 
     public void transfer(NeoBank neoBank, String value, SimpleUser receiver, boolean isByContact) {
-        if (Double.parseDouble(value) + neoBank.getWage() > this.getBalance()) {
+        if (Double.parseDouble(value) + neoBank.getManagerData().getWage() > this.getBalance()) {
             System.out.println(ColorConsole.RED + "transfer failed! you don't have enough money!" + ColorConsole.RESET);
             return;
         }
         double remains = this.getOwner().isHasRemainsFund() ? this.getOwner().getRemainsFund().calculateRemains(value) : 0;
         this.getOwner().getRemainsFund().saveRemains(remains);
-        this.setBalance(this.getBalance() - Double.parseDouble(value) - neoBank.getWage() - remains);
+        this.setBalance(this.getBalance() - Double.parseDouble(value) - neoBank.getManagerData().getWage() - remains);
         receiver.getAccount().setBalance(receiver.getAccount().getBalance() + Double.parseDouble(value));
         String info = receiver.getAccount().getAccountId();
         if (isByContact) {

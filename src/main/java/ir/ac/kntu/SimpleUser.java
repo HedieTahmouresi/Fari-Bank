@@ -376,4 +376,8 @@ public class SimpleUser extends UserPerson {
         }
         return null;
     }
+
+    public void addFund(NeoBank neoBank){
+
+    }
 }
