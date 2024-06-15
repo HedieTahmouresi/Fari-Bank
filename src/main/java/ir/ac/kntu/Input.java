@@ -159,6 +159,18 @@ public class Input {
         return "yes".equalsIgnoreCase(answer);
     }
 
+    public boolean nextConfirmation(String receiver, String sender, String value){
+        System.out.println(ColorConsole.GREEN + "Receiver { your" + ColorConsole.YELLOW + receiver + " }" + ColorConsole.RESET);
+        System.out.println(ColorConsole.GREEN + "Sender { your" + ColorConsole.YELLOW + sender + " }" + ColorConsole.RESET);
+        System.out.println(ColorConsole.GREEN + "Value : " + ColorConsole.YELLOW + value + "$" + ColorConsole.RESET);
+        System.out.println(ColorConsole.GREEN + "Are you sure?" + ColorConsole.RESET);
+        String answer = this.nextLine();
+        if (!this.exitPoint(answer)) {
+            return false;
+        }
+        return "yes".equalsIgnoreCase(answer);
+    }
+
     private void displaySections() {
         System.out.println(ColorConsole.CYAN + "Choose a section :");
         System.out.println("   1. Account Management");

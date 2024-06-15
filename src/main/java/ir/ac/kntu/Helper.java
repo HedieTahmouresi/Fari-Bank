@@ -9,11 +9,13 @@ public class Helper {
         aylin.getAuthenticated().authenticateUser(neoBank, aylin);
         neoBank.getBankData().addUser(aylin);
         aylin.setContactOption(false);
-        SimpleUser amir = new SimpleUser("Amir", "Tahmouresi", "09109057292", "0023577410", "A@tah1379", new Authentication("09028789000"));
-        amir.getAuthenticated().authenticateUser(neoBank, amir);
+        SimpleUser amir = new SimpleUser("Amir", "Tahmouresi", "09028789000", "0023577410", "A@tah1379", new Authentication("09028789000"));
         neoBank.getBankData().addUser(amir);
-        SimpleUser neda = new SimpleUser("Hadis", "Tahmoures", "09124464876", "0306201582", "Neda0*0abeN", new Authentication("09124464876"));
-        neda.getAuthenticated().authenticateUser(neoBank, neda);
+        neoBank.getBankData().addAuthentication( amir.getAuthenticated());
+        SimpleUser neda = new SimpleUser("Neda", "Abtahi", "09124464876", "0306201582", "Neda0*0abeN", new Authentication("09124464876"));
+        neoBank.getBankData().addAuthentication( neda.getAuthenticated());
+        neda.getAuthenticated().setAuthenticated(false);
+        neda.getAuthenticated().setReason("I don't like you");
         neoBank.getBankData().addUser(neda);
         SimpleUser sepehr = new SimpleUser("Sepehr", "Ghardashi", "09111262338", "0105213054", "H@tah1384", new Authentication("09111262338"));
         neoBank.getBankData().addUser(sepehr);

@@ -50,14 +50,13 @@ public class Admin {
     }
 
     public void selectAuthentication(NeoBank neoBank, String answer) {
-
         if (Integer.parseInt(answer) > 0 && Integer.parseInt(answer) <= this.getData().authenticationsSize()) {
             int index = Integer.parseInt(answer);
             this.getData().authenticateUser(neoBank, index - 1);
             return;
 
         }
-        System.out.println(ColorConsole.RED + "Out of bound!" + ColorConsole.RESET);
+        System.out.println(ColorConsole.RED + "Index Out of bound!" + ColorConsole.RESET);
 
     }
 

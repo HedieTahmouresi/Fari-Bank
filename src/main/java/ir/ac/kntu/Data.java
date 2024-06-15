@@ -160,6 +160,10 @@ public class Data {
         Pagination authenticationList = new Pagination<>(this.authentications, 5);
         String command;
         do {
+            if (this.authentications.isEmpty()){
+                System.out.println(ColorConsole.RED + "No authentications!" + ColorConsole.RESET);
+                return;
+            }
             authenticationList.showPage();
             System.out.println(ColorConsole.BLUE +"Enter 'next' to go to the next page, 'previous' to go back or the number of the transaction you want"+ ColorConsole.RESET);
             command = input.nextLine();

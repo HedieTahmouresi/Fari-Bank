@@ -12,6 +12,7 @@ public class SimpleUser extends UserPerson {
     private Authentication authenticated;
     private List<Contact> contacts;
     private List<Request> requests;
+    private List<Fund> funds;
 
     private final Input input = new Input();
 
@@ -314,7 +315,7 @@ public class SimpleUser extends UserPerson {
     }
 
     public void showRequests() {
-        if (requests==null && requests.isEmpty()){
+        if (requests==null || requests.isEmpty()){
             return;
         }
         Pagination requestList = new Pagination<>(requests, 5);

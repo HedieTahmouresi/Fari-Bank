@@ -9,6 +9,7 @@ public class NeoBank {
     private List<Admin> admins;
     private int tracingNumber;
     private double wage;
+    private int baseFundID;
 
     private final Input input = new Input();
 
@@ -17,7 +18,16 @@ public class NeoBank {
         setBankData(new Data());
         Random random = new Random();
         setTracingNumber(random.nextInt(8999999) + 1000000);
+        setBaseFundID(random.nextInt(999999999));
         setWage(2.5);
+    }
+
+    public int getBaseFundID() {
+        return baseFundID;
+    }
+
+    public void setBaseFundID(int baseFundID) {
+        this.baseFundID = baseFundID;
     }
 
     public double getWage() {
