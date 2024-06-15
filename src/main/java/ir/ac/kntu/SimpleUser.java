@@ -10,6 +10,7 @@ public class SimpleUser extends UserPerson {
     private Account account;
     private boolean contactOption;
     private Authentication authenticated;
+    private boolean hasRemainsFund;
     private List<Contact> contacts;
     private List<Request> requests;
     private List<Fund> funds;
@@ -56,6 +57,14 @@ public class SimpleUser extends UserPerson {
         this.authenticated = authenticated;
     }
 
+    public boolean isHasRemainsFund() {
+        return hasRemainsFund;
+    }
+
+    public void setHasRemainsFund(boolean hasRemainsFund) {
+        this.hasRemainsFund = hasRemainsFund;
+    }
+
     public SimpleUser(String name, String lastName, String phoneNumber, String securityNumber, String password, Authentication authentication) {
         super(name, lastName, phoneNumber);
         setSecurityNumber(securityNumber);
@@ -85,6 +94,10 @@ public class SimpleUser extends UserPerson {
 
     public void removeContact(Contact contact) {
         this.contacts.remove(contact);
+    }
+
+    public void removeFund (Fund fund){
+        this.funds.remove(fund);
     }
 
     public Contact showContacts(NeoBank neoBank) {
@@ -354,5 +367,14 @@ public class SimpleUser extends UserPerson {
         System.out.println(ColorConsole.PURPLE + "Account Id : " + ColorConsole.BLUE_BOLD + this.getAccount().getAccountId() + ColorConsole.RESET);
         System.out.println(ColorConsole.PURPLE + "Transactions : " + ColorConsole.RESET);
         this.getAccount().showTransactionList(neoBank, this.getAccount().addAllTransactions(neoBank));
+    }
+
+    public RemainsFund getRemainsFund(){
+        for (Fund fund : this.funds){
+            if (fund instanceof RemainsFund){
+                return (RemainsFund) fund;
+            }
+        }
+        return null;
     }
 }

@@ -10,6 +10,7 @@ public class NeoBank {
     private int tracingNumber;
     private double wage;
     private int baseFundID;
+    private int bonusPercentage;
 
     private final Input input = new Input();
 
@@ -20,6 +21,14 @@ public class NeoBank {
         setTracingNumber(random.nextInt(8999999) + 1000000);
         setBaseFundID(random.nextInt(999999999));
         setWage(2.5);
+    }
+
+    public int getBonusPercentage() {
+        return bonusPercentage;
+    }
+
+    public void setBonusPercentage(int bonusPercentage) {
+        this.bonusPercentage = bonusPercentage;
     }
 
     public int getBaseFundID() {

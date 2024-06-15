@@ -248,7 +248,9 @@ public class Account {
             System.out.println(ColorConsole.RED + "transfer failed! you don't have enough money!" + ColorConsole.RESET);
             return;
         }
-        this.setBalance(this.getBalance() - Double.parseDouble(value) - neoBank.getWage());
+        double remains = this.getOwner().isHasRemainsFund() ? this.getOwner().getRemainsFund().calculateRemains(value) : 0 ;
+        this.getOwner().getRemainsFund().saveRemains(remains);
+        this.setBalance(this.getBalance() - Double.parseDouble(value) - neoBank.getWage() - remains);
         receiver.getAccount().setBalance(receiver.getAccount().getBalance() + Double.parseDouble(value));
         String info = receiver.getAccount().getAccountId();
         if (isByContact) {

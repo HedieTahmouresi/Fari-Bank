@@ -45,6 +45,28 @@ public class Fund {
         setOwner(owner);
     }
 
+    public void transfer(NeoBank neoBank){
+        System.out.println(ColorConsole.BLUE + "What would you like to do?" + ColorConsole.RESET);
+        System.out.println(ColorConsole.BLUE + "  1. Transfer from your Fund" + ColorConsole.RESET);
+        System.out.println(ColorConsole.BLUE + "  1. Transfer to your Fund" + ColorConsole.RESET);
+        String answer = input.nextLine();
+        switch (answer){
+            case "1", "Transfer from your Fund":
+                this.transferFromFund(neoBank, " ");
+                break;
+            case "2", "Transfer to your Fund":
+                this.transferToFund(neoBank, " ");
+                break;
+            default:
+                if (!input.exitPoint(answer)){
+                    return;
+                }
+                System.out.println(ColorConsole.RED +"No other Option! Try again! " + ColorConsole.RESET);
+                break;
+        }
+        this.transfer(neoBank);
+    }
+
     public void transferToFund(NeoBank neoBank, String fundType){
         System.out.println(ColorConsole.BLUE + "How much would you like to transfer to your " +fundType + "fund?" + ColorConsole.RESET);
         String value = input.nextLine();
@@ -55,8 +77,10 @@ public class Fund {
         } else{
             if (this.getOwner().getAccount().getBalance()> Double.parseDouble(value)){
                 if (input.nextConfirmation(fundType, "Account", value)) {
+                    double remains = this.getOwner().isHasRemainsFund() ? this.getOwner().getRemainsFund().calculateRemains(value) : 0 ;
+                    this.getOwner().getRemainsFund().saveRemains(remains);
                     this.setBalance(this.getBalance() + Double.parseDouble(value));
-                    this.getOwner().getAccount().setBalance(this.getOwner().getAccount().getBalance() - Double.parseDouble(value));
+                    this.getOwner().getAccount().setBalance(this.getOwner().getAccount().getBalance() - Double.parseDouble(value) - remains);
                     Transaction newTransaction = new TransferInsideTransaction(Double.parseDouble(value), neoBank.getTracingNumber(), "Account", fundType, this.getFundID());
                     neoBank.setTracingNumber(neoBank.getTracingNumber() + 1);
                     this.getOwner().getAccount().addTransaction(newTransaction, "Inside Transfer");
@@ -80,7 +104,9 @@ public class Fund {
         } else{
             if (this.getBalance() > Double.parseDouble(value)){
                 if (input.nextConfirmation("Account", fundType, value)) {
-                    this.setBalance(this.getBalance() - Double.parseDouble(value));
+                    double remains = this.getOwner().isHasRemainsFund() ? this.getOwner().getRemainsFund().calculateRemains(value) : 0 ;
+                    this.getOwner().getRemainsFund().saveRemains(remains);
+                    this.setBalance(this.getBalance() - Double.parseDouble(value) - remains);
                     this.getOwner().getAccount().setBalance(this.getOwner().getAccount().getBalance() + Double.parseDouble(value));
                     Transaction newTransaction = new TransferInsideTransaction(Double.parseDouble(value), neoBank.getTracingNumber(), fundType, "Account", this.getFundID());
                     neoBank.setTracingNumber(neoBank.getTracingNumber() + 1);
@@ -93,5 +119,39 @@ public class Fund {
             System.out.println(ColorConsole.RED + "You don't have enough money!" + ColorConsole.RESET);
         }
         this.transferFromFund(neoBank, fundType);
+    }
+
+    public void checkBalance(){
+        System.out.println(ColorConsole.GREEN + "This is your Balance : " + ColorConsole.YELLOW + this.getBalance() + ColorConsole.GREEN + "$" + ColorConsole.RESET);
+    }
+
+    public void manageFund(NeoBank neoBank){
+        System.out.println(ColorConsole.BLUE + "How can we help you?" + ColorConsole.RESET);
+        System.out.println(ColorConsole.BLUE + "   1. Transfer" + ColorConsole.RESET);
+        System.out.println(ColorConsole.BLUE + "   2. Check Balance" + ColorConsole.RESET);
+        String answer = input.nextLine();
+        switch (answer){
+            case "1", "Transfer":
+                this.transfer(neoBank);
+                break;
+            case "2", "Check Balance":
+                this.checkBalance();
+                break;
+            default:
+                if (!input.exitPoint(answer)){
+                    return;
+                }
+                System.out.println(ColorConsole.RED +"No other Option! Try again! " + ColorConsole.RESET);
+                break;
+        }
+        this.manageFund(neoBank);
+    }
+
+    @Override
+    public String toString() {
+        return ColorConsole.PURPLE + "Fund{" +
+                "owner=" + ColorConsole.PINK +this.getOwner() +
+                ColorConsole.PURPLE +", fundID='"+ ColorConsole.PINK + this.getFundID() + '\'' + ColorConsole.PURPLE  +
+                '}' + ColorConsole.RESET;
     }
 }
