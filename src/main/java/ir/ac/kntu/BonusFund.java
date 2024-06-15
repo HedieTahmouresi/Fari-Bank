@@ -33,6 +33,7 @@ public class BonusFund extends Fund {
         Instant futureInstant = futureDateTime.toInstant();
         setExpiration(futureInstant);
     }
+
     @Override
     public void dissolveFund(NeoBank neoBank) {
         if (Calendar.now().isBefore(this.getExpiration())) {
@@ -49,7 +50,7 @@ public class BonusFund extends Fund {
         this.getOwner().getAccount().setBalance(this.getOwner().getAccount().getBalance() + this.getBalance());
         Transaction newTransaction = new TransferInsideTransaction(this.getBalance(), neoBank.getTracingNumber(), "Bonus Fund", "Account", this.getFundID());
         this.getOwner().getAccount().addTransaction(newTransaction, "Inside Transfer");
-        double remains = this.getOwner().isHasRemainsFund()  ? this.getOwner().getRemainsFund().calculateRemains(Double.toString(this.getBalance())) : 0;
+        double remains = this.getOwner().isHasRemainsFund() ? this.getOwner().getRemainsFund().calculateRemains(Double.toString(this.getBalance())) : 0;
         if (this.getOwner().isHasRemainsFund()) {
             this.getOwner().getRemainsFund().saveRemains(remains, neoBank);
         }

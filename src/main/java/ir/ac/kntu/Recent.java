@@ -41,6 +41,6 @@ public class Recent {
 
     @Override
     public String toString() {
-        return this.getPerson().getName() +" "+ this.getPerson().getLastName();
+        return this.getPerson().getName() + " " + this.getPerson().getLastName();
     }
 }

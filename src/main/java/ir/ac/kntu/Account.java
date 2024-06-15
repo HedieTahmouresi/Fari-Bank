@@ -242,7 +242,7 @@ public class Account {
     }
 
     public void transfer(NeoBank neoBank, String value, SimpleUser receiver, boolean isByContact) {
-        double remains = this.getOwner().isHasRemainsFund()  ? this.getOwner().getRemainsFund().calculateRemains(value) : 0;
+        double remains = this.getOwner().isHasRemainsFund() ? this.getOwner().getRemainsFund().calculateRemains(value) : 0;
         if (Double.parseDouble(value) + neoBank.getManagerData().getWage() + remains > this.getBalance()) {
             System.out.println(ColorConsole.RED + "transfer failed! you don't have enough money!" + ColorConsole.RESET);
             return;

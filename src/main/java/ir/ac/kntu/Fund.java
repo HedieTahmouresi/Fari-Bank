@@ -74,14 +74,13 @@ public class Fund {
         } else if (!value.matches("\\d+\\.?\\d*")) {
             System.out.println(ColorConsole.RED + "Wrong format! Try again!" + ColorConsole.RESET);
         } else {
-            double remains = this.getOwner().isHasRemainsFund()  ? this.getOwner().getRemainsFund().calculateRemains(value) : 0;
+            double remains = this.getOwner().isHasRemainsFund() ? this.getOwner().getRemainsFund().calculateRemains(value) : 0;
             if (this.getOwner().getAccount().getBalance() >= Double.parseDouble(value) + remains) {
                 if (input.nextConfirmation(fundType, "Account", value)) {
                     this.setBalance(this.getBalance() + Double.parseDouble(value));
                     this.getOwner().getAccount().setBalance(this.getOwner().getAccount().getBalance() - Double.parseDouble(value) - remains);
-                    Transaction newTransaction = new TransferInsideTransaction(Double.parseDouble(value), neoBank.getTracingNumber(), "Account", fundType, this.getFundID());
+                    this.getOwner().getAccount().addTransaction(new TransferInsideTransaction(Double.parseDouble(value), neoBank.getTracingNumber(), "Account", fundType, this.getFundID()), "Inside Transfer");
                     neoBank.setTracingNumber(neoBank.getTracingNumber() + 1);
-                    this.getOwner().getAccount().addTransaction(newTransaction, "Inside Transfer");
                     if (this.getOwner().isHasRemainsFund()) {
                         this.getOwner().getRemainsFund().saveRemains(remains, neoBank);
                     }
@@ -104,14 +103,13 @@ public class Fund {
         } else if (!value.matches("\\d+\\.?\\d*")) {
             System.out.println(ColorConsole.RED + "Wrong format! Try again!" + ColorConsole.RESET);
         } else {
-            double remains = this.getOwner().isHasRemainsFund()  ? this.getOwner().getRemainsFund().calculateRemains(value) : 0;
+            double remains = this.getOwner().isHasRemainsFund() ? this.getOwner().getRemainsFund().calculateRemains(value) : 0;
             if (this.getBalance() >= Double.parseDouble(value) + remains) {
                 if (input.nextConfirmation("Account", fundType, value)) {
                     this.setBalance(this.getBalance() - Double.parseDouble(value) - remains);
                     this.getOwner().getAccount().setBalance(this.getOwner().getAccount().getBalance() + Double.parseDouble(value));
-                    Transaction newTransaction = new TransferInsideTransaction(Double.parseDouble(value), neoBank.getTracingNumber(), fundType, "Account", this.getFundID());
+                    this.getOwner().getAccount().addTransaction(new TransferInsideTransaction(Double.parseDouble(value), neoBank.getTracingNumber(), fundType, "Account", this.getFundID()), "Inside Transfer");
                     neoBank.setTracingNumber(neoBank.getTracingNumber() + 1);
-                    this.getOwner().getAccount().addTransaction(newTransaction, "Inside Transfer");
                     if (this.getOwner().isHasRemainsFund()) {
                         this.getOwner().getRemainsFund().saveRemains(remains, neoBank);
                     }
@@ -164,20 +162,20 @@ public class Fund {
                 '}' + ColorConsole.RESET;
     }
 
-    public void dissolveFund(NeoBank neoBank){
+    public void dissolveFund(NeoBank neoBank) {
         System.out.println(ColorConsole.PINK + "Are you sure?" + ColorConsole.RESET);
         String answer = input.nextLine();
-        if ("no".equalsIgnoreCase(answer) || !input.exitPoint(answer)){
+        if ("no".equalsIgnoreCase(answer) || !input.exitPoint(answer)) {
             return;
-        }else if(!"yes".equalsIgnoreCase(answer)){
+        } else if (!"yes".equalsIgnoreCase(answer)) {
             this.dissolveFund(neoBank);
         }
         this.getOwner().getAccount().setBalance(this.getOwner().getAccount().getBalance() + this.getBalance());
         this.getOwner().removeFund(this);
         Transaction newTransaction = new TransferInsideTransaction(this.getBalance(), neoBank.getTracingNumber(), "Fund", "Account", this.getFundID());
         this.getOwner().getAccount().addTransaction(newTransaction, "Inside Transfer");
-        neoBank.setTracingNumber(neoBank.getTracingNumber()+1);
-        double remains = this.getOwner().isHasRemainsFund()  ? this.getOwner().getRemainsFund().calculateRemains(Double.toString(this.getBalance())) : 0;
+        neoBank.setTracingNumber(neoBank.getTracingNumber() + 1);
+        double remains = this.getOwner().isHasRemainsFund() ? this.getOwner().getRemainsFund().calculateRemains(Double.toString(this.getBalance())) : 0;
         if (this.getOwner().isHasRemainsFund()) {
             this.getOwner().getRemainsFund().saveRemains(remains, neoBank);
         }

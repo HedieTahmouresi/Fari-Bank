@@ -101,7 +101,7 @@ public class SimpleUser extends UserPerson {
         this.funds.remove(fund);
     }
 
-    public void addFund(Fund fund){
+    public void addFund(Fund fund) {
         this.funds.add(fund);
     }
 
@@ -118,7 +118,7 @@ public class SimpleUser extends UserPerson {
             if (!input.exitPoint(command)) {
                 return null;
             } else if (command.matches("[0-9]+")) {
-                return this.selectContact( command);
+                return this.selectContact(command);
             } else if ("next".equals(command) || "previous".equals(command)) {
                 contactList.changePage(command);
             } else {
@@ -128,7 +128,7 @@ public class SimpleUser extends UserPerson {
         return null;
     }
 
-    public Contact selectContact( String answer) {
+    public Contact selectContact(String answer) {
         if (Integer.parseInt(answer) > 0 && Integer.parseInt(answer) < contacts.size() + 1) {
             return this.contacts.get(Integer.parseInt(answer) - 1);
         }
@@ -202,7 +202,7 @@ public class SimpleUser extends UserPerson {
             return;
         }
         SimpleUser receiver = neoBank.getBankData().getUserByAccountID(accountID);
-        String value = input.nextValue( receiver);
+        String value = input.nextValue(receiver);
         if (value == null) {
             return;
         }
@@ -383,12 +383,12 @@ public class SimpleUser extends UserPerson {
         return null;
     }
 
-    public void addFund(NeoBank neoBank){
+    public void addFund(NeoBank neoBank) {
         String fundType = input.nextFundType();
-        if (fundType==null){
+        if (fundType == null) {
             return;
         }
-        switch (fundType){
+        switch (fundType) {
             case "1", "Savings Fund" -> {
                 SavingsFund newFund = new SavingsFund(this, neoBank);
                 this.addFund(newFund);
@@ -396,7 +396,7 @@ public class SimpleUser extends UserPerson {
                 newFund.transferToFund(neoBank, "Savings Fund");
             }
             case "2", "Remains Fund" -> {
-                if (this.isHasRemainsFund()){
+                if (this.isHasRemainsFund()) {
                     System.out.println(ColorConsole.RED + "You can't have 2 remains funds" + ColorConsole.RESET);
                     return;
                 }
@@ -408,21 +408,22 @@ public class SimpleUser extends UserPerson {
             case "3", "Bonus Fund" -> {
                 this.createBonusFund(neoBank);
             }
+            default -> System.out.println("haha");
         }
     }
 
-    public void createBonusFund(NeoBank neoBank){
+    public void createBonusFund(NeoBank neoBank) {
         System.out.println(ColorConsole.BLUE + "How long would you like to have this fund for?" + ColorConsole.RESET);
         String answer = input.nextLine();
-        if (!input.exitPoint(answer)){
+        if (!input.exitPoint(answer)) {
             return;
-        } else if (!answer.matches("[0-9]+")){
+        } else if (!answer.matches("[0-9]+")) {
             System.out.println(ColorConsole.RED + "Wrong format!" + ColorConsole.RESET);
             this.createBonusFund(neoBank);
         }
         BonusFund newFund = new BonusFund(this, neoBank, Integer.parseInt(answer));
         newFund.transferToFund(neoBank, "Bonus Fund");
-        if (newFund.getBalance()==0){
+        if (newFund.getBalance() == 0) {
             System.out.println(ColorConsole.RED + "You can't have an empty bonus fund!" + ColorConsole.RESET);
             return;
         }
@@ -431,15 +432,15 @@ public class SimpleUser extends UserPerson {
         System.out.println(ColorConsole.GREEN + "Fund successfully created" + ColorConsole.RESET);
     }
 
-    public void showFunds(NeoBank neoBank){
-        if (this.funds==null || this.funds.isEmpty()){
+    public void showFunds(NeoBank neoBank) {
+        if (this.funds == null || this.funds.isEmpty()) {
             System.out.println(ColorConsole.RED + "There are no funds" + ColorConsole.RESET);
             return;
         }
         Pagination<Fund> fundList = new Pagination<>(this.funds, 5);
         String command;
         do {
-            if(this.funds.isEmpty()){
+            if (this.funds.isEmpty()) {
                 System.out.println(ColorConsole.RED + "There are no funds" + ColorConsole.RESET);
                 return;
             }
@@ -457,6 +458,7 @@ public class SimpleUser extends UserPerson {
             }
         } while (!"return".equals(command));
     }
+
     public void selectFund(String answer, NeoBank neoBank) {
         if (Integer.parseInt(answer) > 0 && Integer.parseInt(answer) <= this.funds.size()) {
             int index = Integer.parseInt(answer) - 1;

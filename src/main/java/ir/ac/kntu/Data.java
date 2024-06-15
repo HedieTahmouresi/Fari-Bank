@@ -343,7 +343,6 @@ public class Data {
     }
 
 
-
     public List<SimpleUser> getAllUsers() {
         return new ArrayList<>(this.users);
     }

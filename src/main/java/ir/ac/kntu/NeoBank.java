@@ -1,7 +1,5 @@
 package ir.ac.kntu;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 public class NeoBank {
@@ -32,7 +30,6 @@ public class NeoBank {
     }
 
 
-
     public int getBaseFundID() {
         return baseFundID;
     }
@@ -61,7 +58,6 @@ public class NeoBank {
     public void setBankData(Data bankData) {
         this.bankData = bankData;
     }
-
 
 
     public Admin signInAdmin() {

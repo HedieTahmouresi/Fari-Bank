@@ -136,7 +136,7 @@ public class Pagination<T> {
         }
     }
 
-    public void selectAdminService( NeoBank neoBank, Admin currentAdmin, String answer) {
+    public void selectAdminService(NeoBank neoBank, Admin currentAdmin, String answer) {
         switch (answer) {
             case "1", "Authentications":
                 currentAdmin.getData().showAuthentications(neoBank, currentAdmin);

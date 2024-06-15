@@ -92,7 +92,7 @@ public class Menu {
             if (!input.exitPoint(answer) || "4".equals(answer)) {
                 return;
             }
-            menu.selectAdminService( neoBank, currentAdmin, answer);
+            menu.selectAdminService(neoBank, currentAdmin, answer);
         } while (!"quit".equals(answer));
 
     }
@@ -167,7 +167,7 @@ public class Menu {
         } while (!"quit".equals(answer));
     }
 
-    public void fundManagement(NeoBank neoBank, SimpleUser currentUser){
+    public void fundManagement(NeoBank neoBank, SimpleUser currentUser) {
         Pagination<String> menu = new Pagination<>(fundManagement, 5);
         String answer;
         do {

@@ -135,7 +135,7 @@ public class Input {
         return this.nextAccountID(neoBank);
     }
 
-    public String nextValue( SimpleUser receiver) {
+    public String nextValue(SimpleUser receiver) {
         System.out.println(ColorConsole.PURPLE + "How much would you like to transfer to " + ColorConsole.PINK + receiver.getName() + " " + receiver.getLastName() + ColorConsole.PURPLE + "?" + ColorConsole.RESET);
         String answer = this.nextLine();
         if (!this.exitPoint(answer)) {
@@ -145,7 +145,7 @@ public class Input {
         } else {
             return answer;
         }
-        return this.nextValue( receiver);
+        return this.nextValue(receiver);
     }
 
     public boolean nextConfirmation(SimpleUser receiver, String value) {
@@ -315,15 +315,15 @@ public class Input {
         return nextSearchPhoneNumber();
     }
 
-    public String nextFundType(){
-        System.out.println(ColorConsole.BLUE +"What kind of fund do you want to make?");
+    public String nextFundType() {
+        System.out.println(ColorConsole.BLUE + "What kind of fund do you want to make?");
         System.out.println("   1. Savings Fund");
         System.out.println("   2. Remains Fund");
         System.out.println("   3. Bonus Fund" + ColorConsole.RESET);
         String answer = this.nextLine();
-        if (!this.exitPoint(answer)){
+        if (!this.exitPoint(answer)) {
             return null;
-        } else if ("1".equals(answer) || "2".equals(answer) || "3".equals(answer) || "4".equals(answer) || "Savings Fund".equals(answer) || "Remains Fund".equals(answer) || "Bonus Fund".equals(answer)){
+        } else if ("1".equals(answer) || "2".equals(answer) || "3".equals(answer) || "4".equals(answer) || "Savings Fund".equals(answer) || "Remains Fund".equals(answer) || "Bonus Fund".equals(answer)) {
             return answer;
         }
         return nextFundType();
