@@ -6,7 +6,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
-public class BonusFund extends Fund{
+public class BonusFund extends Fund {
     private Instant manufacture;
     private Instant expiration;
 
@@ -36,8 +36,8 @@ public class BonusFund extends Fund{
         setExpiration(futureInstant);
     }
 
-    public void dissolveFund(){
-        if (Calendar.now().isBefore(this.getExpiration())){
+    public void dissolveFund() {
+        if (Calendar.now().isBefore(this.getExpiration())) {
             return;
         }
         System.out.println(ColorConsole.RED + "The expiration is due!" + ColorConsole.RESET);
@@ -45,8 +45,8 @@ public class BonusFund extends Fund{
         this.getOwner().removeFund(this);
     }
 
-    public void transferBonus(NeoBank neoBank){
-        double bonus = (this.getBalance() * neoBank.getBonusPercentage())/100;
+    public void transferBonus(NeoBank neoBank) {
+        double bonus = (this.getBalance() * neoBank.getBonusPercentage()) / 100;
         this.getOwner().getAccount().setBalance(this.getOwner().getAccount().getBalance() + bonus);
     }
 }

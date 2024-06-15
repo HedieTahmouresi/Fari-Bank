@@ -95,7 +95,7 @@ public class SimpleUser extends UserPerson {
         this.contacts.remove(contact);
     }
 
-    public void removeFund (Fund fund){
+    public void removeFund(Fund fund) {
         this.funds.remove(fund);
     }
 
@@ -107,7 +107,7 @@ public class SimpleUser extends UserPerson {
         String command;
         do {
             contactList.showPage();
-            System.out.println(ColorConsole.BLUE +"Enter 'next' to go to the next page, 'previous' to go back or the number of the transaction you want"+ ColorConsole.RESET);
+            System.out.println(ColorConsole.BLUE + "Enter 'next' to go to the next page, 'previous' to go back or the number of the transaction you want" + ColorConsole.RESET);
             command = input.nextLine();
             if (!input.exitPoint(command)) {
                 return null;
@@ -124,7 +124,7 @@ public class SimpleUser extends UserPerson {
 
     public Contact selectContact(NeoBank neoBank, String answer) {
         if (Integer.parseInt(answer) > 0 && Integer.parseInt(answer) < contacts.size() + 1) {
-            return  this.contacts.get(Integer.parseInt(answer)-1);
+            return this.contacts.get(Integer.parseInt(answer) - 1);
         }
         System.out.println(ColorConsole.RED + "Index Out of Bound! Try again!" + ColorConsole.RESET);
         return null;
@@ -327,14 +327,14 @@ public class SimpleUser extends UserPerson {
     }
 
     public void showRequests() {
-        if (requests==null || requests.isEmpty()){
+        if (requests == null || requests.isEmpty()) {
             return;
         }
         Pagination requestList = new Pagination<>(requests, 5);
         String command;
         do {
             requestList.showPage();
-            System.out.println(ColorConsole.BLUE +"Enter 'next' to go to the next page, 'previous' to go back or the number of the transaction you want"+ ColorConsole.RESET);
+            System.out.println(ColorConsole.BLUE + "Enter 'next' to go to the next page, 'previous' to go back or the number of the transaction you want" + ColorConsole.RESET);
             command = input.nextLine();
             if (!input.exitPoint(command)) {
                 return;
@@ -348,13 +348,13 @@ public class SimpleUser extends UserPerson {
         } while (!"return".equals(command));
     }
 
-    public void selectRequest( String answer) {
+    public void selectRequest(String answer) {
         if (Integer.parseInt(answer) > 0 && Integer.parseInt(answer) <= this.requests.size()) {
-            int index = Integer.parseInt(answer)-1;
+            int index = Integer.parseInt(answer) - 1;
             this.requests.get(index).showInfo();
             return;
         }
-            System.out.println(ColorConsole.RED + "Wrong input try again!" + ColorConsole.RESET);
+        System.out.println(ColorConsole.RED + "Wrong input try again!" + ColorConsole.RESET);
 
     }
 
@@ -368,9 +368,9 @@ public class SimpleUser extends UserPerson {
         this.getAccount().showTransactionList(neoBank, this.getAccount().addAllTransactions(neoBank));
     }
 
-    public RemainsFund getRemainsFund(){
-        for (Fund fund : this.funds){
-            if (fund instanceof RemainsFund){
+    public RemainsFund getRemainsFund() {
+        for (Fund fund : this.funds) {
+            if (fund instanceof RemainsFund) {
                 return (RemainsFund) fund;
             }
         }

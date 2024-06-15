@@ -159,7 +159,7 @@ public class Input {
         return "yes".equalsIgnoreCase(answer);
     }
 
-    public boolean nextConfirmation(String receiver, String sender, String value){
+    public boolean nextConfirmation(String receiver, String sender, String value) {
         System.out.println(ColorConsole.GREEN + "Receiver { your" + ColorConsole.YELLOW + receiver + " }" + ColorConsole.RESET);
         System.out.println(ColorConsole.GREEN + "Sender { your" + ColorConsole.YELLOW + sender + " }" + ColorConsole.RESET);
         System.out.println(ColorConsole.GREEN + "Value : " + ColorConsole.YELLOW + value + "$" + ColorConsole.RESET);

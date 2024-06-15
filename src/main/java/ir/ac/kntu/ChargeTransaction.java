@@ -26,6 +26,6 @@ public class ChargeTransaction extends Transaction {
 
     @Override
     public String toString() {
-        return ColorConsole.PURPLE + "Transaction Type :" + ColorConsole.CYAN + "Charge" +super.toString();
+        return ColorConsole.PURPLE + "Transaction Type :" + ColorConsole.CYAN + "Charge" + super.toString();
     }
 }

@@ -97,20 +97,20 @@ public class Admin {
         System.out.println("   5.Return" + ColorConsole.RESET);
     }
 
-    public void showRequest(List<Request> requestsList){
-        if (requestsList==null || requestsList.isEmpty()){
+    public void showRequest(List<Request> requestsList) {
+        if (requestsList == null || requestsList.isEmpty()) {
             return;
         }
         Pagination requests = new Pagination<>(requestsList, 5);
         String command;
         do {
             requests.showPage();
-            System.out.println(ColorConsole.BLUE +"Enter 'next' to go to the next page, 'previous' to go back or the number of the transaction you want"+ ColorConsole.RESET);
+            System.out.println(ColorConsole.BLUE + "Enter 'next' to go to the next page, 'previous' to go back or the number of the transaction you want" + ColorConsole.RESET);
             command = input.nextLine();
             if (!input.exitPoint(command)) {
                 return;
             } else if (command.matches("[0-9]+")) {
-                this.selectRequest(requestsList,command);
+                this.selectRequest(requestsList, command);
             } else if ("next".equals(command) || "previous".equals(command)) {
                 requests.changePage(command);
             } else {
@@ -119,7 +119,7 @@ public class Admin {
         } while (!"return".equals(command));
     }
 
-    public void selectRequest( List<Request> requestsList, String answer) {
+    public void selectRequest(List<Request> requestsList, String answer) {
         if (Integer.parseInt(answer) > 0 && Integer.parseInt(answer) < requestsList.size() + 1) {
             int index = Integer.parseInt(answer);
             if (answer.equals(Integer.toString(index))) {
@@ -129,11 +129,11 @@ public class Admin {
                 } else if (RequestStatus.NOTED.equals(requestsList.get(index - 1).getStatus())) {
                     requestsList.get(index - 1).processRequest();
                 } else {
-                    requestsList.get(index-1).showInfo();
+                    requestsList.get(index - 1).showInfo();
                 }
             }
 
-        }else {
+        } else {
             System.out.println(ColorConsole.RED + "Index Out of Bound! Try again!" + ColorConsole.RESET);
         }
     }

@@ -16,22 +16,17 @@ public class Menu {
 
     private final List<String> adminServiceMenu = new ArrayList<>(Arrays.asList(ColorConsole.CYAN + "Authentications", ColorConsole.CYAN + "Requests" + ColorConsole.RESET, ColorConsole.CYAN + "Users", ColorConsole.CYAN + "Return" + ColorConsole.RESET));
 
-    private final List<String> userServiceMenu = new ArrayList<>(Arrays.asList(ColorConsole.CYAN + "Account Management",ColorConsole.CYAN + "Fund management",ColorConsole.CYAN + "Contacts" + ColorConsole.RESET
-            , ColorConsole.CYAN + "Transferring Money", ColorConsole.CYAN + "Administer", ColorConsole.CYAN + "Settings", ColorConsole.CYAN + "Return" + ColorConsole.RESET));
+    private final List<String> userServiceMenu = new ArrayList<>(Arrays.asList(ColorConsole.CYAN + "Account Management", ColorConsole.CYAN + "Fund management", ColorConsole.CYAN + "Contacts" + ColorConsole.RESET, ColorConsole.CYAN + "Transferring Money", ColorConsole.CYAN + "Administer", ColorConsole.CYAN + "Settings", ColorConsole.CYAN + "Return" + ColorConsole.RESET));
 
-    private final List<String> managementMenu = new ArrayList<>(Arrays.asList(ColorConsole.CYAN + "Charge Account", ColorConsole.CYAN + "Check Balance" + ColorConsole.RESET
-            , ColorConsole.CYAN + "See Transactions", ColorConsole.CYAN + "Return" + ColorConsole.RESET));
+    private final List<String> managementMenu = new ArrayList<>(Arrays.asList(ColorConsole.CYAN + "Charge Account", ColorConsole.CYAN + "Check Balance" + ColorConsole.RESET, ColorConsole.CYAN + "See Transactions", ColorConsole.CYAN + "Return" + ColorConsole.RESET));
 
     private final List<String> contactMenu = new ArrayList<>(Arrays.asList(ColorConsole.CYAN + "Add Contact", ColorConsole.CYAN + "Show Contact List" + ColorConsole.RESET, ColorConsole.CYAN + "Return" + ColorConsole.RESET));
 
-    private final List<String> transferMenu = new ArrayList<>(Arrays.asList(ColorConsole.CYAN + "by Account ID", ColorConsole.CYAN + "by Contact" + ColorConsole.RESET
-            , ColorConsole.CYAN + "by Recent List", ColorConsole.CYAN + "Return" + ColorConsole.RESET));
+    private final List<String> transferMenu = new ArrayList<>(Arrays.asList(ColorConsole.CYAN + "by Account ID", ColorConsole.CYAN + "by Contact" + ColorConsole.RESET, ColorConsole.CYAN + "by Recent List", ColorConsole.CYAN + "Return" + ColorConsole.RESET));
 
     private final List<String> administerMenu = new ArrayList<>(Arrays.asList(ColorConsole.CYAN + "Add Request", ColorConsole.CYAN + "Show Request List" + ColorConsole.RESET, ColorConsole.CYAN + "Return" + ColorConsole.RESET));
 
-
-    private final List<String> settings = new ArrayList<>(Arrays.asList(ColorConsole.CYAN + "Change User Password", ColorConsole.CYAN + "Set/Change Credit Card Password" + ColorConsole.RESET
-            , ColorConsole.CYAN + "Contact Option", ColorConsole.CYAN + "Show Account info", ColorConsole.CYAN + "Return" + ColorConsole.RESET));
+    private final List<String> settings = new ArrayList<>(Arrays.asList(ColorConsole.CYAN + "Change User Password", ColorConsole.CYAN + "Set/Change Credit Card Password" + ColorConsole.RESET, ColorConsole.CYAN + "Contact Option", ColorConsole.CYAN + "Show Account info", ColorConsole.CYAN + "Return" + ColorConsole.RESET));
 
     public void mainMenu(NeoBank neoBank) {
         Pagination<String> menu = new Pagination<>(main, 5);
@@ -133,7 +128,7 @@ public class Menu {
     public void transferMenu(NeoBank neoBank, SimpleUser currentUser) {
         Pagination<String> menu = new Pagination<>(transferMenu, 5);
         String answer;
-        do{
+        do {
 
             menu.showPage();
             answer = input.nextLine();
@@ -141,20 +136,20 @@ public class Menu {
                 return;
             }
             menu.selectTransfer(neoBank, currentUser, answer);
-        }while(!"quit".equals(answer));
+        } while (!"quit".equals(answer));
     }
 
     public void administerMenu(NeoBank neoBank, SimpleUser currentUser) {
         Pagination<String> menu = new Pagination<>(administerMenu, 5);
         String answer;
-        do{
+        do {
             menu.showPage();
             answer = input.nextLine();
             if (!input.exitPoint(answer) || "3".equals(answer)) {
                 return;
             }
             menu.selectAdminister(neoBank, currentUser, answer);
-        }while(!"quit".equals(answer));
+        } while (!"quit".equals(answer));
     }
 
     public void settingsMenu(SimpleUser currentUser) {

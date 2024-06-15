@@ -32,9 +32,9 @@ public class Recent {
     public Recent(SimpleUser person, boolean byContact) {
         setPerson(person);
         setByContact(byContact);
-        if (byContact){
+        if (byContact) {
             setReceiverInfo(person.getPhoneNumber());
-        }else {
+        } else {
             setReceiverInfo(person.getAccount().getAccountId());
         }
     }

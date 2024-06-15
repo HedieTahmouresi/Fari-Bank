@@ -1,6 +1,6 @@
 package ir.ac.kntu;
 
-public class SavingsFund extends Fund{
+public class SavingsFund extends Fund {
 
     private final Input input = new Input();
 
@@ -9,12 +9,12 @@ public class SavingsFund extends Fund{
     }
 
     @Override
-    public void transfer(NeoBank neoBank){
+    public void transfer(NeoBank neoBank) {
         System.out.println(ColorConsole.BLUE + "What would you like to do?" + ColorConsole.RESET);
         System.out.println(ColorConsole.BLUE + "  1. Transfer from your Fund" + ColorConsole.RESET);
         System.out.println(ColorConsole.BLUE + "  1. Transfer to your Fund" + ColorConsole.RESET);
         String answer = input.nextLine();
-        switch (answer){
+        switch (answer) {
             case "1", "Transfer from your Fund":
                 super.transferFromFund(neoBank, "Savings Fund");
                 break;
@@ -22,10 +22,10 @@ public class SavingsFund extends Fund{
                 super.transferToFund(neoBank, "Savings Fund");
                 break;
             default:
-                if (!input.exitPoint(answer)){
+                if (!input.exitPoint(answer)) {
                     return;
                 }
-                System.out.println(ColorConsole.RED +"No other Option! Try again! " + ColorConsole.RESET);
+                System.out.println(ColorConsole.RED + "No other Option! Try again! " + ColorConsole.RESET);
                 break;
         }
         this.transfer(neoBank);

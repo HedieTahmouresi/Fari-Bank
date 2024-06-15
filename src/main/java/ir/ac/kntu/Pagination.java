@@ -36,7 +36,7 @@ public class Pagination<T> {
         int start = currentPage * pageSize;
         int end = Math.min((currentPage + 1) * pageSize, list.size());
         for (int index = start; index < end; index++) {
-            int num = index+1;
+            int num = index + 1;
             System.out.println(ColorConsole.PINK + num + " ." + ColorConsole.PURPLE + list.get(index).toString() + ColorConsole.PURPLE);
         }
     }
@@ -46,14 +46,14 @@ public class Pagination<T> {
             currentPage++;
         } else if ("previous".equalsIgnoreCase(command) && currentPage > 0) {
             currentPage--;
-        } else if ("next".equalsIgnoreCase(command)){
+        } else if ("next".equalsIgnoreCase(command)) {
             System.out.println(ColorConsole.RED + "No more page!This is the last Page!" + ColorConsole.RESET);
-        } else if ("previous".equalsIgnoreCase(command)){
+        } else if ("previous".equalsIgnoreCase(command)) {
             System.out.println(ColorConsole.RED + "No more page!This is the first Page!" + ColorConsole.RESET);
         }
     }
 
-    public void selectUserLog(Menu menu,NeoBank neoBank, String answer){
+    public void selectUserLog(Menu menu, NeoBank neoBank, String answer) {
         switch (answer) {
             case "1", "Sign In":
                 SimpleUser currentUser = neoBank.getBankData().signInUser();
@@ -80,7 +80,7 @@ public class Pagination<T> {
         }
     }
 
-    public void selectMain(Menu menu, NeoBank neoBank, String answer){
+    public void selectMain(Menu menu, NeoBank neoBank, String answer) {
         switch (answer) {
             case "1", "Simple User":
                 menu.userLog(neoBank);
@@ -101,20 +101,21 @@ public class Pagination<T> {
         }
     }
 
-    public void selectUserService(Menu menu, NeoBank neoBank, String answer, SimpleUser currentUser){
+    public void selectUserService(Menu menu, NeoBank neoBank, String answer, SimpleUser currentUser) {
         switch (answer) {
-            case "1", "Account Management"-> menu.managementMenu(neoBank, currentUser);
+            case "1", "Account Management" -> menu.managementMenu(neoBank, currentUser);
             case "2", "Fund Management" -> System.out.println("haha");
-            case "3", "Contacts"-> menu.contactMenu(neoBank, currentUser);
-            case "4", "Transferring Money"-> menu.transferMenu(neoBank, currentUser);
-            case "5", "Administer"-> menu.administerMenu(neoBank, currentUser);
-            case "6", "Settings"-> menu.settingsMenu(currentUser);
-            case "next", "previous"-> this.changePage(answer);
-            default-> System.out.println(ColorConsole.RED + "THERE IS NO OTHER OPTION! Please input something else!" + ColorConsole.RESET);
+            case "3", "Contacts" -> menu.contactMenu(neoBank, currentUser);
+            case "4", "Transferring Money" -> menu.transferMenu(neoBank, currentUser);
+            case "5", "Administer" -> menu.administerMenu(neoBank, currentUser);
+            case "6", "Settings" -> menu.settingsMenu(currentUser);
+            case "next", "previous" -> this.changePage(answer);
+            default ->
+                    System.out.println(ColorConsole.RED + "THERE IS NO OTHER OPTION! Please input something else!" + ColorConsole.RESET);
         }
     }
 
-    public void selectAdminLog(Menu menu, NeoBank neoBank, String answer){
+    public void selectAdminLog(Menu menu, NeoBank neoBank, String answer) {
         switch (answer) {
             case "1", "Sign In":
                 Admin currentAdmin = neoBank.signInAdmin();
@@ -135,7 +136,7 @@ public class Pagination<T> {
         }
     }
 
-    public void selectAdminService(Menu menu, NeoBank neoBank, Admin currentAdmin, String answer){
+    public void selectAdminService(Menu menu, NeoBank neoBank, Admin currentAdmin, String answer) {
         switch (answer) {
             case "1", "Authentications":
                 currentAdmin.getData().showAuthentications(neoBank, currentAdmin);
@@ -156,7 +157,7 @@ public class Pagination<T> {
         }
     }
 
-    public void selectAccountManagement( NeoBank neoBank, SimpleUser currentUser, String answer){
+    public void selectAccountManagement(NeoBank neoBank, SimpleUser currentUser, String answer) {
         switch (answer) {
             case "1", "Charge Account":
                 currentUser.getAccount().chargeAccount(neoBank);
@@ -177,7 +178,7 @@ public class Pagination<T> {
         }
     }
 
-    public void selectSetting(SimpleUser currentUser, String answer){
+    public void selectSetting(SimpleUser currentUser, String answer) {
         switch (answer) {
             case "1", "Change User Password":
                 currentUser.changePassword();
@@ -201,7 +202,7 @@ public class Pagination<T> {
         }
     }
 
-    public void selectContactMenu(NeoBank neoBank, SimpleUser currentUser, String answer){
+    public void selectContactMenu(NeoBank neoBank, SimpleUser currentUser, String answer) {
         switch (answer) {
             case "1", "Add Contact":
                 input.nextContact(neoBank, currentUser);
@@ -223,7 +224,7 @@ public class Pagination<T> {
         }
     }
 
-    public void selectTransfer(NeoBank neoBank, SimpleUser currentUser, String answer){
+    public void selectTransfer(NeoBank neoBank, SimpleUser currentUser, String answer) {
         switch (answer) {
             case "1", "by Account ID":
                 currentUser.transferByAccountID(neoBank);
@@ -249,7 +250,7 @@ public class Pagination<T> {
         }
     }
 
-    public void selectAdminister(NeoBank neoBank, SimpleUser currentUser, String answer){
+    public void selectAdminister(NeoBank neoBank, SimpleUser currentUser, String answer) {
         switch (answer) {
             case "1", "Add Request":
                 currentUser.addRequest(neoBank);

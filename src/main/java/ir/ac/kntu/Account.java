@@ -217,7 +217,7 @@ public class Account {
         String command;
         do {
             transactions.showPage();
-            System.out.println(ColorConsole.BLUE + "Enter 'next' to go to the next page, 'previous' to go back or the number of the transaction you want"+ColorConsole.RESET);
+            System.out.println(ColorConsole.BLUE + "Enter 'next' to go to the next page, 'previous' to go back or the number of the transaction you want" + ColorConsole.RESET);
             command = input.nextLine();
             if (!input.exitPoint(command)) {
                 return;
@@ -226,7 +226,7 @@ public class Account {
             } else if ("next".equals(command) || "previous".equals(command)) {
                 transactions.changePage(command);
             } else {
-                System.out.println(ColorConsole.RED + "No other option! Please try again!"+ColorConsole.RESET);
+                System.out.println(ColorConsole.RED + "No other option! Please try again!" + ColorConsole.RESET);
             }
         } while (!"return".equals(command));
 
@@ -246,7 +246,7 @@ public class Account {
             System.out.println(ColorConsole.RED + "transfer failed! you don't have enough money!" + ColorConsole.RESET);
             return;
         }
-        double remains = this.getOwner().isHasRemainsFund() ? this.getOwner().getRemainsFund().calculateRemains(value) : 0 ;
+        double remains = this.getOwner().isHasRemainsFund() ? this.getOwner().getRemainsFund().calculateRemains(value) : 0;
         this.getOwner().getRemainsFund().saveRemains(remains);
         this.setBalance(this.getBalance() - Double.parseDouble(value) - neoBank.getWage() - remains);
         receiver.getAccount().setBalance(receiver.getAccount().getBalance() + Double.parseDouble(value));
@@ -270,7 +270,7 @@ public class Account {
         String command;
         do {
             recents.showPage();
-            System.out.println(ColorConsole.BLUE +"Enter 'next' to go to the next page, 'previous' to go back or the number of the transaction you want"+ ColorConsole.RESET);
+            System.out.println(ColorConsole.BLUE + "Enter 'next' to go to the next page, 'previous' to go back or the number of the transaction you want" + ColorConsole.RESET);
             command = input.nextLine();
             if (!input.exitPoint(command)) {
                 return null;
@@ -287,7 +287,7 @@ public class Account {
 
     public Recent selectRecent(NeoBank neoBank, String answer) {
         if (Integer.parseInt(answer) > 0 && Integer.parseInt(answer) <= this.recentList.size()) {
-            return this.recentList.get(Integer.parseInt(answer)-1);
+            return this.recentList.get(Integer.parseInt(answer) - 1);
         }
         System.out.println(ColorConsole.RED_BOLD + "Index Out of bound! Try again!" + ColorConsole.RESET);
         return null;

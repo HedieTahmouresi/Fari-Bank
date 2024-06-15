@@ -117,7 +117,7 @@ public class UserPerson {
     public String toString() {
         return ColorConsole.PURPLE_BOLD + "Name : " + ColorConsole.PINK + this.getName() +
                 ColorConsole.PURPLE_BOLD + ", Last Name : " + ColorConsole.PINK + this.getLastName() +
-                ColorConsole.PURPLE_BOLD +", Phone Number : " + ColorConsole.PINK + this.getPhoneNumber() +
+                ColorConsole.PURPLE_BOLD + ", Phone Number : " + ColorConsole.PINK + this.getPhoneNumber() +
                 ColorConsole.RESET;
 
     }

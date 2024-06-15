@@ -18,7 +18,7 @@ public class Data {
         this.users = new ArrayList<>();
     }
 
-    public int authenticationsSize(){
+    public int authenticationsSize() {
         return this.authentications.size();
     }
 
@@ -153,24 +153,24 @@ public class Data {
         return currentUser;
     }
 
-    public void showAuthentications(NeoBank neoBank,Admin currentAdmin) {
-        if (this.authentications==null || this.authentications.isEmpty()){
+    public void showAuthentications(NeoBank neoBank, Admin currentAdmin) {
+        if (this.authentications == null || this.authentications.isEmpty()) {
             return;
         }
         Pagination authList = new Pagination<>(this.authentications, 5);
         String command;
         do {
-            if (this.authentications.isEmpty()){
+            if (this.authentications.isEmpty()) {
                 System.out.println(ColorConsole.RED + "No authentications!" + ColorConsole.RESET);
                 return;
             }
             authList.showPage();
-            System.out.println(ColorConsole.BLUE +"Enter 'next' to go to the next page, 'previous' to go back or the number of the transaction you want"+ ColorConsole.RESET);
+            System.out.println(ColorConsole.BLUE + "Enter 'next' to go to the next page, 'previous' to go back or the number of the transaction you want" + ColorConsole.RESET);
             command = input.nextLine();
             if (!input.exitPoint(command)) {
                 return;
             } else if (command.matches("[0-9]+")) {
-                currentAdmin.selectAuthentication(neoBank,command);
+                currentAdmin.selectAuthentication(neoBank, command);
             } else if ("next".equals(command) || "previous".equals(command)) {
                 authList.changePage(command);
             } else {
@@ -240,7 +240,7 @@ public class Data {
 
     public List<Request> filteredRequestsBySection() {
         RequestSection section = input.nextRequestSection();
-        if (section==null){
+        if (section == null) {
             return null;
         }
         List<Request> list = new ArrayList<>();
@@ -261,7 +261,7 @@ public class Data {
         String phoneNumber = input.nextRequestPerson(neoBank);
         if (phoneNumber == null) {
             return null;
-        }else if (this.requests.isEmpty()) {
+        } else if (this.requests.isEmpty()) {
             System.out.println(ColorConsole.RED + "There are no requests" + ColorConsole.RESET);
             return null;
         }
@@ -278,7 +278,7 @@ public class Data {
         List<Request> list = new ArrayList<>();
         if (status == null) {
             return null;
-        }else if (this.requests.isEmpty()) {
+        } else if (this.requests.isEmpty()) {
             System.out.println(ColorConsole.RED + "There are no requests" + ColorConsole.RESET);
             return null;
         }

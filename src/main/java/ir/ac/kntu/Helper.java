@@ -11,9 +11,9 @@ public class Helper {
         aylin.setContactOption(false);
         SimpleUser amir = new SimpleUser("Amir", "Tahmouresi", "09028789000", "0023577410", "A@tah1379", new Authentication("09028789000"));
         neoBank.getBankData().addUser(amir);
-        neoBank.getBankData().addAuthentication( amir.getAuthenticated());
+        neoBank.getBankData().addAuthentication(amir.getAuthenticated());
         SimpleUser neda = new SimpleUser("Neda", "Abtahi", "09124464876", "0306201582", "Neda0*0abeN", new Authentication("09124464876"));
-        neoBank.getBankData().addAuthentication( neda.getAuthenticated());
+        neoBank.getBankData().addAuthentication(neda.getAuthenticated());
         neda.getAuthenticated().setAuthenticated(false);
         neda.getAuthenticated().setReason("I don't like you");
         neoBank.getBankData().addUser(neda);
