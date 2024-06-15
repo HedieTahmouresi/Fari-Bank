@@ -2,9 +2,7 @@ package ir.ac.kntu;
 
 import ir.ac.kntu.util.Calendar;
 
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.*;
 
 public class BonusFund extends Fund {
     private Instant manufacture;
@@ -35,9 +33,13 @@ public class BonusFund extends Fund {
         Instant futureInstant = futureDateTime.toInstant();
         setExpiration(futureInstant);
     }
-
+    @Override
     public void dissolveFund() {
         if (Calendar.now().isBefore(this.getExpiration())) {
+            ZonedDateTime zonedDateTime = this.getExpiration().atZone(ZoneId.systemDefault());
+            LocalDate datePart = zonedDateTime.toLocalDate();
+            System.out.println(ColorConsole.PINK + "You can't do anything with this fund!" + ColorConsole.RESET);
+            System.out.println(ColorConsole.CYAN + "The expiration date : " + ColorConsole.PURPLE + datePart + ColorConsole.RESET);
             return;
         }
         System.out.println(ColorConsole.RED + "The expiration is due!" + ColorConsole.RESET);
@@ -48,5 +50,10 @@ public class BonusFund extends Fund {
     public void transferBonus(NeoBank neoBank) {
         double bonus = (this.getBalance() * neoBank.getBonusPercentage()) / 100;
         this.getOwner().getAccount().setBalance(this.getOwner().getAccount().getBalance() + bonus);
+    }
+
+    @Override
+    public void manageFund(NeoBank neoBank) {
+        this.dissolveFund();
     }
 }

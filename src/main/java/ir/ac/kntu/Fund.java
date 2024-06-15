@@ -128,6 +128,7 @@ public class Fund {
         System.out.println(ColorConsole.BLUE + "How can we help you?" + ColorConsole.RESET);
         System.out.println(ColorConsole.BLUE + "   1. Transfer" + ColorConsole.RESET);
         System.out.println(ColorConsole.BLUE + "   2. Check Balance" + ColorConsole.RESET);
+        System.out.println(ColorConsole.BLUE + "   3. Delete Fund" + ColorConsole.RESET);
         String answer = input.nextLine();
         switch (answer) {
             case "1", "Transfer":
@@ -135,6 +136,9 @@ public class Fund {
                 break;
             case "2", "Check Balance":
                 this.checkBalance();
+                break;
+            case "3", "Delete Fund":
+                this.dissolveFund();
                 break;
             default:
                 if (!input.exitPoint(answer)) {
@@ -152,5 +156,18 @@ public class Fund {
                 "owner=" + ColorConsole.PINK + this.getOwner() +
                 ColorConsole.PURPLE + ", fundID='" + ColorConsole.PINK + this.getFundID() + '\'' + ColorConsole.PURPLE +
                 '}' + ColorConsole.RESET;
+    }
+
+    public void dissolveFund(){
+        System.out.println("Are you sure?");
+        String answer = input.nextLine();
+        if ("no".equalsIgnoreCase(answer) || !input.exitPoint(answer)){
+            return;
+        }else if(!"yes".equalsIgnoreCase(answer)){
+            this.dissolveFund();
+        }
+        this.getOwner().getAccount().setBalance(this.getOwner().getAccount().getBalance() + this.getBalance());
+        this.getOwner().removeFund(this);
+        System.out.println(ColorConsole.GREEN + "Fund successfully deleted" + ColorConsole.RESET);
     }
 }

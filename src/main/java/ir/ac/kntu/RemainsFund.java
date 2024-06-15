@@ -47,4 +47,10 @@ public class RemainsFund extends Fund {
         }
         this.transfer(neoBank);
     }
+
+    @Override
+    public void dissolveFund() {
+        super.dissolveFund();
+        this.getOwner().setHasRemainsFund(false);
+    }
 }
