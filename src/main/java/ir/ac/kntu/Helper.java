@@ -36,6 +36,7 @@ public class Helper {
         neoBank.getManagerData().addAdmin(fourth);
         Admin fifth = new Admin("Toranj Ebrahimi", "Tori1397", "T.Eb1397", neoBank.getBankData());
         neoBank.getManagerData().addAdmin(fifth);
+        fifth.getAbilities().setAuthentications(false);
     }
 
     public void initiateContacts(SimpleUser firstUser, SimpleUser secondUser){

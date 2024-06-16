@@ -184,19 +184,28 @@ public class Data {
     }
 
 
-    public List<Request> allRequests() {
+    public List<Request> allRequests(Admin currentAdmin) {
         if (this.requests.isEmpty()) {
             System.out.println(ColorConsole.RED + "There are no requests" + ColorConsole.RESET);
             return null;
         }
-        return new ArrayList<>(this.requests);
+        List<Request> requestList = new ArrayList<>();
+        for (Request request : requests){
+            if (currentAdmin.getAbilities().hasAbility(request.getSection())){
+                requestList.add(request);
+            }
+        }
+        return requestList;
     }
 
 
-    public List<Request> filteredRequestsBySection() {
+    public List<Request> filteredRequestsBySection(Admin currentAdmin) {
         RequestSection section = input.nextRequestSections();
         if (section == null) {
             return null;
+        }
+        if (!currentAdmin.getAbilities().hasAbility(section)){
+            System.out.println(ColorConsole.RED + "You cant choose this section you are not allowed to" + ColorConsole.RESET);
         }
         List<Request> list = new ArrayList<>();
         if (this.requests.isEmpty()) {
@@ -204,14 +213,14 @@ public class Data {
             return null;
         }
         for (Request request : this.requests) {
-            if (request.getSection().equals(section)) {
+            if (request.getSection().equals(section) ) {
                 list.add(request);
             }
         }
         return list;
     }
 
-    public List<Request> filteredRequestsByPerson(NeoBank neoBank) {
+    public List<Request> filteredRequestsByPerson(NeoBank neoBank, Admin currentAdmin) {
         List<Request> list = new ArrayList<>();
         String phoneNumber = input.nextRequestPerson(neoBank);
         if (phoneNumber == null) {
@@ -221,14 +230,14 @@ public class Data {
             return null;
         }
         for (Request request : this.requests) {
-            if (request.getPhoneNumber().equals(phoneNumber)) {
+            if (request.getPhoneNumber().equals(phoneNumber) && currentAdmin.getAbilities().hasAbility(request.getSection())) {
                 list.add(request);
             }
         }
         return list;
     }
 
-    public List<Request> filteredRequestsByStatus() {
+    public List<Request> filteredRequestsByStatus(Admin currentAdmin) {
         RequestStatus status = input.nextRequestStatus();
         List<Request> list = new ArrayList<>();
         if (status == null) {
@@ -238,7 +247,7 @@ public class Data {
             return null;
         }
         for (Request request : this.requests) {
-            if (request.getStatus().equals(status)) {
+            if (request.getStatus().equals(status) && currentAdmin.getAbilities().hasAbility(request.getSection())) {
                 list.add(request);
             }
         }

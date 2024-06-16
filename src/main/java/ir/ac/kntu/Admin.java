@@ -7,6 +7,8 @@ public class Admin {
     private String userName;
     private String password;
     private Data data;
+    private AdminAbilities abilities;
+
 
 
     private final Input input = new Input();
@@ -16,6 +18,15 @@ public class Admin {
         setUserName(userName);
         setPassword(password);
         setData(data);
+        setAbilities(new AdminAbilities(this));
+    }
+
+    public AdminAbilities getAbilities() {
+        return abilities;
+    }
+
+    public void setAbilities(AdminAbilities abilities) {
+        this.abilities = abilities;
     }
 
     public String getFullName() {
@@ -56,16 +67,16 @@ public class Admin {
         answer = input.nextLine();
         switch (answer) {
             case "1", "Show All requests":
-                this.showRequest(this.getData().allRequests(), neoBank);
+                this.showRequest(this.getData().allRequests(this), neoBank);
                 break;
             case "2", "Show requests by Person":
-                this.showRequest(this.getData().filteredRequestsByPerson(neoBank), neoBank);
+                this.showRequest(this.getData().filteredRequestsByPerson(neoBank, this), neoBank);
                 break;
             case "3", "Show requests by Section":
-                this.showRequest(this.getData().filteredRequestsBySection(), neoBank);
+                this.showRequest(this.getData().filteredRequestsBySection(this), neoBank);
                 break;
             case "4", "Show requests by Status":
-                this.showRequest(this.getData().filteredRequestsByStatus(), neoBank);
+                this.showRequest(this.getData().filteredRequestsByStatus(this), neoBank);
                 break;
             case "5", "Return":
                 return;
@@ -184,4 +195,6 @@ public class Admin {
         System.out.println(ColorConsole.RED + "Wrong input try again!" + ColorConsole.RESET);
 
     }
+
+
 }

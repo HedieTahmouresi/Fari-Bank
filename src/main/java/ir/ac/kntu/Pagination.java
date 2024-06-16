@@ -256,7 +256,7 @@ public class Pagination<T> {
                 currentUser.addRequest(neoBank);
                 break;
             case "2", "Show Request list":
-                currentUser.showRequests();
+                currentUser.showRequests(neoBank);
                 break;
             case "3", "Return":
                 return;

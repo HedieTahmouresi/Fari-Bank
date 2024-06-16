@@ -332,7 +332,7 @@ public class SimpleUser extends UserPerson {
         System.out.println(ColorConsole.GREEN + "Request successfully noted!" + ColorConsole.RESET);
     }
 
-    public void showRequests() {
+    public void showRequests(NeoBank neoBank) {
         if (requests == null || requests.isEmpty()) {
             return;
         }
@@ -345,7 +345,7 @@ public class SimpleUser extends UserPerson {
             if (!input.exitPoint(command)) {
                 return;
             } else if (command.matches("[0-9]+")) {
-                this.selectRequest(command);
+                this.selectRequest(command, neoBank);
             } else if ("next".equals(command) || "previous".equals(command)) {
                 requestList.changePage(command);
             } else {
@@ -354,10 +354,10 @@ public class SimpleUser extends UserPerson {
         } while (!"return".equals(command));
     }
 
-    public void selectRequest(String answer) {
+    public void selectRequest(String answer, NeoBank neoBank) {
         if (Integer.parseInt(answer) > 0 && Integer.parseInt(answer) <= this.requests.size()) {
             int index = Integer.parseInt(answer) - 1;
-            this.requests.get(index).showInfo();
+            this.requests.get(index).showInfo(neoBank.getBankData());
             return;
         }
         System.out.println(ColorConsole.RED + "Wrong input try again!" + ColorConsole.RESET);

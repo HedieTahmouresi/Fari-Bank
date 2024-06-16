@@ -25,6 +25,7 @@ public class Authentication extends Request{
         System.out.println("The reason :" + this.getAnswer() + ColorConsole.RESET);
     }
 
+    @Override
     public void showInfo(Data data) {
         SimpleUser currentUser = data.getUserByPhone(this.getPhoneNumber());
         System.out.println(ColorConsole.PINK + "***" + ColorConsole.RESET);

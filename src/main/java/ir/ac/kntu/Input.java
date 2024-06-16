@@ -179,20 +179,20 @@ public class Input {
     }
 
     public RequestSection nextRequestSections() {
-        List<String> sections = new ArrayList<>(Arrays.asList(ColorConsole.CYAN + "Authentications" ,ColorConsole.CYAN + "Report", ColorConsole.CYAN + "Funds", ColorConsole.CYAN + "Contacts", ColorConsole.CYAN + "Transfer", ColorConsole.CYAN + "Sim Charge", ColorConsole.CYAN + "Credit Card", ColorConsole.CYAN + "Settings", ColorConsole.CYAN+ "Return" + ColorConsole.RESET));
+        List<String> sections = new ArrayList<>(Arrays.asList(ColorConsole.CYAN + "Authentications", ColorConsole.CYAN + "Report", ColorConsole.CYAN + "Funds", ColorConsole.CYAN + "Contacts", ColorConsole.CYAN + "Transfer", ColorConsole.CYAN + "Sim Charge", ColorConsole.CYAN + "Credit Card", ColorConsole.CYAN + "Settings", ColorConsole.CYAN + "Return" + ColorConsole.RESET));
         Pagination<String> sectionList = new Pagination<>(sections, 5);
         String answer;
-        do{
+        do {
             sectionList.showPage();
             answer = this.nextLine();
-            if (!this.exitPoint(answer) || "9".equals(answer)){
+            if (!this.exitPoint(answer) || "9".equals(answer)) {
                 return null;
-            } else if ("next".equals(answer) || "previous".equals(answer)){
+            } else if ("next".equals(answer) || "previous".equals(answer)) {
                 sectionList.changePage(answer);
-            } else{
+            } else {
                 return this.nextSection(answer);
             }
-        } while(true);
+        } while (true);
     }
 
     public RequestSection nextSection(String answer) {
@@ -201,7 +201,7 @@ public class Input {
                 return RequestSection.AUTHENTICATIONS;
             case "2", "Report":
                 return RequestSection.REPORT;
-            case "3", "Funds" :
+            case "3", "Funds":
                 return RequestSection.FUNDS;
             case "4", "Contacts":
                 return RequestSection.CONTACTS;
@@ -213,8 +213,6 @@ public class Input {
                 return RequestSection.CREDIT_CARD;
             case "8", "Settings":
                 return RequestSection.SETTINGS;
-            case "9", "Return":
-                return null;
             default:
                 if (!this.exitPoint(answer)) {
                     return null;
