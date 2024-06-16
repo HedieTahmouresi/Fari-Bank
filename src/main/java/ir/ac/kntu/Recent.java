@@ -33,7 +33,7 @@ public class Recent {
         setPerson(person);
         setByContact(byContact);
         if (byContact) {
-            setReceiverInfo(person.getPhoneNumber());
+            setReceiverInfo(person.getSimCard().getPhoneNumber());
         } else {
             setReceiverInfo(person.getAccount().getAccountId());
         }

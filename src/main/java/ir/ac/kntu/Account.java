@@ -251,7 +251,7 @@ public class Account {
         receiver.getAccount().setBalance(receiver.getAccount().getBalance() + Double.parseDouble(value));
         String info = receiver.getAccount().getAccountId();
         if (isByContact) {
-            info = receiver.getPhoneNumber();
+            info = receiver.getSimCard().getPhoneNumber();
         }
         TransferTransaction newTransaction = new TransferTransaction(Double.parseDouble(value), neoBank.getTracingNumber(), receiver, isByContact, info, "-", this.getOwner(), false);
         this.addTransaction(newTransaction, "transfer");
@@ -260,7 +260,7 @@ public class Account {
         if (this.getOwner().isHasRemainsFund()) {
             this.getOwner().getRemainsFund().saveRemains(remains, neoBank);
         }
-        this.addRecent(newTransaction, receiver.getPhoneNumber(), neoBank);
+        this.addRecent(newTransaction, receiver.getSimCard().getPhoneNumber(), neoBank);
         System.out.println(ColorConsole.GREEN_BOLD + "Transfer Completed!" + ColorConsole.RESET);
     }
 

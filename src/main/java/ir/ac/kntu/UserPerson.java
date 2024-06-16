@@ -5,7 +5,7 @@ import java.util.Objects;
 public class UserPerson {
     private String name;
     private String lastName;
-    private String phoneNumber;
+    private SimCard simCard;
 
     private final Input input = new Input();
 
@@ -25,18 +25,19 @@ public class UserPerson {
         this.lastName = lastName;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
+    public SimCard getSimCard() {
+        return simCard;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setSimCard(SimCard simCard) {
+        this.simCard = simCard;
     }
 
-    public UserPerson(String name, String lastName, String phoneNumber) {
+    public UserPerson(String name, String lastName, SimCard simCard) {
         setName(name);
         setLastName(lastName);
-        setPhoneNumber(phoneNumber);
+        simCard.setHasAccount(true);
+        setSimCard(simCard);
     }
 
     @Override
@@ -47,12 +48,12 @@ public class UserPerson {
         if (!(object instanceof UserPerson that)) {
             return false;
         }
-        return Objects.equals(getPhoneNumber(), that.getPhoneNumber());
+        return Objects.equals(getSimCard(), that.getSimCard());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getPhoneNumber());
+        return Objects.hashCode(getSimCard());
     }
 
     public void changeName() {
@@ -92,7 +93,7 @@ public class UserPerson {
     }
 
     public void changePhoneNumber(NeoBank neoBank, SimpleUser user, String usage) {
-        System.out.println(ColorConsole.CYAN_BOLD + "Would you like to change the phone number? (previous phone number : " + ColorConsole.PURPLE + this.getPhoneNumber() + ColorConsole.CYAN_BOLD + ")" + ColorConsole.RESET);
+        System.out.println(ColorConsole.CYAN_BOLD + "Would you like to change the phone number? (previous phone number : " + ColorConsole.PURPLE + this.getSimCard().getPhoneNumber() + ColorConsole.CYAN_BOLD + ")" + ColorConsole.RESET);
         String answer = input.nextLine();
         if ("no".equalsIgnoreCase(answer) || !input.exitPoint(answer)) {
             return;
@@ -100,11 +101,16 @@ public class UserPerson {
             String need = "contact".equals(usage) ? "should exist" : "shouldn't exist";
             String phoneNumber = input.nextPhoneNumber(neoBank.getBankData(), need);
             if (phoneNumber != null) {
-                if ("contact".equals(usage) && user.contactExistence(new Contact(" ", " ", phoneNumber))) {
+                if ("contact".equals(usage) && user.contactExistence(new Contact(" ", " ", new SimCard(phoneNumber, false)))) {
                     System.out.println(ColorConsole.RED_BOLD + "You already have a contact with this phone number" + ColorConsole.RESET);
                     this.changePhoneNumber(neoBank, user, usage);
                 }
-                this.setPhoneNumber(phoneNumber);
+                SimCard sim = neoBank.getManagerData().getSimCard(phoneNumber);
+                if (sim==null){
+                    sim = new SimCard(phoneNumber, true);
+                    neoBank.getManagerData().addSimCard(sim);
+                }
+                this.setSimCard(sim);
             }
             return;
         } else {
@@ -117,7 +123,7 @@ public class UserPerson {
     public String toString() {
         return ColorConsole.PURPLE_BOLD + "Name : " + ColorConsole.PINK + this.getName() +
                 ColorConsole.PURPLE_BOLD + ", Last Name : " + ColorConsole.PINK + this.getLastName() +
-                ColorConsole.PURPLE_BOLD + ", Phone Number : " + ColorConsole.PINK + this.getPhoneNumber() +
+                ColorConsole.PURPLE_BOLD + ", Phone Number : " + ColorConsole.PINK + this.getSimCard().getPhoneNumber() +
                 ColorConsole.RESET;
 
     }

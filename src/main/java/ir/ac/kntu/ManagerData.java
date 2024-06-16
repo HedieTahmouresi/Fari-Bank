@@ -9,6 +9,7 @@ public class ManagerData {
     private List<Admin> admins;
     private List<Manager> managers;
     private double wage;
+    private List<SimCard> simCards;
 
     private int bonusPercentage;
 
@@ -25,6 +26,7 @@ public class ManagerData {
         this.bonusFunds = new ArrayList<>();
         this.admins = new ArrayList<>();
         this.managers = new ArrayList<>();
+        this.simCards = new ArrayList<>();
         setWage(2.5);
     }
 
@@ -60,5 +62,18 @@ public class ManagerData {
 
     public void addBonusFund(BonusFund fund) {
         this.bonusFunds.add(fund);
+    }
+
+    public void addSimCard(SimCard simCard){
+        this.simCards.add(simCard);
+    }
+
+    public SimCard getSimCard(String phoneNumber){
+        for (SimCard simCard : simCards){
+            if (simCard.getPhoneNumber().equals(phoneNumber)){
+                return simCard;
+            }
+        }
+        return null;
     }
 }

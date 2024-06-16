@@ -64,8 +64,8 @@ public class SimpleUser extends UserPerson {
         this.hasRemainsFund = hasRemainsFund;
     }
 
-    public SimpleUser(String name, String lastName, String phoneNumber, String securityNumber, String password, Authentication authentication) {
-        super(name, lastName, phoneNumber);
+    public SimpleUser(String name, String lastName, SimCard simCard, String securityNumber, String password, Authentication authentication) {
+        super(name, lastName, simCard);
         setSecurityNumber(securityNumber);
         setPassword(password);
         this.requests = new ArrayList<>();
@@ -177,8 +177,8 @@ public class SimpleUser extends UserPerson {
         this.changePhoneNumber(neoBank, this, "user");
         this.changeSecurityNumber(neoBank);
         this.changePassword();
-        neoBank.getBankData().addAuthentication(new Authentication(this.getPhoneNumber()));
-        this.setAuthenticated(new Authentication(this.getPhoneNumber()));
+        neoBank.getBankData().addAuthentication(new Authentication(this.getSimCard().getPhoneNumber()));
+        this.setAuthenticated(new Authentication(this.getSimCard().getPhoneNumber()));
         System.out.println(ColorConsole.GREEN + "Sign Up info changed!" + ColorConsole.RESET);
     }
 
@@ -219,7 +219,7 @@ public class SimpleUser extends UserPerson {
         if (receiverContact == null) {
             return;
         }
-        SimpleUser receiver = neoBank.getBankData().getUserByPhone(receiverContact.getPhoneNumber());
+        SimpleUser receiver = neoBank.getBankData().getUserByPhone(receiverContact.getSimCard().getPhoneNumber());
         if (!this.checkContactForTransfer(receiver)) {
             return;
         }
@@ -260,7 +260,7 @@ public class SimpleUser extends UserPerson {
     }
 
     public boolean checkContactForTransfer(SimpleUser receiver) {
-        if (!receiver.contactExistence(new Contact(" ", " ", this.getPhoneNumber()))) {
+        if (!receiver.contactExistence(new Contact(" ", " ", this.getSimCard()))) {
             System.out.println(ColorConsole.RED + "You can't transfer to a contact if they don't have you as a contact!" + ColorConsole.RESET);
             return false;
         } else if (!receiver.isContactOption()) {
@@ -272,7 +272,7 @@ public class SimpleUser extends UserPerson {
 
     public Contact findContact(String phoneNumber) {
         for (Contact contact : contacts) {
-            if (contact.getPhoneNumber().equals(phoneNumber)) {
+            if (contact.getSimCard().getPhoneNumber().equals(phoneNumber)) {
                 return contact;
             }
         }
@@ -326,7 +326,7 @@ public class SimpleUser extends UserPerson {
         if (!input.exitPoint(text)) {
             return;
         }
-        Request newRequest = new Request(text, section, this.getPhoneNumber());
+        Request newRequest = new Request(text, section, this.getSimCard().getPhoneNumber());
         this.addRequest(newRequest);
         neoBank.getBankData().addRequest(newRequest);
         System.out.println(ColorConsole.GREEN + "Request successfully noted!" + ColorConsole.RESET);
@@ -368,7 +368,7 @@ public class SimpleUser extends UserPerson {
     public void showUserInfo(NeoBank neoBank) {
         System.out.println(ColorConsole.PURPLE + "Name : " + ColorConsole.BLUE_BOLD + this.getName() + ColorConsole.RESET);
         System.out.println(ColorConsole.PURPLE + "Last Name : " + ColorConsole.BLUE_BOLD + this.getLastName() + ColorConsole.RESET);
-        System.out.println(ColorConsole.PURPLE + "Phone Number : " + ColorConsole.BLUE_BOLD + this.getPhoneNumber() + ColorConsole.RESET);
+        System.out.println(ColorConsole.PURPLE + "Phone Number : " + ColorConsole.BLUE_BOLD + this.getSimCard().getPhoneNumber() + ColorConsole.RESET);
         System.out.println(ColorConsole.PURPLE + "Account Id : " + ColorConsole.BLUE_BOLD + this.getAccount().getAccountId() + ColorConsole.RESET);
         System.out.println(ColorConsole.PURPLE + "Transactions : " + ColorConsole.RESET);
         this.getAccount().showTransactionList(neoBank, this.getAccount().addAllTransactions(neoBank));
@@ -466,5 +466,22 @@ public class SimpleUser extends UserPerson {
             return;
         }
         System.out.println(ColorConsole.RED + "Wrong input try again!" + ColorConsole.RESET);
+    }
+
+    public void chargeSimCard(NeoBank neoBank){
+        String phoneNumber = input.nextPhoneNumber(neoBank.getBankData(), "doesn't matter");
+        if (phoneNumber==null){
+            return;
+        }
+        SimCard simCard = neoBank.getManagerData().getSimCard(phoneNumber);
+        if (simCard==null){
+            simCard = new SimCard(phoneNumber, false);
+        }
+        boolean hasBeenCharged = simCard.chargeSimCard();
+        if (!hasBeenCharged){
+            System.out.println(ColorConsole.RED + "Charge has failed!" + ColorConsole.RESET);
+            return;
+        }
+        neoBank.getManagerData().addSimCard(simCard);
     }
 }

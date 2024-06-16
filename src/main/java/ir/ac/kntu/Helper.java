@@ -2,27 +2,33 @@ package ir.ac.kntu;
 
 public class Helper {
     public static void initiateUsers(NeoBank neoBank) {
-        SimpleUser hedie = new SimpleUser("Hedie", "Tahmouresi", "09109056296", "0025755900", "H@tah1384", new Authentication("09109056296"));
+
+        SimpleUser hedie = new SimpleUser("Hedie", "Tahmouresi", new SimCard("09109056296", false), "0025755900", "H@tah1384", new Authentication("09109056296"));
         hedie.getAuthenticated().authenticateUser(neoBank, hedie);
         neoBank.getBankData().addUser(hedie);
-        SimpleUser aylin = new SimpleUser("Aylin", "Jabbari", "09901917812", "0215021470", "A#Jab1384", new Authentication("09901917812"));
+        SimpleUser aylin = new SimpleUser("Aylin", "Jabbari", new SimCard("09901917812", false), "0215021470", "A#Jab1384", new Authentication("09901917812"));
         aylin.getAuthenticated().authenticateUser(neoBank, aylin);
         neoBank.getBankData().addUser(aylin);
         aylin.setContactOption(false);
-        SimpleUser amir = new SimpleUser("Amir", "Tahmouresi", "09028789000", "0023577410", "A@tah1379", new Authentication("09028789000"));
+        SimpleUser amir = new SimpleUser("Amir", "Tahmouresi", new SimCard("09028789000", false), "0023577410", "A@tah1379", new Authentication("09028789000"));
         neoBank.getBankData().addUser(amir);
         neoBank.getBankData().addAuthentication(amir.getAuthenticated());
-        SimpleUser neda = new SimpleUser("Neda", "Abtahi", "09124464876", "0306201582", "Neda0*0abeN", new Authentication("09124464876"));
+        SimpleUser neda = new SimpleUser("Neda", "Abtahi", new SimCard("09124464876", false), "0306201582", "Neda0*0abeN", new Authentication("09124464876"));
         neoBank.getBankData().addAuthentication(neda.getAuthenticated());
         neda.getAuthenticated().setAuthenticated(false);
         neda.getAuthenticated().setReason("I don't like you");
         neoBank.getBankData().addUser(neda);
-        SimpleUser sepehr = new SimpleUser("Sepehr", "Ghardashi", "09111262338", "0105213054", "H@tah1384", new Authentication("09111262338"));
+        SimpleUser sepehr = new SimpleUser("Sepehr", "Ghardashi", new SimCard("09111262338", false), "0105213054", "H@tah1384", new Authentication("09111262338"));
         neoBank.getBankData().addUser(sepehr);
         sepehr.getAuthenticated().authenticateUser(neoBank, sepehr);
-        hedie.addContact(new Contact("Sepi", "<>.<>", sepehr.getPhoneNumber()));
-        hedie.addContact(new Contact("Malake ziba", "Elsaii", aylin.getPhoneNumber()));
-        sepehr.addContact(new Contact("humourless", " ", "09109056296"));
+        hedie.addContact(new Contact("Sepi", "<>.<>", new SimCard(sepehr.getSimCard().getPhoneNumber(), true)));
+        hedie.addContact(new Contact("Malake ziba", "Elsaii", new SimCard(aylin.getSimCard().getPhoneNumber(), true)));
+        sepehr.addContact(new Contact("humourless", " ", new SimCard("09109056296", true)));
+        neoBank.getManagerData().addSimCard(hedie.getSimCard());
+        neoBank.getManagerData().addSimCard(amir.getSimCard());
+        neoBank.getManagerData().addSimCard(aylin.getSimCard());
+        neoBank.getManagerData().addSimCard(neda.getSimCard());
+        neoBank.getManagerData().addSimCard(sepehr.getSimCard());
     }
 
     public static void initiateAdmins(NeoBank neoBank) {

@@ -45,12 +45,14 @@ public class Data {
         if (!phoneMatcher.matches()) {
             System.out.println(ColorConsole.RED_BOLD + "Invalid phone number Please try again" + ColorConsole.RESET);
             return false;
+        } else if ("doesn't matter".equals(need)){
+            return true;
         }
         for (SimpleUser user : this.users) {
-            if (phoneNumber.equalsIgnoreCase(user.getPhoneNumber()) && "shouldn't exist".equals(need)) {
+            if (phoneNumber.equalsIgnoreCase(user.getSimCard().getPhoneNumber()) && "shouldn't exist".equals(need)) {
                 System.out.println(ColorConsole.RED_BOLD + "a user with this phone number already exists" + ColorConsole.RESET);
                 return false;
-            } else if (phoneNumber.equalsIgnoreCase(user.getPhoneNumber())) {
+            } else if (phoneNumber.equalsIgnoreCase(user.getSimCard().getPhoneNumber())) {
                 return true;
             }
         }
@@ -80,7 +82,7 @@ public class Data {
 
     public SimpleUser getUserByPhone(String phoneNumber) {
         for (SimpleUser user : this.users) {
-            if (user.getPhoneNumber().equalsIgnoreCase(phoneNumber)) {
+            if (user.getSimCard().getPhoneNumber().equalsIgnoreCase(phoneNumber)) {
                 return user;
             }
         }
@@ -96,7 +98,7 @@ public class Data {
         return null;
     }
 
-    public void signUp() {
+    public void signUp(NeoBank neoBank) {
         String name, lastName, phoneNumber, securityNumber, password;
         System.out.println(ColorConsole.BLUE_BOLD + "Please enter your name" + ColorConsole.RESET);
         name = input.nextLine();
@@ -120,8 +122,13 @@ public class Data {
         if (password == null) {
             return;
         }
+        SimCard simCard = neoBank.getManagerData().getSimCard(phoneNumber);
+        if (simCard==null){
+            simCard = new SimCard(phoneNumber, false);
+            neoBank.getManagerData().addSimCard(simCard);
+        }
         Authentication newAuthentication = new Authentication(phoneNumber);
-        this.addUser(new SimpleUser(name, lastName, phoneNumber, securityNumber, password, newAuthentication));
+        this.addUser(new SimpleUser(name, lastName, simCard, securityNumber, password, newAuthentication));
         this.addAuthentication(newAuthentication);
         System.out.println(ColorConsole.GREEN + "You have successfully signed in!" + ColorConsole.RESET);
     }
@@ -334,7 +341,7 @@ public class Data {
     public static List<SimpleUser> fuzzySearchPhone(String phoneNumber, List<SimpleUser> list) {
         List<SimpleUser> result = new ArrayList<>();
         for (SimpleUser user : list) {
-            Fuzzy similarity = new Fuzzy(phoneNumber, user.getPhoneNumber());
+            Fuzzy similarity = new Fuzzy(phoneNumber, user.getSimCard().getPhoneNumber());
             if (similarity.getSimilarity() >= 0.6) {
                 result.add(user);
             }

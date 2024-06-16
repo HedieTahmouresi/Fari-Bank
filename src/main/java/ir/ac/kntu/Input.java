@@ -113,7 +113,11 @@ public class Input {
         if (phoneNumber == null) {
             return;
         }
-        Contact newContact = new Contact(name, lastName, phoneNumber);
+        SimCard simCard = neoBank.getManagerData().getSimCard(phoneNumber);
+        if (simCard == null){
+            simCard = new SimCard(phoneNumber, false);
+        }
+        Contact newContact = new Contact(name, lastName, simCard);
         newContact.addContact(neoBank, currentUser);
     }
 

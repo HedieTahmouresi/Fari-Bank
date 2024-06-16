@@ -48,7 +48,7 @@ public class Authentication {
         System.out.println(ColorConsole.PINK + "Name : " + ColorConsole.PURPLE + currentUser.getName() + ColorConsole.RESET);
         System.out.println(ColorConsole.PINK + "Last Name : " + ColorConsole.PURPLE + currentUser.getLastName() + ColorConsole.RESET);
         System.out.println(ColorConsole.PINK + "Social Security Number : " + ColorConsole.PURPLE + currentUser.getSecurityNumber() + ColorConsole.RESET);
-        System.out.println(ColorConsole.PINK + "Phone Number : " + ColorConsole.PURPLE + currentUser.getPhoneNumber() + ColorConsole.RESET);
+        System.out.println(ColorConsole.PINK + "Phone Number : " + ColorConsole.PURPLE + currentUser.getSimCard().getPhoneNumber() + ColorConsole.RESET);
         System.out.println(ColorConsole.PINK + "Password : " + ColorConsole.PURPLE + currentUser.getPassword() + ColorConsole.RESET);
         System.out.println(ColorConsole.PINK + "***" + ColorConsole.RESET);
     }

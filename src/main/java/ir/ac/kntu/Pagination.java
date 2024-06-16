@@ -65,7 +65,7 @@ public class Pagination<T> {
                 }
                 break;
             case "2", "Sign Up":
-                neoBank.getBankData().signUp();
+                neoBank.getBankData().signUp(neoBank);
                 break;
             case "next", "previous":
                 this.changePage(answer);
@@ -105,10 +105,11 @@ public class Pagination<T> {
         switch (answer) {
             case "1", "Account Management" -> menu.managementMenu(neoBank, currentUser);
             case "2", "Fund Management" -> menu.fundManagement(neoBank, currentUser);
-            case "3", "Contacts" -> menu.contactMenu(neoBank, currentUser);
-            case "4", "Transferring Money" -> menu.transferMenu(neoBank, currentUser);
-            case "5", "Administer" -> menu.administerMenu(neoBank, currentUser);
-            case "6", "Settings" -> menu.settingsMenu(currentUser);
+            case "3", "Charge sim" -> menu.chargeSim(neoBank, currentUser);
+            case "4", "Contacts" -> menu.contactMenu(neoBank, currentUser);
+            case "5", "Transferring Money" -> menu.transferMenu(neoBank, currentUser);
+            case "6", "Administer" -> menu.administerMenu(neoBank, currentUser);
+            case "7", "Settings" -> menu.settingsMenu(currentUser);
             case "next", "previous" -> this.changePage(answer);
             default ->
                     System.out.println(ColorConsole.RED + "THERE IS NO OTHER OPTION! Please input something else!" + ColorConsole.RESET);
@@ -168,7 +169,9 @@ public class Pagination<T> {
             case "3", "See Transactions":
                 currentUser.getAccount().seeTransactions(neoBank);
                 break;
-            case "4", "Return":
+            case "4", "See Sim Card Charge" :
+                currentUser.getSimCard().showCharge();
+            case "5", "Return":
                 return;
             case "next", "previous":
                 this.changePage(answer);
@@ -286,6 +289,33 @@ public class Pagination<T> {
             default:
                 System.out.println(ColorConsole.RED + "THERE IS NO OTHER OPTION! Please input something else!" + ColorConsole.RESET);
                 break;
+
+        }
+    }
+
+    public void selectChargeOption(NeoBank neoBank, SimpleUser currentUser, String answer) {
+        switch (answer) {
+            case "1", "My Own Sim Card":
+                currentUser.getSimCard().chargeSimCard();
+                break;
+            case "2", "My Contacts":
+                if (currentUser.isContactOption()) {
+                    Contact currentContact = currentUser.showContacts();
+                    neoBank.getManagerData().getSimCard(currentContact.getSimCard().getPhoneNumber()).chargeSimCard();
+                } else {
+                    System.out.println(ColorConsole.RED + "You can't choose this option! You have turned off your contact option!" + ColorConsole.RESET);
+                }
+                break;
+            case "3", "Other":
+                currentUser.chargeSimCard(neoBank);
+                break;
+            case "4", "Return":
+                return;
+            case "next", "previous":
+                this.changePage(answer);
+                break;
+            default:
+                System.out.println(ColorConsole.RED + "THERE IS NO OTHER OPTION! Please input something else!" + ColorConsole.RESET);
 
         }
     }

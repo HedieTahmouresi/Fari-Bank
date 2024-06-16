@@ -3,8 +3,8 @@ package ir.ac.kntu;
 public class Contact extends UserPerson {
     private final Input input = new Input();
 
-    public Contact(String name, String lastName, String phoneNumber) {
-        super(name, lastName, phoneNumber);
+    public Contact(String name, String lastName, SimCard simCard) {
+        super(name, lastName, simCard);
     }
 
     @Override
@@ -14,7 +14,7 @@ public class Contact extends UserPerson {
 
     public void showInfo() {
         System.out.println(ColorConsole.PURPLE + this.toString() + ColorConsole.RESET);
-        System.out.println(ColorConsole.CYAN + "Phone Number : " + this.getPhoneNumber() + ColorConsole.RESET);
+        System.out.println(ColorConsole.CYAN + "Phone Number : " + this.getSimCard().getPhoneNumber() + ColorConsole.RESET);
     }
 
     public void addContact(NeoBank neoBank, SimpleUser currentUser) {
@@ -22,7 +22,7 @@ public class Contact extends UserPerson {
             System.out.println(ColorConsole.RED_BOLD + "You already have a contact with this phone number!" + ColorConsole.RESET);
             return;
         }
-        if (!neoBank.getBankData().getUserByPhone(this.getPhoneNumber()).getAuthenticated().isAuthenticated()) {
+        if (!neoBank.getBankData().getUserByPhone(this.getSimCard().getPhoneNumber()).getAuthenticated().isAuthenticated()) {
             System.out.println(ColorConsole.RED_BOLD + "This user hasn't completed setup!" + ColorConsole.RESET);
             return;
         }
