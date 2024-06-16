@@ -468,17 +468,17 @@ public class SimpleUser extends UserPerson {
         System.out.println(ColorConsole.RED + "Wrong input try again!" + ColorConsole.RESET);
     }
 
-    public void chargeSimCard(NeoBank neoBank){
+    public void chargeSimCard(NeoBank neoBank) {
         String phoneNumber = input.nextPhoneNumber(neoBank.getBankData(), "doesn't matter");
-        if (phoneNumber==null){
+        if (phoneNumber == null) {
             return;
         }
         SimCard simCard = neoBank.getManagerData().getSimCard(phoneNumber);
-        if (simCard==null){
+        if (simCard == null) {
             simCard = new SimCard(phoneNumber, false);
         }
-        boolean hasBeenCharged = simCard.chargeSimCard(neoBank,this);
-        if (!hasBeenCharged){
+        boolean hasBeenCharged = simCard.chargeSimCard(neoBank, this);
+        if (!hasBeenCharged) {
             System.out.println(ColorConsole.RED + "Charge has failed!" + ColorConsole.RESET);
             return;
         }

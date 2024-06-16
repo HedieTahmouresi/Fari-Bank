@@ -45,7 +45,7 @@ public class Data {
         if (!phoneMatcher.matches()) {
             System.out.println(ColorConsole.RED_BOLD + "Invalid phone number Please try again" + ColorConsole.RESET);
             return false;
-        } else if ("doesn't matter".equals(need)){
+        } else if ("doesn't matter".equals(need)) {
             return true;
         }
         for (SimpleUser user : this.users) {
@@ -122,15 +122,20 @@ public class Data {
         if (password == null) {
             return;
         }
-        SimCard simCard = neoBank.getManagerData().getSimCard(phoneNumber);
-        if (simCard==null){
-            simCard = new SimCard(phoneNumber, false);
-            neoBank.getManagerData().addSimCard(simCard);
-        }
+        SimCard simCard = this.getSim(neoBank, phoneNumber);
         Authentication newAuthentication = new Authentication(phoneNumber);
         this.addUser(new SimpleUser(name, lastName, simCard, securityNumber, password, newAuthentication));
         this.addAuthentication(newAuthentication);
         System.out.println(ColorConsole.GREEN + "You have successfully signed in!" + ColorConsole.RESET);
+    }
+
+    public SimCard getSim(NeoBank neoBank, String phoneNumber){
+        SimCard simCard = neoBank.getManagerData().getSimCard(phoneNumber);
+        if (simCard == null) {
+            simCard = new SimCard(phoneNumber, false);
+            neoBank.getManagerData().addSimCard(simCard);
+        }
+        return simCard;
     }
 
     public SimpleUser signInUser() {

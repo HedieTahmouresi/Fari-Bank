@@ -106,7 +106,7 @@ public class UserPerson {
                     this.changePhoneNumber(neoBank, user, usage);
                 }
                 SimCard sim = neoBank.getManagerData().getSimCard(phoneNumber);
-                if (sim==null){
+                if (sim == null) {
                     sim = new SimCard(phoneNumber, true);
                     neoBank.getManagerData().addSimCard(sim);
                 }

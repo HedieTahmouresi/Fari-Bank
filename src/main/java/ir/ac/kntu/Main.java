@@ -5,8 +5,9 @@ public class Main {
 
     public static void main(String[] args) {
         NeoBank fariBank = new NeoBank();
-        Helper.initiateUsers(fariBank);
-        Helper.initiateAdmins(fariBank);
+        Helper helper = new Helper();
+        helper.initiateUsers(fariBank);
+        helper.initiateAdmins(fariBank);
         fariBank.launchBank();
     }
 

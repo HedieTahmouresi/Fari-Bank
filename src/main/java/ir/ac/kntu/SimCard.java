@@ -33,29 +33,29 @@ public class SimCard {
         this.charge = charge;
     }
 
-    public SimCard(String phoneNumber, boolean hasAccount){
+    public SimCard(String phoneNumber, boolean hasAccount) {
         setPhoneNumber(phoneNumber);
         setCharge(0);
         setHasAccount(hasAccount);
     }
 
-    public boolean chargeSimCard(NeoBank neoBank,SimpleUser currentUser){
+    public boolean chargeSimCard(NeoBank neoBank, SimpleUser currentUser) {
         System.out.println(ColorConsole.BLUE + "How much do you want to charge this sim card?" + ColorConsole.PURPLE + "(" + this.getPhoneNumber() + ")" + ColorConsole.RESET);
         String answer = input.nextLine();
-        if (!input.exitPoint(answer)){
+        if (!input.exitPoint(answer)) {
             return false;
-        } else if(!answer.matches("[0-9]+\\.?[0-9]*")){
+        } else if (!answer.matches("[0-9]+\\.?[0-9]*")) {
             System.out.println(ColorConsole.RED + "Wrong format" + ColorConsole.RESET);
-            return this.chargeSimCard(neoBank,currentUser);
+            return this.chargeSimCard(neoBank, currentUser);
         }
         double remains = currentUser.isHasRemainsFund() ? currentUser.getRemainsFund().calculateRemains(answer) : 0;
-        if (Double.parseDouble(answer) +remains > currentUser.getAccount().getBalance()) {
+        if (Double.parseDouble(answer) + remains + neoBank.getManagerData().getChargeWage() > currentUser.getAccount().getBalance()) {
             System.out.println(ColorConsole.RED + "transfer failed! you don't have enough money!" + ColorConsole.RESET);
-            return this.chargeSimCard(neoBank,currentUser);
+            return this.chargeSimCard(neoBank, currentUser);
         }
-        currentUser.getAccount().addTransaction(new SimChargeTransaction(Double.parseDouble(answer), neoBank.getTracingNumber(), " ", this.getPhoneNumber()), "Sim Card Charge");
+        currentUser.getAccount().addTransaction(new SimChargeTransaction(Double.parseDouble(answer) + neoBank.getManagerData().getChargeWage(), neoBank.getTracingNumber(), " ", this.getPhoneNumber()), "Sim Card Charge");
         this.setCharge(this.getCharge() + Double.parseDouble(answer));
-        currentUser.getAccount().setBalance(currentUser.getAccount().getBalance() - remains - Double.parseDouble(answer));
+        currentUser.getAccount().setBalance(currentUser.getAccount().getBalance() - remains - Double.parseDouble(answer) - neoBank.getManagerData().getChargeWage());
         if (currentUser.isHasRemainsFund()) {
             currentUser.getRemainsFund().saveRemains(remains, neoBank);
         }
@@ -63,14 +63,18 @@ public class SimCard {
         return true;
     }
 
-    public void showCharge(){
+    public void showCharge() {
         System.out.println(ColorConsole.GREEN + "This is your charge : " + ColorConsole.YELLOW + this.getCharge() + ColorConsole.RESET);
     }
 
     @Override
     public boolean equals(Object object) {
-        if (this == object) return true;
-        if (!(object instanceof SimCard simCard)) return false;
+        if (this == object) {
+            return true;
+        }
+        if (!(object instanceof SimCard simCard)) {
+            return false;
+        }
         return Objects.equals(getPhoneNumber(), simCard.getPhoneNumber());
     }
 

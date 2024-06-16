@@ -16,9 +16,9 @@ public class Menu {
 
     private final List<String> adminServiceMenu = new ArrayList<>(Arrays.asList(ColorConsole.CYAN + "Authentications", ColorConsole.CYAN + "Requests" + ColorConsole.RESET, ColorConsole.CYAN + "Users", ColorConsole.CYAN + "Return" + ColorConsole.RESET));
 
-    private final List<String> userServiceMenu = new ArrayList<>(Arrays.asList(ColorConsole.CYAN + "Account Management", ColorConsole.CYAN + "Fund management",ColorConsole.CYAN + "Charge Sim", ColorConsole.CYAN + "Contacts" + ColorConsole.RESET, ColorConsole.CYAN + "Transferring Money", ColorConsole.CYAN + "Administer", ColorConsole.CYAN + "Settings", ColorConsole.CYAN + "Return" + ColorConsole.RESET));
+    private final List<String> userServiceMenu = new ArrayList<>(Arrays.asList(ColorConsole.CYAN + "Account Management", ColorConsole.CYAN + "Fund management", ColorConsole.CYAN + "Charge Sim", ColorConsole.CYAN + "Contacts" + ColorConsole.RESET, ColorConsole.CYAN + "Transferring Money", ColorConsole.CYAN + "Administer", ColorConsole.CYAN + "Settings", ColorConsole.CYAN + "Return" + ColorConsole.RESET));
 
-    private final List<String> managementMenu = new ArrayList<>(Arrays.asList(ColorConsole.CYAN + "Charge Account", ColorConsole.CYAN + "Check Balance" + ColorConsole.RESET, ColorConsole.CYAN + "See Transactions",ColorConsole.CYAN + "See Sim Card Charge", ColorConsole.CYAN + "Return" + ColorConsole.RESET));
+    private final List<String> managementMenu = new ArrayList<>(Arrays.asList(ColorConsole.CYAN + "Charge Account", ColorConsole.CYAN + "Check Balance" + ColorConsole.RESET, ColorConsole.CYAN + "See Transactions", ColorConsole.CYAN + "See Sim Card Charge", ColorConsole.CYAN + "Return" + ColorConsole.RESET));
 
     private final List<String> contactMenu = new ArrayList<>(Arrays.asList(ColorConsole.CYAN + "Add Contact", ColorConsole.CYAN + "Show Contact List" + ColorConsole.RESET, ColorConsole.CYAN + "Return" + ColorConsole.RESET));
 
@@ -186,13 +186,13 @@ public class Menu {
     public void chargeSim(NeoBank neoBank, SimpleUser currentUser) {
         Pagination<String> menu = new Pagination<>(chargeSimOptions, 5);
         String answer;
-        do{
+        do {
             menu.showPage();
             answer = input.nextLine();
-            if (!input.exitPoint(answer) || "4".equals(answer)){
+            if (!input.exitPoint(answer) || "4".equals(answer)) {
                 return;
             }
             menu.selectChargeOption(neoBank, currentUser, answer);
-        }while(!"quit".equals(answer));
+        } while (!"quit".equals(answer));
     }
 }

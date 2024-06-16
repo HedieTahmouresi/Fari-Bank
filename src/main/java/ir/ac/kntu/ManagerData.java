@@ -8,10 +8,18 @@ public class ManagerData {
     private List<Fund> bonusFunds;
     private List<Admin> admins;
     private List<Manager> managers;
-    private double wage;
+    private double fariWage;
     private List<SimCard> simCards;
-
+    private double chargeWage;
     private int bonusPercentage;
+
+    public double getChargeWage() {
+        return chargeWage;
+    }
+
+    public void setChargeWage(double chargeWage) {
+        this.chargeWage = chargeWage;
+    }
 
     public Data getData() {
         return data;
@@ -27,7 +35,7 @@ public class ManagerData {
         this.admins = new ArrayList<>();
         this.managers = new ArrayList<>();
         this.simCards = new ArrayList<>();
-        setWage(2.5);
+        setFariWage(2.5);
     }
 
     public Admin getSpecificAdmin(String userName) {
@@ -44,12 +52,12 @@ public class ManagerData {
     }
 
 
-    public double getWage() {
-        return wage;
+    public double getFariWage() {
+        return fariWage;
     }
 
-    public void setWage(double wage) {
-        this.wage = wage;
+    public void setFariWage(double fariWage) {
+        this.fariWage = fariWage;
     }
 
     public int getBonusPercentage() {
@@ -64,13 +72,13 @@ public class ManagerData {
         this.bonusFunds.add(fund);
     }
 
-    public void addSimCard(SimCard simCard){
+    public void addSimCard(SimCard simCard) {
         this.simCards.add(simCard);
     }
 
-    public SimCard getSimCard(String phoneNumber){
-        for (SimCard simCard : simCards){
-            if (simCard.getPhoneNumber().equals(phoneNumber)){
+    public SimCard getSimCard(String phoneNumber) {
+        for (SimCard simCard : simCards) {
+            if (simCard.getPhoneNumber().equals(phoneNumber)) {
                 return simCard;
             }
         }
