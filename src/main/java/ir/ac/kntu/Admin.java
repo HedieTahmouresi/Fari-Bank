@@ -116,12 +116,12 @@ public class Admin {
                 if (requestsList.get(index-1) instanceof Authentication){
                     ((Authentication) requestsList.get(index-1)).authenticateUser(neoBank);
                 }else if (RequestStatus.IN_PROCESS.equals(requestsList.get(index - 1).getStatus())) {
-                    requestsList.get(index - 1).showInfo();
+                    requestsList.get(index - 1).showInfo(neoBank.getBankData());
                     requestsList.get(index - 1).closeRequest();
                 } else if (RequestStatus.NOTED.equals(requestsList.get(index - 1).getStatus())) {
-                    requestsList.get(index - 1).processRequest();
+                    requestsList.get(index - 1).processRequest(neoBank);
                 } else {
-                    requestsList.get(index - 1).showInfo();
+                    requestsList.get(index - 1).showInfo(neoBank.getBankData());
                 }
             }
 

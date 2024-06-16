@@ -33,6 +33,8 @@ public class Authentication extends Request{
         System.out.println(ColorConsole.PINK + "Social Security Number : " + ColorConsole.PURPLE + currentUser.getSecurityNumber() + ColorConsole.RESET);
         System.out.println(ColorConsole.PINK + "Phone Number : " + ColorConsole.PURPLE + currentUser.getSimCard().getPhoneNumber() + ColorConsole.RESET);
         System.out.println(ColorConsole.PINK + "Password : " + ColorConsole.PURPLE + currentUser.getPassword() + ColorConsole.RESET);
+        System.out.println(ColorConsole.PINK + "Request Status : " + ColorConsole.PURPLE + this.getStatus());
+        System.out.println(ColorConsole.PINK + "Admins Answer : " + ColorConsole.PURPLE + this.getAnswer());
         System.out.println(ColorConsole.PINK + "***" + ColorConsole.RESET);
     }
 
@@ -54,10 +56,11 @@ public class Authentication extends Request{
 
     @Override
     public String toString() {
-        return "Authentication{" +
+        return ColorConsole.PURPLE + "Authentication Request {" +
                 "phoneNumber='" + this.getPhoneNumber() + '\'' +
                 ", authenticated=" + authenticated +
-                '}';
+                ", Status=" + this.getStatus() +
+                '}' + ColorConsole.RESET;
     }
 
     @Override
@@ -74,16 +77,19 @@ public class Authentication extends Request{
     }
 
     public void authenticateUser(NeoBank neoBank) {
+        this.setStatus(RequestStatus.IN_PROCESS);
         SimpleUser currentUser = neoBank.getBankData().getUserByPhone(this.getPhoneNumber());
         currentUser.getAuthenticated().showInfo(neoBank.getBankData());
         System.out.println(ColorConsole.BLUE + "Would you like to authenticate this user?" + ColorConsole.PURPLE + "(1. yes, 2. no)" + ColorConsole.RESET);
         String answer = input.nextLine();
         switch (answer) {
             case "1", "yes":
+                this.setStatus(RequestStatus.PROCESSED);
                 neoBank.getBankData().removeAuthentication(currentUser);
                 currentUser.getAuthenticated().authenticateUser(neoBank, currentUser);
                 return;
             case "2", "no":
+                this.setStatus(RequestStatus.PROCESSED);
                 currentUser.getAuthenticated().rejectUser();
                 return;
             default:
