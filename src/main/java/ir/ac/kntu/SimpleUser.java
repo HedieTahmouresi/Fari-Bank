@@ -466,6 +466,5 @@ public class SimpleUser extends UserPerson {
             return;
         }
         System.out.println(ColorConsole.RED + "Wrong input try again!" + ColorConsole.RESET);
-
     }
 }
