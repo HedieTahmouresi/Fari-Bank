@@ -202,7 +202,7 @@ public class SimpleUser extends UserPerson {
             return;
         }
         SimpleUser receiver = neoBank.getBankData().getUserByAccountID(accountID);
-        String value = input.nextValue(receiver);
+        String value = input.nextValue(receiver, 8000000.0);
         if (value == null) {
             return;
         }
@@ -223,7 +223,7 @@ public class SimpleUser extends UserPerson {
         if (!this.checkContactForTransfer(receiver)) {
             return;
         }
-        String value = input.nextValue(receiver);
+        String value = input.nextValue(receiver, 8000000.0);
         if (value == null) {
             return;
         }
@@ -247,7 +247,7 @@ public class SimpleUser extends UserPerson {
                 return;
             }
         }
-        String value = input.nextValue(receiver);
+        String value = input.nextValue(receiver, 8000000.0);
         if (value == null) {
             return;
         }

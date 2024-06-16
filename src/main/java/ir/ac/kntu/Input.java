@@ -142,17 +142,19 @@ public class Input {
         return this.nextAccountID(neoBank);
     }
 
-    public String nextValue(SimpleUser receiver) {
+    public String nextValue(SimpleUser receiver, Double limit) {
         System.out.println(ColorConsole.PURPLE + "How much would you like to transfer to " + ColorConsole.PINK + receiver.getName() + " " + receiver.getLastName() + ColorConsole.PURPLE + "?" + ColorConsole.RESET);
         String answer = this.nextLine();
         if (!this.exitPoint(answer)) {
             return null;
         } else if (!answer.matches("[0-9]+\\.?[0-9]*")) {
             System.out.println(ColorConsole.RED_BOLD + "Wrong Format! Try again! Please Enter a number!" + ColorConsole.RESET);
-        } else {
+        } else if (Double.parseDouble(answer)<limit){
             return answer;
+        } else{
+            System.out.println(ColorConsole.RED + "You can't transfer more that 8000000" + ColorConsole.RESET);
         }
-        return this.nextValue(receiver);
+        return this.nextValue(receiver, limit);
     }
 
     public boolean nextConfirmation(SimpleUser receiver, String value) {
@@ -346,5 +348,58 @@ public class Input {
             return answer;
         }
         return nextFundType();
+    }
+
+    public Account nextAccount(CentralBank centralBank){
+        System.out.println(ColorConsole.BLUE + "By :" + ColorConsole.RESET);
+        System.out.println(ColorConsole.BLUE + "   1. Credit Card" + ColorConsole.RESET);
+        System.out.println(ColorConsole.BLUE + "   2. Account" + ColorConsole.RESET);
+        String answer = input.nextLine();
+        if (!this.exitPoint(answer)){
+            return null;
+        } else if ("1".equals(answer) || "Credit Card".equalsIgnoreCase(answer)){
+            return this.nextAccountID(centralBank);
+        } else if ("2".equals(answer) || "Account".equals(answer)){
+            return this.nextCreditCardID(centralBank);
+        }
+        System.out.println(ColorConsole.RED + "No other option! Try again!" + ColorConsole.RESET);
+        return this.nextAccount(centralBank);
+    }
+
+    public Account nextAccountID(CentralBank centralBank) {
+        System.out.println(ColorConsole.BLUE + "Please enter the account Id of the person you would like to transfer money to!" + ColorConsole.RESET);
+        String answer = this.nextLine();
+        String regexID = "[0-9]{13}";
+        Pattern patternID = Pattern.compile(regexID);
+        Matcher matcherID = patternID.matcher(answer);
+        if (!this.exitPoint(answer)) {
+            return null;
+        } else if (!matcherID.matches()) {
+            System.out.println(ColorConsole.RED + "Wrong format! Please try again! each account ID involves 13 digits!" + ColorConsole.RESET);
+        } else if (centralBank.existsAccountId(answer)==null) {
+            System.out.println(ColorConsole.RED + "No account with this ID exists! Try again!" + ColorConsole.RESET);
+        } else {
+            return centralBank.existsAccountId(answer);
+        }
+        return this.nextAccountID(centralBank);
+    }
+
+
+    public Account nextCreditCardID(CentralBank centralBank){
+        System.out.println(ColorConsole.BLUE + "Please enter the credit card Id of the person you would like to transfer money to!" + ColorConsole.RESET);
+        String answer = this.nextLine();
+        String regexID = "[0-9]{16}";
+        Pattern patternID = Pattern.compile(regexID);
+        Matcher matcherID = patternID.matcher(answer);
+        if (!this.exitPoint(answer)) {
+            return null;
+        } else if (!matcherID.matches()) {
+            System.out.println(ColorConsole.RED + "Wrong format! Please try again! each account ID involves 13 digits!" + ColorConsole.RESET);
+        } else if (centralBank.existsCreditCardId(answer)==null) {
+            System.out.println(ColorConsole.RED + "No card with this ID exists! Try again!" + ColorConsole.RESET);
+        } else {
+            return centralBank.existsCreditCardId(answer);
+        }
+        return this.nextCreditCardID(centralBank);
     }
 }

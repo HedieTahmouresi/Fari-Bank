@@ -42,7 +42,7 @@ public class CreditCard {
         String mask = "00000000";
         DecimalFormat decimalFormat = new DecimalFormat(mask);
         do {
-            creditCardString = "21995282";
+            creditCardString = neoBank.getCreditCardStarter();
             creditCard = random.nextLong(100000000);
             creditCardString = creditCardString.concat(decimalFormat.format(creditCard));
         } while (neoBank.getBankData().existsCreditCard(creditCardString));

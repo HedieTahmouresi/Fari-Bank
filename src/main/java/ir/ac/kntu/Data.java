@@ -83,9 +83,36 @@ public class Data {
         return null;
     }
 
+    public Account getAccountByID(String accountID){
+        for (SimpleUser user : this.users) {
+            if (user.getAccount().getAccountId().equalsIgnoreCase(accountID)) {
+                return user.getAccount();
+            }
+        }
+        return null;
+    }
+
     public SimpleUser getUserByAccountID(String accountID) {
         for (SimpleUser user : this.users) {
             if (user.getAccount().getAccountId().equalsIgnoreCase(accountID)) {
+                return user;
+            }
+        }
+        return null;
+    }
+
+    public Account getAccountByCard(String creditID){
+        for (SimpleUser user : this.users) {
+            if (user.getAccount().getCreditCard().getCreditCardId().equalsIgnoreCase(creditID)) {
+                return user.getAccount();
+            }
+        }
+        return null;
+    }
+
+    public SimpleUser getUserByCreditID(String creditID) {
+        for (SimpleUser user : this.users) {
+            if (user.getAccount().getCreditCard().getCreditCardId().equalsIgnoreCase(creditID)) {
                 return user;
             }
         }

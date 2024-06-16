@@ -53,12 +53,12 @@ public class Pagination<T> {
         }
     }
 
-    public void selectUserLog(Menu menu, NeoBank neoBank, String answer) {
+    public void selectUserLog(Menu menu, NeoBank neoBank, String answer, CentralBank centralBank) {
         switch (answer) {
             case "1", "Sign In":
                 SimpleUser currentUser = neoBank.getBankData().signInUser();
                 if (currentUser != null && currentUser.getAuthenticated().isAuthenticated()) {
-                    menu.userService(currentUser, neoBank);
+                    menu.userService(currentUser, neoBank, centralBank);
                 } else if (currentUser != null) {
                     currentUser.getAuthenticated().showRejection();
                     currentUser.changeInfo(neoBank);
@@ -80,10 +80,10 @@ public class Pagination<T> {
         }
     }
 
-    public void selectMain(Menu menu, NeoBank neoBank, String answer) {
+    public void selectMain(Menu menu, NeoBank neoBank, String answer, CentralBank centralBank) {
         switch (answer) {
             case "1", "Simple User":
-                menu.userLog(neoBank);
+                menu.userLog(neoBank, centralBank);
                 break;
             case "2", "Admin":
                 menu.adminLog(neoBank);
@@ -101,13 +101,13 @@ public class Pagination<T> {
         }
     }
 
-    public void selectUserService(Menu menu, NeoBank neoBank, String answer, SimpleUser currentUser) {
+    public void selectUserService(Menu menu, NeoBank neoBank, String answer, SimpleUser currentUser, CentralBank centralBank) {
         switch (answer) {
             case "1", "Account Management" -> menu.managementMenu(neoBank, currentUser);
             case "2", "Fund Management" -> menu.fundManagement(neoBank, currentUser);
             case "3", "Charge sim" -> menu.chargeSim(neoBank, currentUser);
             case "4", "Contacts" -> menu.contactMenu(neoBank, currentUser);
-            case "5", "Transferring Money" -> menu.transferMenu(neoBank, currentUser);
+            case "5", "Transferring Money" -> menu.transferMenu(neoBank,centralBank, currentUser);
             case "6", "Administer" -> menu.administerMenu(neoBank, currentUser);
             case "7", "Settings" -> menu.settingsMenu(currentUser);
             case "next", "previous" -> this.changePage(answer);
@@ -224,7 +224,7 @@ public class Pagination<T> {
         }
     }
 
-    public void selectTransfer(NeoBank neoBank, SimpleUser currentUser, String answer) {
+    public void selectFariTransfer(NeoBank neoBank, SimpleUser currentUser, String answer) {
         switch (answer) {
             case "1", "by Account ID":
                 currentUser.transferByAccountID(neoBank);
@@ -308,6 +308,28 @@ public class Pagination<T> {
                 break;
             case "4", "Return":
                 return;
+            case "next", "previous":
+                this.changePage(answer);
+                break;
+            default:
+                System.out.println(ColorConsole.RED + "THERE IS NO OTHER OPTION! Please input something else!" + ColorConsole.RESET);
+
+        }
+    }
+
+    public void selectTransfer(NeoBank neoBank, CentralBank centralBank, SimpleUser currentUser, String answer, Menu menu){
+        switch (answer) {
+            case "1", "Wire Transfer":
+                centralBank.wireTransfer(currentUser, neoBank);
+                break;
+            case "2", "Bridge Transfer":
+                centralBank.bridgeTransfer(currentUser, neoBank);
+                break;
+            case "3", "Credit to Credit":
+                centralBank.cardToCard(currentUser, neoBank);
+                break;
+            case "4", "Fari Transfer":
+                menu.fariTransferMenu(neoBank, currentUser);
             case "next", "previous":
                 this.changePage(answer);
                 break;

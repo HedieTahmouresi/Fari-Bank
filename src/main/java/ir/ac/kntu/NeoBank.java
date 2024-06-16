@@ -5,20 +5,29 @@ import java.util.Random;
 public class NeoBank {
     private Data bankData;
     private int tracingNumber;
-
+    private String creditCardStarter;
     private int baseFundID;
     private ManagerData managerData;
 
     private final Input input = new Input();
 
-    public NeoBank() {
+    public NeoBank(String creditCardStarter) {
         Data newData = new Data();
         setManagerData(new ManagerData(newData));
         setBankData(newData);
         Random random = new Random();
         setTracingNumber(random.nextInt(8999999) + 1000000);
         setBaseFundID(random.nextInt(999999999));
+        setCreditCardStarter(creditCardStarter);
 
+    }
+
+    public String getCreditCardStarter() {
+        return creditCardStarter;
+    }
+
+    public void setCreditCardStarter(String creditCardStarter) {
+        this.creditCardStarter = creditCardStarter;
     }
 
     public ManagerData getManagerData() {
@@ -87,9 +96,9 @@ public class NeoBank {
         return wantedAdmin;
     }
 
-    public void launchBank() {
+    public void launchBank(CentralBank centralBank) {
         Menu menu = new Menu();
-        menu.mainMenu(this);
+        menu.mainMenu(this, centralBank);
     }
 
 

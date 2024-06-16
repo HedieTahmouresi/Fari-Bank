@@ -12,6 +12,24 @@ public class ManagerData {
     private List<SimCard> simCards;
     private double chargeWage;
     private int bonusPercentage;
+    private double cardWage;
+    private double bridgeWage;
+
+    public double getBridgeWage() {
+        return bridgeWage;
+    }
+
+    public void setBridgeWage(double bridgeWage) {
+        this.bridgeWage = bridgeWage;
+    }
+
+    public double getCardWage() {
+        return cardWage;
+    }
+
+    public void setCardWage(double cardWage) {
+        this.cardWage = cardWage;
+    }
 
     public double getChargeWage() {
         return chargeWage;
@@ -35,7 +53,9 @@ public class ManagerData {
         this.admins = new ArrayList<>();
         this.managers = new ArrayList<>();
         this.simCards = new ArrayList<>();
-        setFariWage(2.5);
+        setFariWage(0.0);
+        setCardWage(300.0);
+        setChargeWage(0.0);
     }
 
     public Admin getSpecificAdmin(String userName) {

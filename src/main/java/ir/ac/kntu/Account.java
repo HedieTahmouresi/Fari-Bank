@@ -81,6 +81,10 @@ public class Account {
         recentList.add(new Recent(neoBank.getBankData().getUserByPhone(phoneNumber), transaction.isByContact()));
     }
 
+    public void addRecent(TransferTransaction transaction, String phoneNumber, CentralBank centralBank) {
+        recentList.add(new Recent(centralBank.getUserBySim(phoneNumber), transaction.isByContact()));
+    }
+
     public void chargeAccount(NeoBank neoBank) {
         System.out.println(ColorConsole.BLUE_BOLD + "How much would you like to charge your account?" + ColorConsole.RESET);
         String answer;
