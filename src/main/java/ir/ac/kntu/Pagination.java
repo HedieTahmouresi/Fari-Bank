@@ -296,12 +296,12 @@ public class Pagination<T> {
     public void selectChargeOption(NeoBank neoBank, SimpleUser currentUser, String answer) {
         switch (answer) {
             case "1", "My Own Sim Card":
-                currentUser.getSimCard().chargeSimCard();
+                currentUser.getSimCard().chargeSimCard(neoBank,currentUser);
                 break;
             case "2", "My Contacts":
                 if (currentUser.isContactOption()) {
                     Contact currentContact = currentUser.showContacts();
-                    neoBank.getManagerData().getSimCard(currentContact.getSimCard().getPhoneNumber()).chargeSimCard();
+                    neoBank.getManagerData().getSimCard(currentContact.getSimCard().getPhoneNumber()).chargeSimCard(neoBank,currentUser);
                 } else {
                     System.out.println(ColorConsole.RED + "You can't choose this option! You have turned off your contact option!" + ColorConsole.RESET);
                 }

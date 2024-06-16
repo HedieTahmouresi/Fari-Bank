@@ -477,7 +477,7 @@ public class SimpleUser extends UserPerson {
         if (simCard==null){
             simCard = new SimCard(phoneNumber, false);
         }
-        boolean hasBeenCharged = simCard.chargeSimCard();
+        boolean hasBeenCharged = simCard.chargeSimCard(neoBank,this);
         if (!hasBeenCharged){
             System.out.println(ColorConsole.RED + "Charge has failed!" + ColorConsole.RESET);
             return;

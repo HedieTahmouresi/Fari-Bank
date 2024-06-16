@@ -55,7 +55,7 @@ public class Transaction {
         LocalTime timePart = zonedDateTime.toLocalTime();
         System.out.println(ColorConsole.PINK + "Transaction : " + ColorConsole.RESET);
         System.out.println(ColorConsole.PINK + "Value: " + ColorConsole.PURPLE + this.getSign() + this.getValue() + ColorConsole.RESET);
-        System.out.println(ColorConsole.PINK + "Date: " + ColorConsole.PURPLE + datePart + ColorConsole.PINK + "Time: " + ColorConsole.PURPLE + timePart + ColorConsole.RESET);
+        System.out.println(ColorConsole.PINK + "Date: " + ColorConsole.PURPLE + datePart + ColorConsole.PINK + ", Time: " + ColorConsole.PURPLE + timePart + ColorConsole.RESET);
         System.out.println(ColorConsole.PINK + "Tracing Number: " + ColorConsole.PURPLE + this.getTracingNumber() + ColorConsole.RESET);
     }
 
