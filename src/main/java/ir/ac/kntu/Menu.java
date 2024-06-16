@@ -14,7 +14,7 @@ public class Menu {
 
     private final List<String> adminLog = new ArrayList<>(List.of(ColorConsole.CYAN + "Sign In"));
 
-    private final List<String> adminServiceMenu = new ArrayList<>(Arrays.asList(ColorConsole.CYAN + "Authentications", ColorConsole.CYAN + "Requests" + ColorConsole.RESET, ColorConsole.CYAN + "Users", ColorConsole.CYAN + "Return" + ColorConsole.RESET));
+    private final List<String> adminServiceMenu = new ArrayList<>(Arrays.asList( ColorConsole.CYAN + "Requests" + ColorConsole.RESET, ColorConsole.CYAN + "Users", ColorConsole.CYAN + "Return" + ColorConsole.RESET));
 
     private final List<String> userServiceMenu = new ArrayList<>(Arrays.asList(ColorConsole.CYAN + "Account Management", ColorConsole.CYAN + "Fund management", ColorConsole.CYAN + "Charge Sim", ColorConsole.CYAN + "Contacts" + ColorConsole.RESET, ColorConsole.CYAN + "Transferring Money", ColorConsole.CYAN + "Administer", ColorConsole.CYAN + "Settings", ColorConsole.CYAN + "Return" + ColorConsole.RESET));
 
@@ -91,7 +91,7 @@ public class Menu {
         do {
             menu.showPage();
             answer = input.nextLine();
-            if (!input.exitPoint(answer) || "4".equals(answer)) {
+            if (!input.exitPoint(answer) || "3".equals(answer)) {
                 return;
             }
             menu.selectAdminService(neoBank, currentAdmin, answer);

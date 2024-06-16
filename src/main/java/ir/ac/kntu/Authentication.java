@@ -1,9 +1,9 @@
 package ir.ac.kntu;
 
-public class Authentication {
-    private String phoneNumber;
+import java.util.Objects;
+
+public class Authentication extends Request{
     private boolean authenticated;
-    private String reason;
 
     private final Input input = new Input();
 
@@ -15,31 +15,14 @@ public class Authentication {
         this.authenticated = authenticated;
     }
 
-    public String getReason() {
-        return reason;
-    }
-
-    public void setReason(String reason) {
-        this.reason = reason;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
     public Authentication(String phoneNumber) {
-        setPhoneNumber(phoneNumber);
+        super("Please authenticate me!", RequestSection.AUTHENTICATIONS, phoneNumber);
         setAuthenticated(false);
-        setReason("Hasn't been checked yet!");
     }
 
     public void showRejection() {
         System.out.println(ColorConsole.YELLOW_BOLD + "you haven't been authenticated!");
-        System.out.println("The reason :" + this.getReason() + ColorConsole.RESET);
+        System.out.println("The reason :" + this.getAnswer() + ColorConsole.RESET);
     }
 
     public void showInfo(Data data) {
@@ -55,7 +38,7 @@ public class Authentication {
 
     public void authenticateUser(NeoBank neoBank, SimpleUser user) {
         this.setAuthenticated(true);
-        this.setReason("Accepted!");
+        this.setAnswer("Accepted!");
         user.setAccount(new Account(user, neoBank));
     }
 
@@ -66,14 +49,51 @@ public class Authentication {
             return;
         }
         this.setAuthenticated(false);
-        this.setReason(answer);
+        this.setAnswer(answer);
     }
 
     @Override
     public String toString() {
         return "Authentication{" +
-                "phoneNumber='" + phoneNumber + '\'' +
+                "phoneNumber='" + this.getPhoneNumber() + '\'' +
                 ", authenticated=" + authenticated +
                 '}';
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(isAuthenticated(), input);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Authentication that)) {
+            return false;
+        }
+        return this.getPhoneNumber().equals(((Authentication) obj).getPhoneNumber());
+    }
+
+    public void authenticateUser(NeoBank neoBank) {
+        SimpleUser currentUser = neoBank.getBankData().getUserByPhone(this.getPhoneNumber());
+        currentUser.getAuthenticated().showInfo(neoBank.getBankData());
+        System.out.println(ColorConsole.BLUE + "Would you like to authenticate this user?" + ColorConsole.PURPLE + "(1. yes, 2. no)" + ColorConsole.RESET);
+        String answer = input.nextLine();
+        switch (answer) {
+            case "1", "yes":
+                neoBank.getBankData().removeAuthentication(currentUser);
+                currentUser.getAuthenticated().authenticateUser(neoBank, currentUser);
+                return;
+            case "2", "no":
+                currentUser.getAuthenticated().rejectUser();
+                return;
+            default:
+                if (!input.exitPoint(answer)) {
+                    return;
+                } else {
+                    System.out.println(ColorConsole.RED + "Wrong Input" + ColorConsole.RESET);
+                }
+        }
+        this.authenticateUser(neoBank);
+    }
+
 }

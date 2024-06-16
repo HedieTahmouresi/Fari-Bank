@@ -8,6 +8,7 @@ public class Admin {
     private String password;
     private Data data;
 
+
     private final Input input = new Input();
 
     public Admin(String fullName, String userName, String password, Data data) {
@@ -49,33 +50,22 @@ public class Admin {
         this.data = data;
     }
 
-    public void selectAuthentication(NeoBank neoBank, String answer) {
-        if (Integer.parseInt(answer) > 0 && Integer.parseInt(answer) <= this.getData().authenticationsSize()) {
-            int index = Integer.parseInt(answer);
-            this.getData().authenticateUser(neoBank, index - 1);
-            return;
-
-        }
-        System.out.println(ColorConsole.RED + "Index Out of bound!" + ColorConsole.RESET);
-
-    }
-
     public void showRequest(NeoBank neoBank) {
         String answer;
         displayRequestMenu();
         answer = input.nextLine();
         switch (answer) {
             case "1", "Show All requests":
-                this.showRequest(this.getData().allRequests());
+                this.showRequest(this.getData().allRequests(), neoBank);
                 break;
             case "2", "Show requests by Person":
-                this.showRequest(this.getData().filteredRequestsByPerson(neoBank));
+                this.showRequest(this.getData().filteredRequestsByPerson(neoBank), neoBank);
                 break;
             case "3", "Show requests by Section":
-                this.showRequest(this.getData().filteredRequestsBySection());
+                this.showRequest(this.getData().filteredRequestsBySection(), neoBank);
                 break;
             case "4", "Show requests by Status":
-                this.showRequest(this.getData().filteredRequestsByStatus());
+                this.showRequest(this.getData().filteredRequestsByStatus(), neoBank);
                 break;
             case "5", "Return":
                 return;
@@ -97,7 +87,7 @@ public class Admin {
         System.out.println("   5.Return" + ColorConsole.RESET);
     }
 
-    public void showRequest(List<Request> requestsList) {
+    public void showRequest(List<Request> requestsList, NeoBank neoBank) {
         if (requestsList == null || requestsList.isEmpty()) {
             return;
         }
@@ -110,7 +100,7 @@ public class Admin {
             if (!input.exitPoint(command)) {
                 return;
             } else if (command.matches("[0-9]+")) {
-                this.selectRequest(requestsList, command);
+                this.selectRequest(requestsList, command, neoBank);
             } else if ("next".equals(command) || "previous".equals(command)) {
                 requests.changePage(command);
             } else {
@@ -119,11 +109,13 @@ public class Admin {
         } while (!"return".equals(command));
     }
 
-    public void selectRequest(List<Request> requestsList, String answer) {
+    public void selectRequest(List<Request> requestsList, String answer, NeoBank neoBank) {
         if (Integer.parseInt(answer) > 0 && Integer.parseInt(answer) < requestsList.size() + 1) {
             int index = Integer.parseInt(answer);
             if (answer.equals(Integer.toString(index))) {
-                if (RequestStatus.IN_PROCESS.equals(requestsList.get(index - 1).getStatus())) {
+                if (requestsList.get(index-1) instanceof Authentication){
+                    ((Authentication) requestsList.get(index-1)).authenticateUser(neoBank);
+                }else if (RequestStatus.IN_PROCESS.equals(requestsList.get(index - 1).getStatus())) {
                     requestsList.get(index - 1).showInfo();
                     requestsList.get(index - 1).closeRequest();
                 } else if (RequestStatus.NOTED.equals(requestsList.get(index - 1).getStatus())) {

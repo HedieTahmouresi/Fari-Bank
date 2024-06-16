@@ -1,5 +1,8 @@
 package ir.ac.kntu;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -175,28 +178,42 @@ public class Input {
         return "yes".equalsIgnoreCase(answer);
     }
 
-    private void displaySections() {
-        System.out.println(ColorConsole.CYAN + "Choose a section :");
-        System.out.println("   1. Account Management");
-        System.out.println("   2. Contacts");
-        System.out.println("   3. Transfer");
-        System.out.println("   4. Settings");
-        System.out.println("   5. Return" + ColorConsole.RESET);
+    public RequestSection nextRequestSections() {
+        List<String> sections = new ArrayList<>(Arrays.asList(ColorConsole.CYAN + "Authentications" ,ColorConsole.CYAN + "Report", ColorConsole.CYAN + "Funds", ColorConsole.CYAN + "Contacts", ColorConsole.CYAN + "Transfer", ColorConsole.CYAN + "Sim Charge", ColorConsole.CYAN + "Credit Card", ColorConsole.CYAN + "Settings", ColorConsole.CYAN+ "Return" + ColorConsole.RESET));
+        Pagination<String> sectionList = new Pagination<>(sections, 5);
+        String answer;
+        do{
+            sectionList.showPage();
+            answer = this.nextLine();
+            if (!this.exitPoint(answer) || "9".equals(answer)){
+                return null;
+            } else if ("next".equals(answer) || "previous".equals(answer)){
+                sectionList.changePage(answer);
+            } else{
+                return this.nextSection(answer);
+            }
+        } while(true);
     }
 
-    public RequestSection nextRequestSection() {
-        this.displaySections();
-        String answer = this.nextLine();
+    public RequestSection nextSection(String answer) {
         switch (answer) {
-            case "1", "Account Management":
-                return RequestSection.MANAGEMENT;
-            case "2", "Contacts":
+            case "1", "Authentications":
+                return RequestSection.AUTHENTICATIONS;
+            case "2", "Report":
+                return RequestSection.REPORT;
+            case "3", "Funds" :
+                return RequestSection.FUNDS;
+            case "4", "Contacts":
                 return RequestSection.CONTACTS;
-            case "3", "Transfer":
+            case "5", "Transfer":
                 return RequestSection.TRANSFER;
-            case "4", "Settings":
+            case "6", "Sim Charge":
+                return RequestSection.SIM_CHARGE;
+            case "7", "Credit Card":
+                return RequestSection.CREDIT_CARD;
+            case "8", "Settings":
                 return RequestSection.SETTINGS;
-            case "5", "Return":
+            case "9", "Return":
                 return null;
             default:
                 if (!this.exitPoint(answer)) {
@@ -205,7 +222,7 @@ public class Input {
                 System.out.println(ColorConsole.RED + "THERE IS NO OTHER OPTION! Please input something else!" + ColorConsole.RESET);
 
         }
-        return this.nextRequestSection();
+        return null;
     }
 
 

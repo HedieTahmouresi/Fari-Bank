@@ -139,16 +139,13 @@ public class Pagination<T> {
 
     public void selectAdminService(NeoBank neoBank, Admin currentAdmin, String answer) {
         switch (answer) {
-            case "1", "Authentications":
-                currentAdmin.getData().showAuthentications(neoBank, currentAdmin);
-                break;
-            case "2", "Requests":
+            case "1", "Requests":
                 currentAdmin.showRequest(neoBank);
                 break;
-            case "3", "Users":
+            case "2", "Users":
                 currentAdmin.searchUsers(neoBank);
                 break;
-            case "4", "Return":
+            case "3", "Return":
                 return;
             case "next", "previous":
                 this.changePage(answer);

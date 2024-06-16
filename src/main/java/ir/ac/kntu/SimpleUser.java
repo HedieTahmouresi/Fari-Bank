@@ -317,7 +317,7 @@ public class SimpleUser extends UserPerson {
     }
 
     public void addRequest(NeoBank neoBank) {
-        RequestSection section = input.nextRequestSection();
+        RequestSection section = input.nextRequestSections();
         if (section == null) {
             return;
         }

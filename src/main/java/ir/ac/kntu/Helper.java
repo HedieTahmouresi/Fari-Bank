@@ -15,7 +15,7 @@ public class Helper {
         SimpleUser neda = new SimpleUser("Neda", "Abtahi", new SimCard("09124464876", false), "0306201582", "Neda0*0abeN", new Authentication("09124464876"));
         neoBank.getBankData().addAuthentication(neda.getAuthenticated());
         neda.getAuthenticated().setAuthenticated(false);
-        neda.getAuthenticated().setReason("I don't like you");
+        neda.getAuthenticated().setAnswer("I don't like you");
         neoBank.getBankData().addUser(neda);
         SimpleUser sepehr = new SimpleUser("Sepehr", "Ghardashi", new SimCard("09111262338", false), "0105213054", "H@tah1384", new Authentication("09111262338"));
         neoBank.getBankData().addUser(sepehr);

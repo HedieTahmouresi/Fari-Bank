@@ -1,8 +1,12 @@
 package ir.ac.kntu;
 
 public enum RequestSection {
-    MANAGEMENT,
+    AUTHENTICATIONS,
+    REPORT,
+    FUNDS,
     CONTACTS,
     TRANSFER,
+    SIM_CHARGE,
+    CREDIT_CARD,
     SETTINGS
 }

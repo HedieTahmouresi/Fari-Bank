@@ -7,19 +7,13 @@ import java.util.regex.Pattern;
 
 public class Data {
     private List<Request> requests;
-    private List<Authentication> authentications;
     private List<SimpleUser> users;
 
     private final Input input = new Input();
 
     public Data() {
         this.requests = new ArrayList<>();
-        this.authentications = new ArrayList<>();
         this.users = new ArrayList<>();
-    }
-
-    public int authenticationsSize() {
-        return this.authentications.size();
     }
 
     public void addRequest(Request request) {
@@ -27,11 +21,11 @@ public class Data {
     }
 
     public void addAuthentication(Authentication authentication) {
-        this.authentications.add(authentication);
+        this.requests.add(authentication);
     }
 
     public void removeAuthentication(SimpleUser user) {
-        this.authentications.remove(user.getAuthenticated());
+        this.requests.remove(user.getAuthenticated());
     }
 
     public void addUser(SimpleUser user) {
@@ -165,54 +159,7 @@ public class Data {
         return currentUser;
     }
 
-    public void showAuthentications(NeoBank neoBank, Admin currentAdmin) {
-        if (this.authentications == null || this.authentications.isEmpty()) {
-            return;
-        }
-        Pagination<Authentication> authList = new Pagination<>(this.authentications, 5);
-        String command;
-        do {
-            if (this.authentications.isEmpty()) {
-                System.out.println(ColorConsole.RED + "No authentications!" + ColorConsole.RESET);
-                return;
-            }
-            authList.showPage();
-            System.out.println(ColorConsole.BLUE + "Enter 'next' to go to the next page, 'previous' to go back or the number of the transaction you want" + ColorConsole.RESET);
-            command = input.nextLine();
-            if (!input.exitPoint(command)) {
-                return;
-            } else if (command.matches("[0-9]+")) {
-                currentAdmin.selectAuthentication(neoBank, command);
-            } else if ("next".equals(command) || "previous".equals(command)) {
-                authList.changePage(command);
-            } else {
-                System.out.println(ColorConsole.RED + "No other option! Please try again!" + ColorConsole.RESET);
-            }
-        } while (!"return".equals(command));
-    }
 
-    public void authenticateUser(NeoBank neoBank, int index) {
-        SimpleUser currentUser = this.getUserByPhone(authentications.get(index).getPhoneNumber());
-        currentUser.getAuthenticated().showInfo(this);
-        System.out.println(ColorConsole.BLUE + "Would you like to authenticate this user?" + ColorConsole.PURPLE + "(1. yes, 2. no)" + ColorConsole.RESET);
-        String answer = input.nextLine();
-        switch (answer) {
-            case "1", "yes":
-                this.authentications.remove(index);
-                currentUser.getAuthenticated().authenticateUser(neoBank, currentUser);
-                return;
-            case "2", "no":
-                currentUser.getAuthenticated().rejectUser();
-                return;
-            default:
-                if (!input.exitPoint(answer)) {
-                    return;
-                } else {
-                    System.out.println(ColorConsole.RED + "Wrong Input" + ColorConsole.RESET);
-                }
-        }
-        this.authenticateUser(neoBank, index);
-    }
 
     public boolean existsCreditCard(String creditCardString) {
         for (SimpleUser user : this.users) {
@@ -247,7 +194,7 @@ public class Data {
 
 
     public List<Request> filteredRequestsBySection() {
-        RequestSection section = input.nextRequestSection();
+        RequestSection section = input.nextRequestSections();
         if (section == null) {
             return null;
         }
