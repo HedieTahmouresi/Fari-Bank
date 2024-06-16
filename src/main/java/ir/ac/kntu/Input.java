@@ -352,14 +352,14 @@ public class Input {
 
     public Account nextAccount(CentralBank centralBank){
         System.out.println(ColorConsole.BLUE + "By :" + ColorConsole.RESET);
-        System.out.println(ColorConsole.BLUE + "   1. Credit Card" + ColorConsole.RESET);
-        System.out.println(ColorConsole.BLUE + "   2. Account" + ColorConsole.RESET);
+        System.out.println(ColorConsole.BLUE + "   1. Account" + ColorConsole.RESET);
+        System.out.println(ColorConsole.BLUE + "   2. Credit Card" + ColorConsole.RESET);
         String answer = input.nextLine();
         if (!this.exitPoint(answer)){
             return null;
-        } else if ("1".equals(answer) || "Credit Card".equalsIgnoreCase(answer)){
+        } else if ("1".equals(answer) || "Account".equalsIgnoreCase(answer)){
             return this.nextAccountID(centralBank);
-        } else if ("2".equals(answer) || "Account".equals(answer)){
+        } else if ("2".equals(answer) || "Credit Card".equals(answer)){
             return this.nextCreditCardID(centralBank);
         }
         System.out.println(ColorConsole.RED + "No other option! Try again!" + ColorConsole.RESET);
@@ -369,7 +369,7 @@ public class Input {
     public Account nextAccountID(CentralBank centralBank) {
         System.out.println(ColorConsole.BLUE + "Please enter the account Id of the person you would like to transfer money to!" + ColorConsole.RESET);
         String answer = this.nextLine();
-        String regexID = "[0-9]{13}";
+        String regexID = "^[0-9]{13}$";
         Pattern patternID = Pattern.compile(regexID);
         Matcher matcherID = patternID.matcher(answer);
         if (!this.exitPoint(answer)) {
@@ -394,7 +394,7 @@ public class Input {
         if (!this.exitPoint(answer)) {
             return null;
         } else if (!matcherID.matches()) {
-            System.out.println(ColorConsole.RED + "Wrong format! Please try again! each account ID involves 13 digits!" + ColorConsole.RESET);
+            System.out.println(ColorConsole.RED + "Wrong format! Please try again! each credit card ID involves 16 digits!" + ColorConsole.RESET);
         } else if (centralBank.existsCreditCardId(answer)==null) {
             System.out.println(ColorConsole.RED + "No card with this ID exists! Try again!" + ColorConsole.RESET);
         } else {

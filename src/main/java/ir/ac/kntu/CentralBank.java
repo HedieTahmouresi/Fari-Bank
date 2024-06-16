@@ -79,6 +79,33 @@ public class CentralBank {
         System.out.println(ColorConsole.GREEN_BOLD + "Transfer Completed!" + ColorConsole.RESET);
     }
 
+    public void bridgeTransfer(SimpleUser sender, NeoBank neoBank){
+        Account receiver = input.nextAccount(this);
+        if (receiver==null){
+            return;
+        }
+        String value = input.nextValue(receiver.getOwner(), 5000000.0);
+        if (value==null){
+            return;
+        }
+        double remains = sender.isHasRemainsFund() ? sender.getRemainsFund().calculateRemains(value) : 0;
+        if (Double.parseDouble(value) + neoBank.getManagerData().getBridgeWage() + remains > sender.getAccount().getBalance()) {
+            System.out.println(ColorConsole.RED + "transfer failed! you don't have enough money!" + ColorConsole.RESET);
+            return;
+        }
+        remains = sender.isHasRemainsFund() ? sender.getRemainsFund().calculateRemains(value) : 0;
+        if (Double.parseDouble(value) + neoBank.getManagerData().getBridgeWage() + remains > sender.getAccount().getBalance()) {
+            System.out.println(ColorConsole.RED + "transfer failed! you don't have enough money!" + ColorConsole.RESET);
+            return;
+        }
+        if (!input.nextConfirmation(receiver.getOwner(), value)){
+            System.out.println(ColorConsole.RED + "Transfer failed" + ColorConsole.RESET);
+            return;
+        }
+        this.transferBetweenBanks(sender, receiver, value, neoBank);
+        System.out.println(ColorConsole.GREEN_BOLD + "Transfer Completed!" + ColorConsole.RESET);
+
+    }
 
     public void transferBetweenBanks(SimpleUser sender, Account receiver, String value, NeoBank neoBank){
         double remains = sender.isHasRemainsFund() ? sender.getRemainsFund().calculateRemains(value) : 0;

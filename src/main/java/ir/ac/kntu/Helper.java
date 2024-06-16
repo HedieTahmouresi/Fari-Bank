@@ -69,7 +69,7 @@ public class Helper {
         SimpleUser mohsen = new SimpleUser("Mohsen", "Tahmouresi", new SimCard("09122153905", true), "0102020202", "M@tah1345", new Authentication("09124464876"));
         neoBank.getBankData().addUser(mohsen);
         mohsen.getAuthenticated().authenticateUser(neoBank, mohsen);
-        System.out.println(mohsen.getAccount().getCreditCard().getCreditCardId());
+        System.out.println(mohsen.getAccount().getAccountId());
     }
 
     public void initiateToriUsers(NeoBank neoBank){
