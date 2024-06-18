@@ -1,5 +1,7 @@
 package ir.ac.kntu;
 
+import java.util.Objects;
+
 public class Recent {
     private SimpleUser person;
     private boolean byContact;
@@ -42,5 +44,21 @@ public class Recent {
     @Override
     public String toString() {
         return this.getPerson().getName() + " " + this.getPerson().getLastName();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof Recent recent)) {
+            return false;
+        }
+        return Objects.equals(getPerson(), recent.getPerson());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getPerson());
     }
 }

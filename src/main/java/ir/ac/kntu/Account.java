@@ -78,11 +78,23 @@ public class Account {
     }
 
     public void addRecent(TransferTransaction transaction, String phoneNumber, NeoBank neoBank) {
-        recentList.add(new Recent(neoBank.getBankData().getUserByPhone(phoneNumber), transaction.isByContact()));
+        Recent newRecent = new Recent(neoBank.getBankData().getUserByPhone(phoneNumber), transaction.isByContact());
+        for (Recent recent : recentList){
+            if (recent.equals(newRecent)){
+                return;
+            }
+        }
+        recentList.add(newRecent);
     }
 
     public void addRecentCentral(TransferTransaction transaction, String phoneNumber, CentralBank centralBank) {
-        recentList.add(new Recent(centralBank.getUserBySim(phoneNumber), transaction.isByContact()));
+        Recent newRecent = new Recent(centralBank.getUserBySim(phoneNumber), transaction.isByContact());
+        for (Recent recent : recentList){
+            if (recent.equals(newRecent)){
+                return;
+            }
+        }
+        recentList.add(newRecent);
     }
 
     public void chargeAccount(NeoBank neoBank) {
@@ -245,7 +257,7 @@ public class Account {
         System.out.println(ColorConsole.RED_BOLD + "Index Out of Bound! Try again!" + ColorConsole.RESET);
     }
 
-    public void transfer(NeoBank neoBank, String value, SimpleUser receiver, boolean isByContact, boolean isByRecent) {
+    public void transfer(NeoBank neoBank, String value, SimpleUser receiver,List<Boolean> facts) {
         boolean confirmed = input.nextConfirmation(receiver, value);
         if (!confirmed) {
             System.out.println(ColorConsole.RED + "Transfer failed!" + ColorConsole.RESET);
@@ -259,17 +271,17 @@ public class Account {
         this.setBalance(this.getBalance() - Double.parseDouble(value) - neoBank.getManagerData().getFariWage() - remains);
         receiver.getAccount().setBalance(receiver.getAccount().getBalance() + Double.parseDouble(value));
         String info = receiver.getAccount().getAccountId();
-        if (isByContact) {
+        if (facts.get(1)) {
             info = receiver.getSimCard().getPhoneNumber();
         }
-        TransferTransaction newTransaction = new TransferTransaction(Double.parseDouble(value) + neoBank.getManagerData().getFariWage(), neoBank.getTracingNumber(), receiver, isByContact, info, "-", this.getOwner(), false);
+        TransferTransaction newTransaction = new TransferTransaction(Double.parseDouble(value) + neoBank.getManagerData().getFariWage(), neoBank.getTracingNumber(), receiver, facts.get(1), info, "-", this.getOwner(), false);
         this.addTransaction(newTransaction, "transfer");
-        receiver.getAccount().addTransaction(new TransferTransaction(Double.parseDouble(value), neoBank.getTracingNumber() + 1, receiver, isByContact, info, "+", this.getOwner(), true), "transfer");
+        receiver.getAccount().addTransaction(new TransferTransaction(Double.parseDouble(value), neoBank.getTracingNumber() + 1, receiver, facts.get(1), info, "+", this.getOwner(), true), "transfer");
         neoBank.setTracingNumber(neoBank.getTracingNumber() + 2);
         if (this.getOwner().isHasRemainsFund()) {
             this.getOwner().getRemainsFund().saveRemains(remains, neoBank);
         }
-        if (!isByRecent){
+        if (!facts.get(1)){
             this.addRecent(newTransaction, receiver.getSimCard().getPhoneNumber(), neoBank);
         }
         System.out.println(ColorConsole.GREEN_BOLD + "Transfer Completed!" + ColorConsole.RESET);
@@ -311,8 +323,11 @@ public class Account {
         String answer = this.displayTransferOptions();
         if (!input.exitPoint(answer)){
             return;
-        }else if (answer.equals("4") || answer.equals("Fari Transfer")){
-            this.transfer(neoBank, value, receiver, byContact, false);
+        }else if ("4".equals(answer) || "Fari Transfer".equals(answer)){
+            List<Boolean> facts = new ArrayList<>();
+            facts.add(byContact);
+            facts.add(false);
+            this.transfer(neoBank, value, receiver, facts);
             return;
         }  else if (!answer.matches("[0-9]+")){
             System.out.println(ColorConsole.RED + "Wrong format" + ColorConsole.RESET);
@@ -354,7 +369,7 @@ public class Account {
                 break;
             case "4", "Fari Transfer" :
                 if (centralBank.sameBank(this.getOwner(), receiver)){
-                    this.transfer(neoBank, value, receiver,false, true);
+                    this.transfer(neoBank, value, receiver,new ArrayList<>(Arrays.asList(false, true)));
                 }
                 break;
             default:

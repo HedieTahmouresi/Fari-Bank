@@ -101,7 +101,11 @@ public class Pagination<T> {
         }
     }
 
-    public void selectUserService(Menu menu, NeoBank neoBank, String answer, SimpleUser currentUser, CentralBank centralBank) {
+    public boolean selectUserService(Menu menu, NeoBank neoBank, SimpleUser currentUser, CentralBank centralBank) {
+        String answer = input.nextLine();
+        if (!input.exitPoint(answer) || "8".equalsIgnoreCase(answer)) {
+            return false;
+        }
         switch (answer) {
             case "1", "Account Management" -> menu.managementMenu(neoBank, currentUser);
             case "2", "Fund Management" -> menu.fundManagement(neoBank, currentUser);
@@ -114,6 +118,7 @@ public class Pagination<T> {
             default ->
                     System.out.println(ColorConsole.RED + "THERE IS NO OTHER OPTION! Please input something else!" + ColorConsole.RESET);
         }
+        return true;
     }
 
     public void selectAdminLog(Menu menu, NeoBank neoBank, String answer) {
@@ -228,6 +233,7 @@ public class Pagination<T> {
         switch (answer) {
             case "1", "by Credit Card ID" :
                 centralBank.transferByCard(neoBank, currentUser);
+                break;
             case "2", "by Account ID":
                 centralBank.transferByAccount(neoBank, currentUser);
                 break;

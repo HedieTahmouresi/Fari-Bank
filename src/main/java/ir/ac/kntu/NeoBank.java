@@ -104,8 +104,12 @@ public class NeoBank {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (!(obj instanceof NeoBank neoBank)) return false;
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof NeoBank neoBank)) {
+            return false;
+        }
         return Objects.equals(getCreditCardStarter(), neoBank.getCreditCardStarter());
     }
 

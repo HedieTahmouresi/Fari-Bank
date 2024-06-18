@@ -32,8 +32,6 @@ public class Menu {
 
     private final List<String> chargeSimOptions = new ArrayList<>(Arrays.asList(ColorConsole.CYAN + "My Own Sim Card", ColorConsole.CYAN + "My Contacts", ColorConsole.CYAN + "Other", ColorConsole.CYAN + "Return" + ColorConsole.RESET));
 
-    private final List<String> transferOptions = new ArrayList<>(Arrays.asList(ColorConsole.CYAN + "Wire Transfer", ColorConsole.CYAN + "Bridge Transfer", ColorConsole.CYAN + "Credit to Credit", ColorConsole.CYAN + "Fari Transfer" + ColorConsole.RESET));
-
     public void mainMenu(NeoBank neoBank, CentralBank centralBank) {
         Pagination<String> menu = new Pagination<>(main, 5);
         String answer;
@@ -75,15 +73,12 @@ public class Menu {
 
     public void userService(SimpleUser currentUser, NeoBank neoBank, CentralBank centralBank) {
         Pagination<String> menu = new Pagination<>(userServiceMenu, 5);
-        String answer;
         do {
             menu.showPage();
-            answer = input.nextLine();
-            if (!input.exitPoint(answer) || "8".equalsIgnoreCase(answer)) {
+            if(!menu.selectUserService(this, neoBank, currentUser, centralBank)){
                 return;
             }
-            menu.selectUserService(this, neoBank, answer, currentUser, centralBank);
-        } while (!"quit".equals(answer));
+        } while (true);
 
     }
 

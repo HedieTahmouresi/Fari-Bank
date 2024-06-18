@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CentralBank {
-    List<NeoBank> banks;
+    private List<NeoBank> banks;
 
     private final Input input = new Input();
 
@@ -38,10 +38,7 @@ public class CentralBank {
                 secondBank = bank;
             }
         }
-        if (secondBank.equals(firstBank)){
-            return true;
-        }
-        return false;
+        return secondBank.equals(firstBank);
     }
 
     public Account existsAccountId(String accountId){
@@ -93,7 +90,11 @@ public class CentralBank {
             System.out.println(ColorConsole.RED + "Transfer failed" + ColorConsole.RESET);
             return;
         }
-        this.transferBetweenBanks(sender, receiver.getAccount(),removeValue, value, neoBank);
+        sender.getAccount().setBalance(sender.getAccount().getBalance() - removeValue);
+        TransferTransaction newTransaction = new TransferTransaction(removeValue, neoBank.getTracingNumber(), receiver, false, receiver.getAccount().getCreditCard().getCreditCardId(), "-", sender, false);
+        sender.getAccount().addTransaction(newTransaction, "Transfer");
+        sender.getAccount().addRecentCentral(newTransaction, receiver.getSimCard().getPhoneNumber(), this);
+        this.transferBetweenBanks(sender, receiver.getAccount(), value, neoBank);
         System.out.println(ColorConsole.GREEN_BOLD + "Transfer Completed!" + ColorConsole.RESET);
     }
 
@@ -114,23 +115,26 @@ public class CentralBank {
             System.out.println(ColorConsole.RED + "Transfer failed" + ColorConsole.RESET);
             return;
         }
-        this.transferBetweenBanks(sender, receiver.getAccount(),removeValue, value, neoBank);
+        sender.getAccount().setBalance(sender.getAccount().getBalance() - removeValue);
+        TransferTransaction newTransaction = new TransferTransaction(removeValue, neoBank.getTracingNumber(), receiver, false, receiver.getAccount().getCreditCard().getCreditCardId(), "-", sender, false);
+        sender.getAccount().addTransaction(newTransaction, "Transfer");
+        sender.getAccount().addRecentCentral(newTransaction, receiver.getSimCard().getPhoneNumber(), this);
+        this.transferBetweenBanks(sender, receiver.getAccount(), value, neoBank);
         System.out.println(ColorConsole.GREEN_BOLD + "Transfer Completed!" + ColorConsole.RESET);
 
     }
 
-    public void transferBetweenBanks(SimpleUser sender, Account receiver, Double removeValue,String value, NeoBank neoBank){
+    public void transferBetweenBanks(SimpleUser sender, Account receiver, String value, NeoBank neoBank){
         double remains = sender.isHasRemainsFund() ? sender.getRemainsFund().calculateRemains(value) : 0;
-        sender.getAccount().setBalance(sender.getAccount().getBalance() - removeValue);
+
         receiver.setBalance(receiver.getBalance() + Double.parseDouble(value));
-        TransferTransaction newTransaction = new TransferTransaction(removeValue, neoBank.getTracingNumber(), receiver.getOwner(), false, receiver.getCreditCard().getCreditCardId(), "-", sender, false);
-        sender.getAccount().addTransaction(newTransaction, "Transfer");
+
         receiver.addTransaction(new TransferTransaction(Double.parseDouble(value), neoBank.getTracingNumber() + 1, receiver.getOwner(), false, receiver.getCreditCard().getCreditCardId(), "+", sender, true), "transfer");
         neoBank.setTracingNumber(neoBank.getTracingNumber() + 2);
         if (sender.isHasRemainsFund()) {
             sender.getRemainsFund().saveRemains(remains, neoBank);
         }
-        sender.getAccount().addRecentCentral(newTransaction, receiver.getOwner().getSimCard().getPhoneNumber(), this);
+
     }
 
     public void transferByCard(NeoBank neoBank, SimpleUser currentUser){
@@ -146,7 +150,7 @@ public class CentralBank {
         String creditCardStarter = creditCardID.substring(0, 8);
         NeoBank bankReceiver = this.findBankByCreditCard(creditCardStarter);
         if (neoBank.equals(bankReceiver)){
-            this.showOnlyFari(neoBank, value, currentUser, receiver);
+            this.showOnlyFariCard(neoBank, value, currentUser, receiver);
             return;
         }
         this.showTransferOptionsForCard(value, currentUser, receiver, neoBank);
@@ -165,17 +169,17 @@ public class CentralBank {
         String creditCardStarter = receiver.getAccount().getCreditCard().getCreditCardId().substring(0, 8);
         NeoBank bankReceiver = this.findBankByCreditCard(creditCardStarter);
         if (neoBank.equals(bankReceiver)){
-            this.showOnlyFari(neoBank, value, currentUser, receiver);
+            this.showOnlyFariAccount(neoBank, value, currentUser, receiver);
             return;
         }
         this.showTransferOptionsForAccount(value, currentUser, receiver, neoBank);
     }
 
-    public void showOnlyFari(NeoBank neoBank, String value, SimpleUser sender, SimpleUser receiver){
+    public void showOnlyFariCard(NeoBank neoBank, String value, SimpleUser sender, SimpleUser receiver){
         String answer = this.displayTransferOptions();
         if (!input.exitPoint(answer)){
             return;
-        } else if (answer.equals("4") || answer.equals("Fari Transfer")){
+        } else if ("4".equals(answer) || "Fari Transfer".equals(answer)){
             sender.transferByCreditID(neoBank, value, receiver.getAccount().getCreditCard().getCreditCardId());
             return;
         }  else if (!answer.matches("[0-9]+")){
@@ -185,7 +189,24 @@ public class CentralBank {
         }else{
             System.out.println(ColorConsole.RED + "You can't choose these!" + ColorConsole.RESET);
         }
-        this.showOnlyFari(neoBank, value, sender, receiver);
+        this.showOnlyFariCard(neoBank, value, sender, receiver);
+    }
+
+    public void showOnlyFariAccount(NeoBank neoBank, String value, SimpleUser sender, SimpleUser receiver){
+        String answer = this.displayTransferOptions();
+        if (!input.exitPoint(answer)){
+            return;
+        } else if ("4".equals(answer) || "Fari Transfer".equals(answer)){
+            sender.transferByAccountID(neoBank, value, receiver.getAccount().getAccountId());
+            return;
+        }  else if (!answer.matches("[0-9]+")){
+            System.out.println(ColorConsole.RED + "Wrong format" + ColorConsole.RESET);
+        } else if (Integer.parseInt(answer)>4){
+            System.out.println(ColorConsole.RED + "No other Option!" + ColorConsole.RESET);
+        }else{
+            System.out.println(ColorConsole.RED + "You can't choose these!" + ColorConsole.RESET);
+        }
+        this.showOnlyFariCard(neoBank, value, sender, receiver);
     }
 
     public String displayTransferOptions(){

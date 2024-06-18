@@ -206,7 +206,10 @@ public class SimpleUser extends UserPerson {
             System.out.println(ColorConsole.RED + "Transfer failed!" + ColorConsole.RESET);
             return;
         }
-        this.getAccount().transfer(neoBank, value, receiver, false, false);
+        List<Boolean> facts = new ArrayList<>();
+        facts.add(false);
+        facts.add(false);
+        this.getAccount().transfer(neoBank, value, receiver, facts);
     }
 
     public void transferByAccountID(NeoBank neoBank, String value, String accountID) {
@@ -219,7 +222,10 @@ public class SimpleUser extends UserPerson {
             System.out.println(ColorConsole.RED + "Transfer failed!" + ColorConsole.RESET);
             return;
         }
-        this.getAccount().transfer(neoBank, value, receiver, false, false);
+        List<Boolean> facts = new ArrayList<>();
+        facts.add(false);
+        facts.add(false);
+        this.getAccount().transfer(neoBank, value, receiver, facts);
     }
 
     public void transferByContact(NeoBank neoBank) {

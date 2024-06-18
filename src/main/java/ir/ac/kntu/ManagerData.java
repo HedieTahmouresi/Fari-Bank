@@ -14,6 +14,15 @@ public class ManagerData {
     private int bonusPercentage;
     private double cardWage;
     private int bridgePercentage;
+    private double wireWage;
+
+    public double getWireWage() {
+        return wireWage;
+    }
+
+    public void setWireWage(double wireWage) {
+        this.wireWage = wireWage;
+    }
 
     public int getBridgePercentage() {
         return bridgePercentage;

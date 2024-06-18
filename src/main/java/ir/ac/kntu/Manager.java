@@ -5,7 +5,15 @@ public class Manager {
     private String userName;
     private String password;
     private ManagerData data;
-    private double wage;
+    private int rank;
+
+    public int getRank() {
+        return rank;
+    }
+
+    public void setRank(int rank) {
+        this.rank = rank;
+    }
 
     public String getUserName() {
         return userName;
@@ -39,19 +47,13 @@ public class Manager {
         this.fullName = fullName;
     }
 
-    public Manager(String fullName, String userName, String password, ManagerData data) {
+    public Manager(String fullName, String userName, String password, ManagerData data, int rank) {
         setFullName(fullName);
         setUserName(userName);
         setPassword(password);
         setData(data);
+        setRank(rank);
     }
 
 
-    public double getWage() {
-        return wage;
-    }
-
-    public void setWage(double wage) {
-        this.wage = wage;
-    }
 }
