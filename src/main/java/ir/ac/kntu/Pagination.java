@@ -82,22 +82,13 @@ public class Pagination<T> {
 
     public void selectMain(Menu menu, NeoBank neoBank, String answer, CentralBank centralBank) {
         switch (answer) {
-            case "1", "Simple User":
-                menu.userLog(neoBank, centralBank);
-                break;
-            case "2", "Admin":
-                menu.adminLog(neoBank);
-                break;
-            case "next", "previous":
-                this.changePage(answer);
-                break;
-            default:
-                if (input.exitPoint(answer)) {
-                    System.out.println(ColorConsole.RED + "There are no other roles." + ColorConsole.BLUE + " Please Try again!" + ColorConsole.RESET);
-                } else {
-                    return;
-                }
-                break;
+            case "1", "Simple User"-> menu.userLog(neoBank, centralBank);
+            case "2", "Admin" -> menu.adminLog(neoBank);
+            case "3", "Manager" -> menu.managerLog(neoBank);
+            case "next", "previous"-> this.changePage(answer);
+            default-> System.out.println(ColorConsole.RED + "There are no other roles." + ColorConsole.BLUE + " Please Try again!" + ColorConsole.RESET);
+
+
         }
     }
 
@@ -325,4 +316,58 @@ public class Pagination<T> {
         }
     }
 
+    public void selectManagerLog(Menu menu, NeoBank neoBank, String answer){
+        switch (answer) {
+            case "1", "Sign In":
+                Manager currentManager = neoBank.signInManager();
+                if (currentManager != null) {
+                    menu.managerService(currentManager, neoBank);
+                }
+                break;
+            case "next", "previous":
+                this.changePage(answer);
+                break;
+            default:
+                if (input.exitPoint(answer)) {
+                    System.out.println(ColorConsole.RED + "There are no other options on the menu." + ColorConsole.BLUE + " Please Try again!" + ColorConsole.RESET);
+                } else {
+                    return;
+                }
+                break;
+        }
+    }
+
+    public void selectManagerService(NeoBank neoBank, String answer, Manager currentManager) {
+        switch (answer) {
+            case "1", "Settings":
+                currentManager.settings(neoBank);
+                break;
+            case "2", "User Management":
+
+                break;
+            case "3", "Automatic Transactions":
+
+                break;
+            case "4", "Return":
+                return;
+            case "next", "previous":
+                this.changePage(answer);
+                break;
+            default:
+                System.out.println(ColorConsole.RED + "THERE IS NO OTHER OPTION! Please input something else!" + ColorConsole.RESET);
+
+        }
+    }
+
+    public void selectSettings(Manager manager, String answer, NeoBank neoBank) {
+        switch (answer){
+            case "1"-> manager.getData().changeFariWage();
+            case "2"->manager.getData().changeChargeWage();
+            case "3"->manager.getData().changeBonusPercentage();
+            case "4"-> manager.getData().changeCardWage();
+            case "5"->manager.getData().changeBridgeWage();
+            case "6"->manager.getData().changeWireWage();
+
+        }
+    }
 }

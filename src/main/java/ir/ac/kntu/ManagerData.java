@@ -16,6 +16,8 @@ public class ManagerData {
     private int bridgePercentage;
     private double wireWage;
 
+    private final Input input = new Input();
+
     public double getWireWage() {
         return wireWage;
     }
@@ -77,6 +79,15 @@ public class ManagerData {
         return null;
     }
 
+    public Manager getSpecificManger(String userName) {
+        for (Manager manager : managers) {
+            if (manager.getUserName().equals(userName)) {
+                return manager;
+            }
+        }
+        return null;
+    }
+
     public void addAdmin(Admin admin) {
         this.admins.add(admin);
     }
@@ -113,5 +124,81 @@ public class ManagerData {
             }
         }
         return null;
+    }
+
+    public void changeFariWage(){
+        System.out.println(ColorConsole.BLUE + "Please enter the new wage :");
+        String answer = input.nextLine();
+        if (!input.exitPoint(answer)){
+            return;
+        } else if (!answer.matches("[0-9]+\\.?[0-9]*")){
+            System.out.println(ColorConsole.RED + "Wrong format" + ColorConsole.RESET);
+            this.changeFariWage();
+        }
+        setFariWage(Double.parseDouble(answer));
+    }
+
+    public void changeChargeWage(){
+        System.out.println(ColorConsole.BLUE + "Please enter the new wage :");
+        String answer = input.nextLine();
+        if (!input.exitPoint(answer)){
+            return;
+        } else if (!answer.matches("[0-9]+\\.?[0-9]*")){
+            System.out.println(ColorConsole.RED + "Wrong format" + ColorConsole.RESET);
+            this.changeChargeWage();
+        }
+        setChargeWage(Double.parseDouble(answer));
+    }
+
+    public void changeBonusPercentage(){
+        System.out.println(ColorConsole.BLUE + "Please enter the new percentage :");
+        String answer = input.nextLine();
+        if (!input.exitPoint(answer)){
+            return;
+        } else if (!answer.matches("[0-9]+")){
+            System.out.println(ColorConsole.RED + "Wrong format" + ColorConsole.RESET);
+            this.changeBonusPercentage();
+        } else if (Integer.parseInt(answer)>100){
+            System.out.println(ColorConsole.RED + "Invalid number" + ColorConsole.RESET);
+        }
+        setBonusPercentage(Integer.parseInt(answer));
+    }
+
+    public void changeCardWage(){
+        System.out.println(ColorConsole.BLUE + "Please enter the new wage :");
+        String answer = input.nextLine();
+        if (!input.exitPoint(answer)){
+            return;
+        } else if (!answer.matches("[0-9]+\\.?[0-9]*")){
+            System.out.println(ColorConsole.RED + "Wrong format" + ColorConsole.RESET);
+            this.changeCardWage();
+        }
+        setCardWage(Double.parseDouble(answer));
+    }
+
+    public void changeBridgeWage(){
+        System.out.println(ColorConsole.BLUE + "Please enter the new wage percentage:");
+        String answer = input.nextLine();
+        if (!input.exitPoint(answer)){
+            return;
+        } else if (!answer.matches("[0-9]+")){
+            System.out.println(ColorConsole.RED + "Wrong format" + ColorConsole.RESET);
+            this.changeBridgeWage();
+        }else if (Integer.parseInt(answer)>100){
+            System.out.println(ColorConsole.RED + "Invalid number" + ColorConsole.RESET);
+        }
+        setBridgePercentage(Integer.parseInt(answer));
+    }
+
+    public void changeWireWage(){
+        System.out.println(ColorConsole.BLUE + "Please enter the new wage :");
+        String answer = input.nextLine();
+        if (!input.exitPoint(answer)){
+            return;
+        } else if (!answer.matches("[0-9]+\\.?[0-9]*")){
+            System.out.println(ColorConsole.RED + "Wrong format" + ColorConsole.RESET);
+            this.changeWireWage();
+        }
+        setWireWage(Double.parseDouble(answer));
     }
 }

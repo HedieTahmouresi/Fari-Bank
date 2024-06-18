@@ -1,11 +1,17 @@
 package ir.ac.kntu;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class Manager {
     private String fullName;
     private String userName;
     private String password;
     private ManagerData data;
     private int rank;
+
+    private final Input input = new Input();
 
     public int getRank() {
         return rank;
@@ -56,4 +62,17 @@ public class Manager {
     }
 
 
+    public void settings(NeoBank neoBank){
+        List<String> options = new ArrayList<>(Arrays.asList(ColorConsole.CYAN + "Fari Wage", ColorConsole.CYAN + "Charge Wage" , ColorConsole.CYAN + "Bonus Percentage", ColorConsole.CYAN + "Card to Card Wage", ColorConsole.CYAN + "Bridge Transfer Wage", ColorConsole.CYAN + "Wire Transfer Wage" + ColorConsole.RESET));
+        Pagination<String> menu = new Pagination<>(options, 5);
+        String answer;
+        do{
+            menu.showPage();
+            answer = input.nextLine();
+            if (!input.exitPoint(answer)){
+                return;
+            }
+            menu.selectSettings(this, answer, neoBank);
+        }while (!"quit".equals(answer));
+    }
 }

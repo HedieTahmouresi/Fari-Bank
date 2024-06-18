@@ -8,7 +8,7 @@ public class Menu {
 
     private final Input input = new Input();
 
-    private final List<String> main = new ArrayList<>(Arrays.asList(ColorConsole.CYAN + "Simple User", ColorConsole.CYAN + "Admin" + ColorConsole.RESET));
+    private final List<String> main = new ArrayList<>(Arrays.asList(ColorConsole.CYAN + "Simple User", ColorConsole.CYAN + "Admin" + ColorConsole.RESET, ColorConsole.CYAN + "Manager" + ColorConsole.RESET));
 
     private final List<String> userLog = new ArrayList<>(Arrays.asList(ColorConsole.CYAN + "Sign In", ColorConsole.CYAN + "Sign Up" + ColorConsole.RESET));
 
@@ -31,6 +31,8 @@ public class Menu {
     private final List<String> fundManagement = new ArrayList<>(Arrays.asList(ColorConsole.CYAN + "Add Fund", ColorConsole.CYAN + "Show Funds" + ColorConsole.RESET));
 
     private final List<String> chargeSimOptions = new ArrayList<>(Arrays.asList(ColorConsole.CYAN + "My Own Sim Card", ColorConsole.CYAN + "My Contacts", ColorConsole.CYAN + "Other", ColorConsole.CYAN + "Return" + ColorConsole.RESET));
+
+    private final List<String> managerService = new ArrayList<>(Arrays.asList(ColorConsole.CYAN + "Settings", ColorConsole.CYAN + "User Management", ColorConsole.CYAN + "Automatic transactions" + ColorConsole.RESET));
 
     public void mainMenu(NeoBank neoBank, CentralBank centralBank) {
         Pagination<String> menu = new Pagination<>(main, 5);
@@ -194,4 +196,29 @@ public class Menu {
     }
 
 
+    public void managerLog(NeoBank neoBank) {
+        Pagination<String> menu = new Pagination<>(adminLog, 5);
+        String answer;
+        do {
+            menu.showPage();
+            answer = input.nextLine();
+            if (!input.exitPoint(answer)) {
+                return;
+            }
+            menu.selectAdminLog(this, neoBank, answer);
+        } while (!"quit".equals(answer));
+    }
+
+    public void managerService(Manager currentManager, NeoBank neoBank) {
+        Pagination<String> menu = new Pagination<>(managerService, 5);
+        String answer;
+        do{
+            menu.showPage();
+            answer = input.nextLine();
+            if(!input.exitPoint(answer)){
+                return;
+            }
+            menu.selectManagerService(neoBank, answer, currentManager);
+        }while (!"quit".equals(answer));
+    }
 }

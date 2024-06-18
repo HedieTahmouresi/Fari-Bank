@@ -97,6 +97,35 @@ public class NeoBank {
         return wantedAdmin;
     }
 
+    public Manager signInManager() {
+        System.out.println(ColorConsole.BLUE + "Please Enter your username" + ColorConsole.RESET);
+        String userName;
+        Manager wantedManager;
+        do {
+            userName = input.nextLine();
+            if (!input.exitPoint(userName)) {
+                return null;
+            }
+            wantedManager = this.getManagerData().getSpecificManger(userName);
+            if (wantedManager == null) {
+                System.out.println(ColorConsole.RED_BOLD + "Username not available!" + ColorConsole.RESET);
+            }
+        } while (wantedManager == null);
+        System.out.println(ColorConsole.BLUE + "Please Enter your password" + ColorConsole.RESET);
+        String password;
+        do {
+            password = input.nextLine();
+            if (!input.exitPoint(password)) {
+                return null;
+            } else if (!password.equals(wantedManager.getPassword())) {
+                System.out.println(ColorConsole.RED_BOLD + "Wrong Password! If you would like to change the user name return to the previous menu" + ColorConsole.RESET);
+            }
+        } while (!password.equals(wantedManager.getPassword()));
+        return wantedManager;
+    }
+
+
+
     public void launchBank(CentralBank centralBank) {
         Menu menu = new Menu();
         menu.mainMenu(this, centralBank);
