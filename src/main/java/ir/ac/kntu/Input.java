@@ -350,21 +350,6 @@ public class Input {
         return nextFundType();
     }
 
-    public Account nextAccount(CentralBank centralBank){
-        System.out.println(ColorConsole.BLUE + "By :" + ColorConsole.RESET);
-        System.out.println(ColorConsole.BLUE + "   1. Account" + ColorConsole.RESET);
-        System.out.println(ColorConsole.BLUE + "   2. Credit Card" + ColorConsole.RESET);
-        String answer = input.nextLine();
-        if (!this.exitPoint(answer)){
-            return null;
-        } else if ("1".equals(answer) || "Account".equalsIgnoreCase(answer)){
-            return this.nextAccountID(centralBank);
-        } else if ("2".equals(answer) || "Credit Card".equals(answer)){
-            return this.nextCreditCardID(centralBank);
-        }
-        System.out.println(ColorConsole.RED + "No other option! Try again!" + ColorConsole.RESET);
-        return this.nextAccount(centralBank);
-    }
 
     public Account nextAccountID(CentralBank centralBank) {
         System.out.println(ColorConsole.BLUE + "Please enter the account Id of the person you would like to transfer money to!" + ColorConsole.RESET);
@@ -385,7 +370,7 @@ public class Input {
     }
 
 
-    public Account nextCreditCardID(CentralBank centralBank){
+    public String nextCreditCardID(CentralBank centralBank){
         System.out.println(ColorConsole.BLUE + "Please enter the credit card Id of the person you would like to transfer money to!" + ColorConsole.RESET);
         String answer = this.nextLine();
         String regexID = "[0-9]{16}";
@@ -398,7 +383,7 @@ public class Input {
         } else if (centralBank.existsCreditCardId(answer)==null) {
             System.out.println(ColorConsole.RED + "No card with this ID exists! Try again!" + ColorConsole.RESET);
         } else {
-            return centralBank.existsCreditCardId(answer);
+            return answer;
         }
         return this.nextCreditCardID(centralBank);
     }

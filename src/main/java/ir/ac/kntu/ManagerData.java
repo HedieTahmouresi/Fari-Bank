@@ -13,14 +13,14 @@ public class ManagerData {
     private double chargeWage;
     private int bonusPercentage;
     private double cardWage;
-    private double bridgeWage;
+    private int bridgePercentage;
 
-    public double getBridgeWage() {
-        return bridgeWage;
+    public int getBridgePercentage() {
+        return bridgePercentage;
     }
 
-    public void setBridgeWage(double bridgeWage) {
-        this.bridgeWage = bridgeWage;
+    public void setBridgePercentage(int bridgePercentage) {
+        this.bridgePercentage = bridgePercentage;
     }
 
     public double getCardWage() {
@@ -56,6 +56,7 @@ public class ManagerData {
         setFariWage(0.0);
         setCardWage(300.0);
         setChargeWage(0.0);
+        setBridgePercentage(2);
     }
 
     public Admin getSpecificAdmin(String userName) {

@@ -22,7 +22,7 @@ public class Menu {
 
     private final List<String> contactMenu = new ArrayList<>(Arrays.asList(ColorConsole.CYAN + "Add Contact", ColorConsole.CYAN + "Show Contact List" + ColorConsole.RESET, ColorConsole.CYAN + "Return" + ColorConsole.RESET));
 
-    private final List<String> fariTransferMenu = new ArrayList<>(Arrays.asList(ColorConsole.CYAN + "by Account ID", ColorConsole.CYAN + "by Contact" + ColorConsole.RESET, ColorConsole.CYAN + "by Recent List", ColorConsole.CYAN + "Return" + ColorConsole.RESET));
+    private final List<String> transferMenu = new ArrayList<>(Arrays.asList(ColorConsole.CYAN + "by Credit Card ID",ColorConsole.CYAN + "by Account ID", ColorConsole.CYAN + "by Contact" + ColorConsole.RESET, ColorConsole.CYAN + "by Recent List", ColorConsole.CYAN + "Return" + ColorConsole.RESET));
 
     private final List<String> administerMenu = new ArrayList<>(Arrays.asList(ColorConsole.CYAN + "Add Request", ColorConsole.CYAN + "Show Request List" + ColorConsole.RESET, ColorConsole.CYAN + "Return" + ColorConsole.RESET));
 
@@ -131,17 +131,17 @@ public class Menu {
         } while (!"quit".equals(answer));
     }
 
-    public void fariTransferMenu(NeoBank neoBank, SimpleUser currentUser) {
-        Pagination<String> menu = new Pagination<>(fariTransferMenu, 5);
+    public void transferMenu(NeoBank neoBank, CentralBank centralBank, SimpleUser currentUser) {
+        Pagination<String> menu = new Pagination<>(transferMenu, 5);
         String answer;
         do {
 
             menu.showPage();
             answer = input.nextLine();
-            if (!input.exitPoint(answer) || "4".equals(answer)) {
+            if (!input.exitPoint(answer) || "5".equals(answer)) {
                 return;
             }
-            menu.selectFariTransfer(neoBank, currentUser, answer);
+            menu.selectTransfer(neoBank, currentUser, answer);
         } while (!"quit".equals(answer));
     }
 
@@ -198,7 +198,7 @@ public class Menu {
         } while (!"quit".equals(answer));
     }
 
-    public void transferMenu(NeoBank neoBank, CentralBank centralBank, SimpleUser currentUser){
+    /*public void transferOptions(NeoBank neoBank, CentralBank centralBank, SimpleUser currentUser){
         Pagination<String> menu = new Pagination<>(transferOptions, 5);
         String answer;
         do{
@@ -209,5 +209,5 @@ public class Menu {
             }
             menu.selectTransfer(neoBank, centralBank, currentUser, answer, this);
         } while (!"quit".equals(answer));
-    }
+    }*/
 }

@@ -57,12 +57,10 @@ public class CentralBank {
 
     }
 
-    public void cardToCard(SimpleUser sender, NeoBank neoBank){
-        Account receiver = input.nextCreditCardID(this);
+    public void cardToCard(NeoBank neoBank, SimpleUser sender, SimpleUser receiver, String value){
         if (receiver==null){
             return;
         }
-        String value = input.nextValue(receiver.getOwner(), 100000.0);
         if (value==null){
             return;
         }
@@ -71,47 +69,42 @@ public class CentralBank {
             System.out.println(ColorConsole.RED + "transfer failed! you don't have enough money!" + ColorConsole.RESET);
             return;
         }
-        if (!input.nextConfirmation(receiver.getOwner(), value)){
+        Double removeValue = Double.parseDouble(value) + neoBank.getManagerData().getCardWage();
+        if (!input.nextConfirmation(receiver, value)){
             System.out.println(ColorConsole.RED + "Transfer failed" + ColorConsole.RESET);
             return;
         }
-        this.transferBetweenBanks(sender, receiver, value, neoBank);
+        this.transferBetweenBanks(sender, receiver.getAccount(),removeValue, value, neoBank);
         System.out.println(ColorConsole.GREEN_BOLD + "Transfer Completed!" + ColorConsole.RESET);
     }
 
-    public void bridgeTransfer(SimpleUser sender, NeoBank neoBank){
-        Account receiver = input.nextAccount(this);
+    public void bridgeTransfer(NeoBank neoBank, SimpleUser sender, SimpleUser receiver, String value){
         if (receiver==null){
             return;
         }
-        String value = input.nextValue(receiver.getOwner(), 5000000.0);
         if (value==null){
             return;
         }
         double remains = sender.isHasRemainsFund() ? sender.getRemainsFund().calculateRemains(value) : 0;
-        if (Double.parseDouble(value) + neoBank.getManagerData().getBridgeWage() + remains > sender.getAccount().getBalance()) {
+        double removeValue = (Double.parseDouble(value)*(neoBank.getManagerData().getBridgePercentage()+100))/100 + remains;
+        if (removeValue > sender.getAccount().getBalance()) {
             System.out.println(ColorConsole.RED + "transfer failed! you don't have enough money!" + ColorConsole.RESET);
             return;
         }
-        remains = sender.isHasRemainsFund() ? sender.getRemainsFund().calculateRemains(value) : 0;
-        if (Double.parseDouble(value) + neoBank.getManagerData().getBridgeWage() + remains > sender.getAccount().getBalance()) {
-            System.out.println(ColorConsole.RED + "transfer failed! you don't have enough money!" + ColorConsole.RESET);
-            return;
-        }
-        if (!input.nextConfirmation(receiver.getOwner(), value)){
+        if (!input.nextConfirmation(receiver, value)){
             System.out.println(ColorConsole.RED + "Transfer failed" + ColorConsole.RESET);
             return;
         }
-        this.transferBetweenBanks(sender, receiver, value, neoBank);
+        this.transferBetweenBanks(sender, receiver.getAccount(),removeValue, value, neoBank);
         System.out.println(ColorConsole.GREEN_BOLD + "Transfer Completed!" + ColorConsole.RESET);
 
     }
 
-    public void transferBetweenBanks(SimpleUser sender, Account receiver, String value, NeoBank neoBank){
+    public void transferBetweenBanks(SimpleUser sender, Account receiver, Double removeValue,String value, NeoBank neoBank){
         double remains = sender.isHasRemainsFund() ? sender.getRemainsFund().calculateRemains(value) : 0;
-        sender.getAccount().setBalance(sender.getAccount().getBalance() - Double.parseDouble(value) - neoBank.getManagerData().getCardWage() - remains);
+        sender.getAccount().setBalance(sender.getAccount().getBalance() - removeValue);
         receiver.setBalance(receiver.getBalance() + Double.parseDouble(value));
-        TransferTransaction newTransaction = new TransferTransaction(Double.parseDouble(value) + neoBank.getManagerData().getCardWage(), neoBank.getTracingNumber(), receiver.getOwner(), false, receiver.getCreditCard().getCreditCardId(), "-", sender, false);
+        TransferTransaction newTransaction = new TransferTransaction(removeValue, neoBank.getTracingNumber(), receiver.getOwner(), false, receiver.getCreditCard().getCreditCardId(), "-", sender, false);
         sender.getAccount().addTransaction(newTransaction, "Transfer");
         receiver.addTransaction(new TransferTransaction(Double.parseDouble(value), neoBank.getTracingNumber() + 1, receiver.getOwner(), false, receiver.getCreditCard().getCreditCardId(), "+", sender, true), "transfer");
         neoBank.setTracingNumber(neoBank.getTracingNumber() + 2);
@@ -119,5 +112,19 @@ public class CentralBank {
             sender.getRemainsFund().saveRemains(remains, neoBank);
         }
         sender.getAccount().addRecent(newTransaction, receiver.getOwner().getSimCard().getPhoneNumber(), this);
+    }
+
+    public void transferByCard(NeoBank neoBank, SimpleUser currentUser){
+        String creditCardID = input.nextCreditCardID(this);
+        if (creditCardID==null){
+            return;
+        }
+        SimpleUser receiver = this.existsCreditCardId(creditCardID).getOwner();
+        String value = input.nextValue(receiver,8000000.0 );
+        if (value==null){
+            return;
+        }
+        String creditCardStarter = creditCardID.substring(0, 8);
+        NeoBank bankReceiver = this.findBankByCreditCard(creditCardStarter);
     }
 }

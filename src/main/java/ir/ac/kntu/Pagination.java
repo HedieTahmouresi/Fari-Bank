@@ -224,22 +224,24 @@ public class Pagination<T> {
         }
     }
 
-    public void selectFariTransfer(NeoBank neoBank, SimpleUser currentUser, String answer) {
+    public void selectTransfer(NeoBank neoBank, SimpleUser currentUser, String answer) {
         switch (answer) {
-            case "1", "by Account ID":
-                currentUser.transferByAccountID(neoBank);
+            case "1", "by Credit Card ID" :
+
+            case "2", "by Account ID":
+                //currentUser.transferByAccountID(neoBank);
                 break;
-            case "2", "by Contact":
+            case "3", "by Contact":
                 if (currentUser.isContactOption()) {
                     currentUser.transferByContact(neoBank);
                 } else {
                     System.out.println(ColorConsole.RED + "You can't choose this option! You have turned off your contact option!" + ColorConsole.RESET);
                 }
                 break;
-            case "3", "by Recent List":
+            case "4", "by Recent List":
                 currentUser.transferByRecent(neoBank);
                 break;
-            case "4", "Return":
+            case "5", "Return":
                 return;
             case "next", "previous":
                 this.changePage(answer);
@@ -317,25 +319,4 @@ public class Pagination<T> {
         }
     }
 
-    public void selectTransfer(NeoBank neoBank, CentralBank centralBank, SimpleUser currentUser, String answer, Menu menu){
-        switch (answer) {
-            case "1", "Wire Transfer":
-                centralBank.wireTransfer(currentUser, neoBank);
-                break;
-            case "2", "Bridge Transfer":
-                centralBank.bridgeTransfer(currentUser, neoBank);
-                break;
-            case "3", "Credit to Credit":
-                centralBank.cardToCard(currentUser, neoBank);
-                break;
-            case "4", "Fari Transfer":
-                menu.fariTransferMenu(neoBank, currentUser);
-            case "next", "previous":
-                this.changePage(answer);
-                break;
-            default:
-                System.out.println(ColorConsole.RED + "THERE IS NO OTHER OPTION! Please input something else!" + ColorConsole.RESET);
-
-        }
-    }
 }

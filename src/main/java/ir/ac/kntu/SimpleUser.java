@@ -196,16 +196,24 @@ public class SimpleUser extends UserPerson {
         this.changeInfo(neoBank);
     }
 
-    public void transferByAccountID(NeoBank neoBank) {
-        String accountID = input.nextAccountID(neoBank);
+    public void transferByCreditID(NeoBank neoBank, String value, String creditCardId){
+        if (creditCardId==null){
+            return;
+        }
+        SimpleUser receiver = neoBank.getBankData().getUserByCreditID(creditCardId);
+        boolean confirmed = input.nextConfirmation(receiver, value);
+        if (!confirmed){
+            System.out.println(ColorConsole.RED + "Transfer failed!" + ColorConsole.RESET);
+            return;
+        }
+        this.getAccount().transfer(neoBank, value, receiver, false);
+    }
+
+    public void transferByAccountID(NeoBank neoBank, String value, String accountID) {
         if (accountID == null) {
             return;
         }
         SimpleUser receiver = neoBank.getBankData().getUserByAccountID(accountID);
-        String value = input.nextValue(receiver, 8000000.0);
-        if (value == null) {
-            return;
-        }
         boolean confirmed = input.nextConfirmation(receiver, value);
         if (!confirmed) {
             System.out.println(ColorConsole.RED + "Transfer failed!" + ColorConsole.RESET);
