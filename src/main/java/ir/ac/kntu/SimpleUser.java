@@ -206,7 +206,7 @@ public class SimpleUser extends UserPerson {
             System.out.println(ColorConsole.RED + "Transfer failed!" + ColorConsole.RESET);
             return;
         }
-        this.getAccount().transfer(neoBank, value, receiver, false);
+        this.getAccount().transfer(neoBank, value, receiver, false, false);
     }
 
     public void transferByAccountID(NeoBank neoBank, String value, String accountID) {
@@ -219,7 +219,7 @@ public class SimpleUser extends UserPerson {
             System.out.println(ColorConsole.RED + "Transfer failed!" + ColorConsole.RESET);
             return;
         }
-        this.getAccount().transfer(neoBank, value, receiver, false);
+        this.getAccount().transfer(neoBank, value, receiver, false, false);
     }
 
     public void transferByContact(NeoBank neoBank) {
@@ -235,15 +235,10 @@ public class SimpleUser extends UserPerson {
         if (value == null) {
             return;
         }
-        boolean confirmed = input.nextConfirmation(receiver, value);
-        if (!confirmed) {
-            System.out.println(ColorConsole.RED + "Transfer failed!" + ColorConsole.RESET);
-            return;
-        }
-        this.getAccount().transfer(neoBank, value, receiver, true);
+        this.getAccount().showOnlyFari(neoBank, value, receiver, true);
     }
 
-    public void transferByRecent(NeoBank neoBank) {
+    public void transferByRecent(NeoBank neoBank, CentralBank centralBank) {
         Recent recent = this.getAccount().showRecentList(neoBank);
         if (recent == null) {
             return;
@@ -259,12 +254,7 @@ public class SimpleUser extends UserPerson {
         if (value == null) {
             return;
         }
-        boolean confirmed = input.nextConfirmation(receiver, value);
-        if (!confirmed) {
-            System.out.println(ColorConsole.RED + "Transfer failed!" + ColorConsole.RESET);
-            return;
-        }
-        this.getAccount().transfer(neoBank, value, receiver, byContact);
+        this.getAccount().showTransferOptionsForRecent(value, receiver, neoBank, centralBank);
     }
 
     public boolean checkContactForTransfer(SimpleUser receiver) {

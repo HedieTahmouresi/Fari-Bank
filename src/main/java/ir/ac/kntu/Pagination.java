@@ -224,12 +224,12 @@ public class Pagination<T> {
         }
     }
 
-    public void selectTransfer(NeoBank neoBank, SimpleUser currentUser, String answer) {
+    public void selectTransfer(NeoBank neoBank, SimpleUser currentUser, String answer, CentralBank centralBank) {
         switch (answer) {
             case "1", "by Credit Card ID" :
-
+                centralBank.transferByCard(neoBank, currentUser);
             case "2", "by Account ID":
-                //currentUser.transferByAccountID(neoBank);
+                centralBank.transferByAccount(neoBank, currentUser);
                 break;
             case "3", "by Contact":
                 if (currentUser.isContactOption()) {
@@ -239,7 +239,7 @@ public class Pagination<T> {
                 }
                 break;
             case "4", "by Recent List":
-                currentUser.transferByRecent(neoBank);
+                currentUser.transferByRecent(neoBank, centralBank);
                 break;
             case "5", "Return":
                 return;

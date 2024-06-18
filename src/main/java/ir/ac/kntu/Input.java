@@ -351,7 +351,7 @@ public class Input {
     }
 
 
-    public Account nextAccountID(CentralBank centralBank) {
+    public String nextAccountID(CentralBank centralBank) {
         System.out.println(ColorConsole.BLUE + "Please enter the account Id of the person you would like to transfer money to!" + ColorConsole.RESET);
         String answer = this.nextLine();
         String regexID = "^[0-9]{13}$";
@@ -364,7 +364,7 @@ public class Input {
         } else if (centralBank.existsAccountId(answer)==null) {
             System.out.println(ColorConsole.RED + "No account with this ID exists! Try again!" + ColorConsole.RESET);
         } else {
-            return centralBank.existsAccountId(answer);
+            return answer;
         }
         return this.nextAccountID(centralBank);
     }

@@ -141,7 +141,7 @@ public class Menu {
             if (!input.exitPoint(answer) || "5".equals(answer)) {
                 return;
             }
-            menu.selectTransfer(neoBank, currentUser, answer);
+            menu.selectTransfer(neoBank, currentUser, answer, centralBank);
         } while (!"quit".equals(answer));
     }
 
