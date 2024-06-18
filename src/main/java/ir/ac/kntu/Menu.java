@@ -198,16 +198,5 @@ public class Menu {
         } while (!"quit".equals(answer));
     }
 
-    /*public void transferOptions(NeoBank neoBank, CentralBank centralBank, SimpleUser currentUser){
-        Pagination<String> menu = new Pagination<>(transferOptions, 5);
-        String answer;
-        do{
-            menu.showPage();
-            answer = input.nextLine();
-            if (!input.exitPoint(answer)){
-                return;
-            }
-            menu.selectTransfer(neoBank, centralBank, currentUser, answer, this);
-        } while (!"quit".equals(answer));
-    }*/
+
 }

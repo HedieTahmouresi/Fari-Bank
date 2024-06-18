@@ -1,5 +1,6 @@
 package ir.ac.kntu;
 
+import java.util.Objects;
 import java.util.Random;
 
 public class NeoBank {
@@ -101,5 +102,15 @@ public class NeoBank {
         menu.mainMenu(this, centralBank);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof NeoBank neoBank)) return false;
+        return Objects.equals(getCreditCardStarter(), neoBank.getCreditCardStarter());
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getCreditCardStarter());
+    }
 }

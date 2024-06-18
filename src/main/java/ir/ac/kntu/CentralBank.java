@@ -126,5 +126,78 @@ public class CentralBank {
         }
         String creditCardStarter = creditCardID.substring(0, 8);
         NeoBank bankReceiver = this.findBankByCreditCard(creditCardStarter);
+        if (neoBank.equals(bankReceiver)){
+            this.showOnlyFari(neoBank, value, currentUser, receiver);
+            return;
+        }
+
+    }
+
+    public void showOnlyFari(NeoBank neoBank, String value, SimpleUser sender, SimpleUser receiver){
+        String answer = this.displayTransferOptions();
+        if (!input.exitPoint(answer)){
+            return;
+        } else if (!answer.matches("[0-9]+")){
+            System.out.println(ColorConsole.RED + "Wrong format" + ColorConsole.RESET);
+        } else if (Integer.parseInt(answer)>=4){
+            System.out.println(ColorConsole.RED + "No other Option!" + ColorConsole.RESET);
+        } else if (answer.equals("4") || answer.equals("Transfer")){
+            sender.transferByCreditID(neoBank, value, receiver.getAccount().getCreditCard().getCreditCardId());
+            return;
+        } else{
+            System.out.println(ColorConsole.RED + "You can't choose these!" + ColorConsole.RESET);
+        }
+        this.showOnlyFari(neoBank, value, sender, receiver);
+    }
+
+    public String displayTransferOptions(){
+        System.out.println(ColorConsole.BLUE + "Choose way : " + ColorConsole.RESET);
+        System.out.println(ColorConsole.YELLOW + "1. Wire Transfer" + ColorConsole.RESET);
+        System.out.println(ColorConsole.YELLOW + "2. Bridge Transfer" + ColorConsole.RESET);
+        System.out.println(ColorConsole.YELLOW + "3. Card to Card Transfer" + ColorConsole.RESET);
+        System.out.println(ColorConsole.YELLOW + "4. Fari Transfer" + ColorConsole.RESET);
+        return input.nextLine();
+    }
+
+    public void showTransferOptionsForCard(String value, SimpleUser sender, SimpleUser receiver, NeoBank neoBank){
+        String answer = this.displayTransferOptions();
+        switch (answer){
+            case "1", "Wire Transfer":
+
+            case "2", "Bridge Transfer":
+                if (checkBridge(value)){
+                    this.bridgeTransfer(neoBank, sender, receiver, value);
+                    return;
+                }
+            case "3", "Card to Card Transfer" :
+                if (checkCard(value, true)){
+                    this.cardToCard(neoBank,sender, receiver, value);
+                    return;
+                }
+            case "4", "Fari Transfer" :
+                System.out.println(ColorConsole.RED + "You can't choose this option" + ColorConsole.RESET);
+            default:
+                if (!input.exitPoint(answer)){
+                    return;
+                }
+                System.out.println(ColorConsole.RED + "No other option" + ColorConsole.RESET);
+        }
+        this.showTransferOptionsForCard(value, sender, receiver, neoBank);
+    }
+
+    public boolean checkCard(String value, boolean byCard){
+        if (!byCard || Double.parseDouble(value)>100000.0){
+            System.out.println(ColorConsole.RED + "You can't choose this");
+            return false;
+        }
+        return true;
+    }
+
+    public boolean checkBridge(String value){
+        if (Double.parseDouble(value)>5000000.0){
+            System.out.println(ColorConsole.RED + "Higher than the maximum limit" + ColorConsole.RESET);
+            return false;
+        }
+        return true;
     }
 }
