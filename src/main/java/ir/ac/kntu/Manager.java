@@ -283,7 +283,7 @@ public class Manager {
             if (user instanceof SimpleUser simpleUser) {
                 this.manageUser(simpleUser);
             } else if (user instanceof Admin admin) {
-
+                this.manageAdmin(admin);
             } else if (user instanceof Manager manager) {
                 this.manageManager(manager);
             }
