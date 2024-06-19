@@ -23,6 +23,14 @@ public class ManagerData {
         this.wireTransactions.add(wireTransaction);
     }
 
+    public void removeAdmin(String userName){
+        for (Admin admin: this.admins){
+            if (admin.getUserName().equals(userName)){
+                this.admins.remove(admin);
+            }
+        }
+    }
+
     public double getWireWage() {
         return wireWage;
     }
