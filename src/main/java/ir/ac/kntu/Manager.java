@@ -295,11 +295,11 @@ public class Manager {
     public void manageManager(Manager manager) {
         System.out.println(ColorConsole.BLUE + "Choose :");
         System.out.println("   1. Edit");
-        System.out.println("   2. Block");
+        System.out.println("   2. Block/UnBlock");
         String answer = input.nextLine();
         switch (answer) {
             case "1", "Edit" -> {
-                if (this.getRank() < manager.getRank()) {
+                if (this.getRank() <= manager.getRank()) {
                     manager.changeName();
                     manager.changeLastName();
                     manager.changeUserName();
@@ -307,9 +307,11 @@ public class Manager {
                     System.out.println(ColorConsole.RED + "You have lower rank!");
                 }
             }
-            case "2", "Block" -> {
-                if (this.getRank() < manager.getRank()) {
-                    manager.setBlocked(true);
+            case "2", "Block/UnBlock" -> {
+                if (this.getRank() <= manager.getRank()) {
+                    manager.setBlocked(!manager.isBlocked());
+                    String change = manager.isBlocked()? "blocked" : "unblocked";
+                    System.out.println(ColorConsole.PURPLE + "This user got " + change + ColorConsole.RESET);
                 } else {
                     System.out.println(ColorConsole.RED + "You have lower rank!");
                 }
@@ -391,7 +393,11 @@ public class Manager {
                 currentUser.changeName();
                 currentUser.changeLastName();
             }
-            case "2", "Block" -> currentUser.setBlocked(true);
+            case "2", "Block" -> {
+                currentUser.setBlocked(!currentUser.isBlocked());
+                String change = currentUser.isBlocked()? "blocked" : "unblocked";
+                System.out.println(ColorConsole.PURPLE + "This user got " + change + ColorConsole.RESET);
+            }
             default -> {
                 if (!input.exitPoint(answer)){
                     return;
@@ -410,9 +416,15 @@ public class Manager {
             case "1", "Edit" -> {
                 currentAdmin.changeName();
                 currentAdmin.changeLastName();
+                currentAdmin.changeUserName(this.getData());
                 currentAdmin.changeAbility();
             }
-            case "2", "Block" -> currentAdmin.setBlocked(true);
+            case "2", "Block" -> {
+                currentAdmin.setBlocked(!currentAdmin.isBlocked());
+
+                String change = currentAdmin.isBlocked()? "blocked" : "unblocked";
+                System.out.println(ColorConsole.PURPLE + "This user got " + change + ColorConsole.RESET);
+            }
             default -> {
                 if (!input.exitPoint(answer)){
                     return;

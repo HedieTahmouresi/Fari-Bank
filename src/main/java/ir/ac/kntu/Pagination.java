@@ -57,11 +57,11 @@ public class Pagination<T> {
         switch (answer) {
             case "1", "Sign In"-> {
                 SimpleUser currentUser = neoBank.getBankData().signInUser();
-                if (currentUser != null && currentUser.getAuthenticated().isAuthenticated()) {
-                    menu.userService(currentUser, neoBank, centralBank);
-                } else if (currentUser != null && currentUser.isBlocked()) {
+                if (currentUser != null && currentUser.isBlocked()) {
                     System.out.println(ColorConsole.RED + "You are blocked!" + ColorConsole.RESET);
-                } else if (currentUser != null) {
+                }else if (currentUser != null && currentUser.getAuthenticated().isAuthenticated()) {
+                    menu.userService(currentUser, neoBank, centralBank);
+                }  else if (currentUser != null) {
                     currentUser.getAuthenticated().showRejection();
                     currentUser.changeInfo(neoBank);
                 }

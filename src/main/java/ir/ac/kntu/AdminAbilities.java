@@ -151,6 +151,7 @@ public class AdminAbilities {
                 case "6"-> this.changeSimCharge();
                 case "7"->this.changeCard();
                 case "8"->this.changeSettings();
+                case "next", "previous"->menu.changePage(answer);
                 default ->{
                     if (!input.exitPoint(answer)){
                         return;

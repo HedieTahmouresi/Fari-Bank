@@ -120,6 +120,7 @@ public class Admin {
 
     public void showRequest(List<Request> requestsList, NeoBank neoBank) {
         if (requestsList == null || requestsList.isEmpty()) {
+            System.out.println(ColorConsole.RED + "Requests are empty" + ColorConsole.RESET);
             return;
         }
         Pagination<Request> requests = new Pagination<>(requestsList, 5);

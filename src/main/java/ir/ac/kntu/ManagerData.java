@@ -24,11 +24,7 @@ public class ManagerData {
     }
 
     public void removeAdmin(String userName){
-        for (Admin admin: this.admins){
-            if (admin.getUserName().equals(userName)){
-                this.admins.remove(admin);
-            }
-        }
+        this.admins.removeIf(admin -> admin.getUserName().equals(userName));
     }
 
     public double getWireWage() {
