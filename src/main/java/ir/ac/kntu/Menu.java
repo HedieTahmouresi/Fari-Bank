@@ -205,7 +205,7 @@ public class Menu {
             if (!input.exitPoint(answer)) {
                 return;
             }
-            menu.selectAdminLog(this, neoBank, answer);
+            menu.selectManagerLog(this, neoBank, answer);
         } while (!"quit".equals(answer));
     }
 

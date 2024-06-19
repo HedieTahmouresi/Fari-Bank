@@ -359,7 +359,7 @@ public class Pagination<T> {
         }
     }
 
-    public void selectSettings(Manager manager, String answer, NeoBank neoBank) {
+    public void selectSettings(Manager manager, String answer) {
         switch (answer){
             case "1"-> manager.getData().changeFariWage();
             case "2"->manager.getData().changeChargeWage();
@@ -367,7 +367,8 @@ public class Pagination<T> {
             case "4"-> manager.getData().changeCardWage();
             case "5"->manager.getData().changeBridgeWage();
             case "6"->manager.getData().changeWireWage();
-
+            case "next", "previous" -> this.changePage(answer);
+            default -> System.out.println(ColorConsole.RED + "There is no other option" + ColorConsole.RESET);
         }
     }
 }

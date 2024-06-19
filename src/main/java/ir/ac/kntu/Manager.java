@@ -63,7 +63,7 @@ public class Manager {
 
 
     public void settings(NeoBank neoBank){
-        List<String> options = new ArrayList<>(Arrays.asList(ColorConsole.CYAN + "Fari Wage", ColorConsole.CYAN + "Charge Wage" , ColorConsole.CYAN + "Bonus Percentage", ColorConsole.CYAN + "Card to Card Wage", ColorConsole.CYAN + "Bridge Transfer Wage", ColorConsole.CYAN + "Wire Transfer Wage" + ColorConsole.RESET));
+        List<String> options = new ArrayList<>(Arrays.asList(ColorConsole.CYAN + "Fari Wage", ColorConsole.CYAN + "Charge Wage", ColorConsole.CYAN + "Bonus Percentage", ColorConsole.CYAN + "Card to Card Wage", ColorConsole.CYAN + "Bridge Transfer Wage", ColorConsole.CYAN + "Wire Transfer Wage" + ColorConsole.RESET));
         Pagination<String> menu = new Pagination<>(options, 5);
         String answer;
         do{
@@ -72,7 +72,7 @@ public class Manager {
             if (!input.exitPoint(answer)){
                 return;
             }
-            menu.selectSettings(this, answer, neoBank);
+            menu.selectSettings(this, answer);
         }while (!"quit".equals(answer));
     }
 }

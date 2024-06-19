@@ -38,6 +38,11 @@ public class Helper {
         fifth.getAbilities().setAuthentications(false);
     }
 
+    public void initiateManager(NeoBank neoBank){
+        Manager mainManager = new Manager("Hedieh Tahmouresi", "H_e_die", "H@tah1384", neoBank.getManagerData(), 0);
+        neoBank.getManagerData().addManager(mainManager);
+    }
+
     public void initiateContacts(SimpleUser firstUser, SimpleUser secondUser){
         firstUser.addContact(new Contact("Sepi", "<>.<>", new SimCard("09111262338", true)));
         firstUser.addContact(new Contact("Malake ziba", "Elsaii", new SimCard("09901917812", true)));
@@ -56,6 +61,7 @@ public class Helper {
     }
 
     public void initiateFari(NeoBank neoBank){
+        this.initiateManager(neoBank);
         this.initiateFariUsers(neoBank);
         this.initiateFariAdmins(neoBank);
     }

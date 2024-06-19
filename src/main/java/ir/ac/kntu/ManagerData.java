@@ -15,6 +15,11 @@ public class ManagerData {
     private double cardWage;
     private int bridgePercentage;
     private double wireWage;
+    private List<WireTransaction> wireTransactions;
+
+    public void addTransaction(WireTransaction wireTransaction){
+        this.wireTransactions.add(wireTransaction);
+    }
 
     private final Input input = new Input();
 
@@ -64,10 +69,12 @@ public class ManagerData {
         this.admins = new ArrayList<>();
         this.managers = new ArrayList<>();
         this.simCards = new ArrayList<>();
+        this.wireTransactions = new ArrayList<>();
         setFariWage(0.0);
         setCardWage(300.0);
         setChargeWage(0.0);
         setBridgePercentage(2);
+        setWireWage(2000);
     }
 
     public Admin getSpecificAdmin(String userName) {
@@ -92,6 +99,9 @@ public class ManagerData {
         this.admins.add(admin);
     }
 
+    public void addManager(Manager manager){
+        this.managers.add(manager);
+    }
 
     public double getFariWage() {
         return fariWage;
@@ -136,6 +146,7 @@ public class ManagerData {
             this.changeFariWage();
         }
         setFariWage(Double.parseDouble(answer));
+        System.out.println(ColorConsole.GREEN + "Fari Wage successfully changed");
     }
 
     public void changeChargeWage(){
@@ -148,6 +159,7 @@ public class ManagerData {
             this.changeChargeWage();
         }
         setChargeWage(Double.parseDouble(answer));
+        System.out.println(ColorConsole.GREEN + "Charge Wage successfully changed");
     }
 
     public void changeBonusPercentage(){
@@ -162,6 +174,7 @@ public class ManagerData {
             System.out.println(ColorConsole.RED + "Invalid number" + ColorConsole.RESET);
         }
         setBonusPercentage(Integer.parseInt(answer));
+        System.out.println(ColorConsole.GREEN + "Bonus Percentage successfully changed");
     }
 
     public void changeCardWage(){
@@ -174,6 +187,7 @@ public class ManagerData {
             this.changeCardWage();
         }
         setCardWage(Double.parseDouble(answer));
+        System.out.println(ColorConsole.GREEN + "Fari Wage successfully changed");
     }
 
     public void changeBridgeWage(){
@@ -188,6 +202,7 @@ public class ManagerData {
             System.out.println(ColorConsole.RED + "Invalid number" + ColorConsole.RESET);
         }
         setBridgePercentage(Integer.parseInt(answer));
+        System.out.println(ColorConsole.GREEN + "Bridge Wage successfully changed");
     }
 
     public void changeWireWage(){
@@ -200,5 +215,6 @@ public class ManagerData {
             this.changeWireWage();
         }
         setWireWage(Double.parseDouble(answer));
+        System.out.println(ColorConsole.GREEN + "Wire Wage successfully changed");
     }
 }
