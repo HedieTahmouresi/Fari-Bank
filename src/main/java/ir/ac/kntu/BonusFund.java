@@ -85,7 +85,9 @@ public class BonusFund extends Fund {
 
     public boolean depositBonus(NeoBank neoBank){
         Instant now = Calendar.now();
-        if (now.isAfter(this.getExpiration())){
+        Duration oneDay = Duration.ofDays(1);
+        Instant endTime = this.getExpiration().plus(oneDay);
+        if (endTime.isAfter(this.getExpiration())){
             return false;
         }
         ZonedDateTime zonedDateTime = this.getLastDeposit().atZone(ZoneId.systemDefault());

@@ -8,8 +8,7 @@ public class Admin {
     private String password;
     private Data data;
     private AdminAbilities abilities;
-
-
+    private boolean blocked;
 
     private final Input input = new Input();
 
@@ -19,7 +18,18 @@ public class Admin {
         setPassword(password);
         setData(data);
         setAbilities(new AdminAbilities(this));
+        setBlocked(false);
     }
+
+
+    public boolean isBlocked() {
+        return blocked;
+    }
+
+    public void setBlocked(boolean blocked) {
+        this.blocked = blocked;
+    }
+
 
     public AdminAbilities getAbilities() {
         return abilities;

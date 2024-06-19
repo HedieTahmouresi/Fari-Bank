@@ -2,6 +2,7 @@ package ir.ac.kntu;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ManagerData {
     private Data data;
@@ -253,4 +254,41 @@ public class ManagerData {
         }
         System.out.println(ColorConsole.PURPLE  + "No available fund to deposit (the time hadn't come or they were expired!)" + ColorConsole.RESET);
     }
+
+    public void addAdmin(){
+        System.out.println(ColorConsole.BLUE + "Please enter the full name" + ColorConsole.RESET);
+        String fullName = input.nextLine();
+        if (!input.exitPoint(fullName)){
+            return;
+        }
+        String userName = input.nextUserNameAdmin(this);
+        if (userName==null){
+            return;
+        }
+        String password = input.nextPassword();
+        if (password==null){
+            return;
+        }
+        Admin newAdmin = new Admin(fullName, userName, password, this.data);
+        this.addAdmin(newAdmin);
+    }
+
+    public boolean adminExists(String userName){
+        for (Admin admin : this.admins){
+            if (admin.getUserName().equals(userName)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean managerExists(String userName){
+        for (Manager manager : this.managers){
+            if (manager.getUserName().equals(userName)){
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

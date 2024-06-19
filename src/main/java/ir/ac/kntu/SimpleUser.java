@@ -13,7 +13,7 @@ public class SimpleUser extends UserPerson {
     private List<Contact> contacts;
     private List<Request> requests;
     private List<Fund> funds;
-
+    private boolean blocked;
     private final Input input = new Input();
 
     public String getSecurityNumber() {
@@ -64,6 +64,14 @@ public class SimpleUser extends UserPerson {
         this.hasRemainsFund = hasRemainsFund;
     }
 
+    public boolean isBlocked() {
+        return blocked;
+    }
+
+    public void setBlocked(boolean blocked) {
+        this.blocked = blocked;
+    }
+
     public SimpleUser(String name, String lastName, SimCard simCard, String securityNumber, String password, Authentication authentication) {
         super(name, lastName, simCard);
         setSecurityNumber(securityNumber);
@@ -74,6 +82,7 @@ public class SimpleUser extends UserPerson {
         setAuthenticated(authentication);
         this.funds = new ArrayList<>();
         setHasRemainsFund(false);
+        setBlocked(false);
     }
 
     public boolean contactExistence(Contact currentContact) {
@@ -475,20 +484,4 @@ public class SimpleUser extends UserPerson {
         System.out.println(ColorConsole.RED + "Wrong input try again!" + ColorConsole.RESET);
     }
 
-    public void chargeSimCard(NeoBank neoBank) {
-        String phoneNumber = input.nextPhoneNumber(neoBank.getBankData(), "doesn't matter");
-        if (phoneNumber == null) {
-            return;
-        }
-        SimCard simCard = neoBank.getManagerData().getSimCard(phoneNumber);
-        if (simCard == null) {
-            simCard = new SimCard(phoneNumber, false);
-        }
-        boolean hasBeenCharged = simCard.chargeSimCard(neoBank, this);
-        if (!hasBeenCharged) {
-            System.out.println(ColorConsole.RED + "Charge has failed!" + ColorConsole.RESET);
-            return;
-        }
-        neoBank.getManagerData().addSimCard(simCard);
-    }
 }

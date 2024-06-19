@@ -303,7 +303,7 @@ public class Pagination<T> {
                 }
                 break;
             case "3", "Other":
-                currentUser.chargeSimCard(neoBank);
+                currentUser.getAccount().chargeSimCard(neoBank);
                 break;
             case "4", "Return":
                 return;
@@ -343,7 +343,7 @@ public class Pagination<T> {
                 currentManager.settings(neoBank);
                 break;
             case "2", "User Management":
-
+                currentManager.userManagement(neoBank);
                 break;
             case "3", "Automatic Transactions":
                 currentManager.automaticTransactions(neoBank, centralBank);

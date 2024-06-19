@@ -387,4 +387,28 @@ public class Input {
         }
         return this.nextCreditCardID(centralBank);
     }
+
+    public String nextUserNameAdmin(ManagerData data){
+        System.out.println(ColorConsole.BLUE + "Please enter your user name" + ColorConsole.RESET);
+        String userName = this.nextLine();
+        if (!this.exitPoint(userName)){
+            return null;
+        }else if (!data.adminExists(userName)){
+            return userName;
+        }
+        System.out.println(ColorConsole.RED + "Another Admin with this username exists" + ColorConsole.RESET);
+        return this.nextUserNameAdmin(data);
+    }
+
+    public String nextUserNameManager(ManagerData data){
+        System.out.println(ColorConsole.BLUE + "Please enter your user name" + ColorConsole.RESET);
+        String userName = this.nextLine();
+        if (!this.exitPoint(userName)){
+            return null;
+        }else if (!data.managerExists(userName)){
+            return userName;
+        }
+        System.out.println(ColorConsole.RED + "Another Admin with this username exists" + ColorConsole.RESET);
+        return this.nextUserNameManager(data);
+    }
 }

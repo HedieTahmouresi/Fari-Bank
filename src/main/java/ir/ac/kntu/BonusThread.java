@@ -7,7 +7,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
-public class BonusThread implements Runnable{
+public class BonusThread implements Runnable {
     NeoBank neoBank;
     BonusFund fund;
 
@@ -27,25 +27,29 @@ public class BonusThread implements Runnable{
         this.fund = fund;
     }
 
-    public BonusThread(NeoBank neoBank, BonusFund fund){
+    public BonusThread(NeoBank neoBank, BonusFund fund) {
         this.setFund(fund);
         this.setNeoBank(neoBank);
     }
 
     @Override
     public void run() {
-        do {
-            ZonedDateTime zonedDateTime = this.getFund().getLastDeposit().atZone(ZoneId.systemDefault());
-            ZonedDateTime futureDateTime = zonedDateTime.plusMonths(1);
-            Instant nextDeposit = futureDateTime.toInstant();
-            Duration duration = Duration.between(this.getFund().getLastDeposit(), nextDeposit);
-            long time = duration.toMillis() / 6000;
-            try {
-                Thread.sleep(time);
-                this.getFund().depositBonus(this.getNeoBank());
-            } catch (InterruptedException error) {
-                System.out.println(ColorConsole.RED + "Thread Error" + ColorConsole.RESET);
+        ZonedDateTime zonedDateTime = this.getFund().getLastDeposit().atZone(ZoneId.systemDefault());
+        ZonedDateTime futureDateTime = zonedDateTime.plusMonths(1);
+        Instant nextDeposit = futureDateTime.toInstant();
+        Duration duration = Duration.between(this.getFund().getLastDeposit(), nextDeposit);
+        long time = duration.toMillis() / 6000;
+        Duration oneDay = Duration.ofDays(1);
+        Instant endTime = this.getFund().getExpiration().plus(oneDay);
+        try {
+            Thread.sleep(time);
+            this.getFund().depositBonus(this.getNeoBank());
+            if (!Calendar.now().isAfter(endTime)){
+                System.out.println("haha");
+                this.run();
             }
-        }while (!Calendar.now().isAfter(this.getFund().getExpiration()));
+        } catch (InterruptedException error) {
+            System.out.println(ColorConsole.RED + "Thread Error" + ColorConsole.RESET);
+        }
     }
 }
