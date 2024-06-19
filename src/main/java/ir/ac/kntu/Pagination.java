@@ -84,7 +84,7 @@ public class Pagination<T> {
         switch (answer) {
             case "1", "Simple User"-> menu.userLog(neoBank, centralBank);
             case "2", "Admin" -> menu.adminLog(neoBank);
-            case "3", "Manager" -> menu.managerLog(neoBank);
+            case "3", "Manager" -> menu.managerLog(neoBank, centralBank);
             case "next", "previous"-> this.changePage(answer);
             default-> System.out.println(ColorConsole.RED + "There are no other roles." + ColorConsole.BLUE + " Please Try again!" + ColorConsole.RESET);
 
@@ -316,12 +316,12 @@ public class Pagination<T> {
         }
     }
 
-    public void selectManagerLog(Menu menu, NeoBank neoBank, String answer){
+    public void selectManagerLog(Menu menu, NeoBank neoBank, String answer, CentralBank centralBank){
         switch (answer) {
             case "1", "Sign In":
                 Manager currentManager = neoBank.signInManager();
                 if (currentManager != null) {
-                    menu.managerService(currentManager, neoBank);
+                    menu.managerService(currentManager, neoBank, centralBank);
                 }
                 break;
             case "next", "previous":
@@ -337,7 +337,7 @@ public class Pagination<T> {
         }
     }
 
-    public void selectManagerService(NeoBank neoBank, String answer, Manager currentManager) {
+    public void selectManagerService(NeoBank neoBank, String answer, Manager currentManager, CentralBank centralBank) {
         switch (answer) {
             case "1", "Settings":
                 currentManager.settings(neoBank);
@@ -346,7 +346,7 @@ public class Pagination<T> {
 
                 break;
             case "3", "Automatic Transactions":
-
+                currentManager.automaticTransactions(neoBank, centralBank);
                 break;
             case "4", "Return":
                 return;

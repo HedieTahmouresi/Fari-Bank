@@ -75,4 +75,22 @@ public class Manager {
             menu.selectSettings(this, answer);
         }while (!"quit".equals(answer));
     }
+
+    public void automaticTransactions(NeoBank neoBank, CentralBank centralBank){
+        System.out.println(ColorConsole.BLUE + "Choose : ");
+        System.out.println("   1. Transfers");
+        System.out.println("   2. Funds");
+        String answer = input.nextLine();
+        switch (answer){
+            case "1", "Transfers" -> this.getData().completeTransfers(centralBank, neoBank);
+            case "2", "Funds" -> this.getData().depositBonuses(neoBank);
+            default -> {
+                if (!input.exitPoint(answer)){
+                    return;
+                }
+                System.out.println(ColorConsole.RED + "No other Option!" + ColorConsole.RESET);
+            }
+        }
+        this.automaticTransactions(neoBank, centralBank);
+    }
 }

@@ -83,5 +83,23 @@ public class BonusFund extends Fund {
         return ColorConsole.PURPLE + "Bonus " + super.toString();
     }
 
-
+    public boolean depositBonus(NeoBank neoBank){
+        Instant now = Calendar.now();
+        if (now.isAfter(this.getExpiration())){
+            return false;
+        }
+        ZonedDateTime zonedDateTime = this.getLastDeposit().atZone(ZoneId.systemDefault());
+        ZonedDateTime futureDateTime = zonedDateTime.plusMonths(1);
+        Instant nextDeposit = futureDateTime.toInstant();
+        if (now.isBefore(nextDeposit) ){
+            return false;
+        }
+        this.transferBonus(neoBank);
+        double bonus = (this.getBalance() * neoBank.getManagerData().getBonusPercentage()) / 100;
+        setLastDeposit(nextDeposit);
+        Transaction newTransaction = new TransferInsideTransaction(bonus, neoBank.getTracingNumber(), "Bonus Fund", "Account", this.getFundID());
+        neoBank.setTracingNumber(neoBank.getTracingNumber()+1);
+        this.getOwner().getAccount().addTransaction(newTransaction, "Inside Transfer");
+        return true;
+    }
 }

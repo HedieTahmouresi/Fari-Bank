@@ -101,11 +101,15 @@ public class CentralBank {
             System.out.println(ColorConsole.RED + "Transfer failed" + ColorConsole.RESET);
             return;
         }
+        if (!receiver.getAccount().getCreditCard().enterPreviousPassCode()){
+            return;
+        }
         double remains = sender.isHasRemainsFund() ? sender.getRemainsFund().calculateRemains(value) : 0;
         if (Double.parseDouble(value) + neoBank.getManagerData().getCardWage() + remains > sender.getAccount().getBalance()) {
             System.out.println(ColorConsole.RED + "transfer failed! you don't have enough money!" + ColorConsole.RESET);
             return;
         }
+        System.out.println(neoBank.getManagerData().getCardWage());
         Double removeValue = Double.parseDouble(value) + neoBank.getManagerData().getCardWage();
         sender.getAccount().setBalance(sender.getAccount().getBalance() - removeValue);
         TransferTransaction newTransaction = new TransferTransaction(removeValue, neoBank.getTracingNumber(), receiver, false, receiver.getAccount().getCreditCard().getCreditCardId(), "-", sender, false);

@@ -288,10 +288,12 @@ public class Account {
     }
 
     public Recent showRecentList(NeoBank neoBank) {
-        if (this.recentList == null || this.recentList.isEmpty()) {
+        if (this.recentList == null || this.recentList.isEmpty() ) {
+            String message = this.recentList.isEmpty()? "Recent List is empty" : "";
+            System.out.println(message);
             return null;
         }
-        Pagination recents = new Pagination<>(this.recentList, 5);
+        Pagination<Recent> recents = new Pagination<>(this.recentList, 5);
         String command;
         do {
             recents.showPage();

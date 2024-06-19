@@ -23,7 +23,7 @@ public class WireTransaction extends TransferTransaction{
         double remains = this.getSender().isHasRemainsFund() ? this.getSender().getRemainsFund().calculateRemains(Double.toString(this.getValue())) : 0;
         double removeValue = this.getValue() + neoBank.getManagerData().getWireWage() + remains;
         this.getSender().getAccount().setBalance(this.getSender().getAccount().getBalance() - removeValue);
-        this.getSender().getAccount().addTransaction(this, "Transfer");
+        this.getSender().getAccount().addTransaction(new WireTransaction(removeValue, this.getTracingNumber(), this.getReceiver(), this.getReceiverInfo(), this.getSign(), this.getSender(), false), "Transfer");
         this.getSender().getAccount().addRecentCentral(this, this.getReceiver().getSimCard().getPhoneNumber(), centralBank);
         SimpleUser receiver = centralBank.getUserBySim(this.getReceiver().getSimCard().getPhoneNumber());
         receiver.getAccount().setBalance(receiver.getAccount().getBalance() + this.getValue());
@@ -33,7 +33,6 @@ public class WireTransaction extends TransferTransaction{
             this.getSender().getRemainsFund().saveRemains(remains, neoBank);
         }
         setHasBeenDone(true);
-        System.out.println(ColorConsole.GREEN_BOLD + "Transfer Completed!" + ColorConsole.RESET);
     }
 
 }

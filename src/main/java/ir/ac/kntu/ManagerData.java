@@ -75,6 +75,7 @@ public class ManagerData {
         setChargeWage(0.0);
         setBridgePercentage(2);
         setWireWage(2000);
+        setBonusPercentage(10);
     }
 
     public Admin getSpecificAdmin(String userName) {
@@ -223,10 +224,34 @@ public class ManagerData {
     }
 
     public void completeTransfers(CentralBank centralBank, NeoBank neoBank){
+        if (this.wireTransactions.isEmpty()){
+            System.out.println(ColorConsole.PURPLE + "No transaction on hold!" + ColorConsole.RESET);
+            return;
+        }
         for (WireTransaction transaction : this.wireTransactions){
             transaction.completeTransaction(centralBank, neoBank);
         }
         this.emptyTransactions();
+        System.out.println(ColorConsole.GREEN + "All transactions done!");
     }
 
+
+    public void depositBonuses(NeoBank neoBank){
+        if (this.bonusFunds.isEmpty()){
+            System.out.println(ColorConsole.PURPLE + "No bonus fund!" + ColorConsole.RESET);
+            return;
+        }
+        boolean depositedOneFund = false;
+        for (BonusFund fund : this.bonusFunds){
+            boolean flag = fund.depositBonus(neoBank);
+            if (flag){
+                depositedOneFund = true;
+            }
+        }
+        if (depositedOneFund) {
+            System.out.println(ColorConsole.GREEN + "All bonuses were deposited");
+            return;
+        }
+        System.out.println(ColorConsole.PURPLE  + "No available fund to deposit (the time hadn't come or they were expired!)" + ColorConsole.RESET);
+    }
 }

@@ -51,7 +51,7 @@ public class CreditCard {
     }
 
     public boolean enterPreviousPassCode() {
-        System.out.println(ColorConsole.BLUE + "Please enter your old passcode!" + ColorConsole.RESET);
+        System.out.println(ColorConsole.BLUE + "Please enter passcode!" + ColorConsole.RESET);
         String answer = input.nextLine();
         if (!input.exitPoint(answer)) {
             return false;
@@ -61,8 +61,9 @@ public class CreditCard {
             System.out.println(ColorConsole.RED + "Wrong format! You should enter a number made of 4 digits!" + ColorConsole.RESET);
         } else if (Integer.parseInt(answer) == this.getPassword()) {
             return true;
+        }else {
+            System.out.println(ColorConsole.RED + "Wrong password!" + ColorConsole.RESET);
         }
-        System.out.println(ColorConsole.RED + "Wrong password!" + ColorConsole.RESET);
         return this.enterPreviousPassCode();
     }
 

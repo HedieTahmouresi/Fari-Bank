@@ -196,7 +196,7 @@ public class Menu {
     }
 
 
-    public void managerLog(NeoBank neoBank) {
+    public void managerLog(NeoBank neoBank, CentralBank centralBank) {
         Pagination<String> menu = new Pagination<>(adminLog, 5);
         String answer;
         do {
@@ -205,11 +205,11 @@ public class Menu {
             if (!input.exitPoint(answer)) {
                 return;
             }
-            menu.selectManagerLog(this, neoBank, answer);
+            menu.selectManagerLog(this, neoBank, answer, centralBank);
         } while (!"quit".equals(answer));
     }
 
-    public void managerService(Manager currentManager, NeoBank neoBank) {
+    public void managerService(Manager currentManager, NeoBank neoBank, CentralBank centralBank) {
         Pagination<String> menu = new Pagination<>(managerService, 5);
         String answer;
         do{
@@ -218,7 +218,7 @@ public class Menu {
             if(!input.exitPoint(answer)){
                 return;
             }
-            menu.selectManagerService(neoBank, answer, currentManager);
+            menu.selectManagerService(neoBank, answer, currentManager, centralBank);
         }while (!"quit".equals(answer));
     }
 }
