@@ -2,7 +2,6 @@ package ir.ac.kntu;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class ManagerData {
     private Data data;
@@ -18,10 +17,11 @@ public class ManagerData {
     private double wireWage;
     private List<WireTransaction> wireTransactions;
 
-    public void addTransaction(WireTransaction wireTransaction){
+    private final Input input = new Input();
+
+    public void addTransaction(WireTransaction wireTransaction) {
         this.wireTransactions.add(wireTransaction);
     }
-    private final Input input = new Input();
 
     public double getWireWage() {
         return wireWage;
@@ -100,7 +100,7 @@ public class ManagerData {
         this.admins.add(admin);
     }
 
-    public void addManager(Manager manager){
+    public void addManager(Manager manager) {
         this.managers.add(manager);
     }
 
@@ -137,12 +137,12 @@ public class ManagerData {
         return null;
     }
 
-    public void changeFariWage(){
+    public void changeFariWage() {
         System.out.println(ColorConsole.BLUE + "Please enter the new wage :");
         String answer = input.nextLine();
-        if (!input.exitPoint(answer)){
+        if (!input.exitPoint(answer)) {
             return;
-        } else if (!answer.matches("[0-9]+\\.?[0-9]*")){
+        } else if (!answer.matches("[0-9]+\\.?[0-9]*")) {
             System.out.println(ColorConsole.RED + "Wrong format" + ColorConsole.RESET);
             this.changeFariWage();
         }
@@ -150,12 +150,12 @@ public class ManagerData {
         System.out.println(ColorConsole.GREEN + "Fari Wage successfully changed");
     }
 
-    public void changeChargeWage(){
+    public void changeChargeWage() {
         System.out.println(ColorConsole.BLUE + "Please enter the new wage :");
         String answer = input.nextLine();
-        if (!input.exitPoint(answer)){
+        if (!input.exitPoint(answer)) {
             return;
-        } else if (!answer.matches("[0-9]+\\.?[0-9]*")){
+        } else if (!answer.matches("[0-9]+\\.?[0-9]*")) {
             System.out.println(ColorConsole.RED + "Wrong format" + ColorConsole.RESET);
             this.changeChargeWage();
         }
@@ -163,27 +163,27 @@ public class ManagerData {
         System.out.println(ColorConsole.GREEN + "Charge Wage successfully changed");
     }
 
-    public void changeBonusPercentage(){
+    public void changeBonusPercentage() {
         System.out.println(ColorConsole.BLUE + "Please enter the new percentage :");
         String answer = input.nextLine();
-        if (!input.exitPoint(answer)){
+        if (!input.exitPoint(answer)) {
             return;
-        } else if (!answer.matches("[0-9]+")){
+        } else if (!answer.matches("[0-9]+")) {
             System.out.println(ColorConsole.RED + "Wrong format" + ColorConsole.RESET);
             this.changeBonusPercentage();
-        } else if (Integer.parseInt(answer)>100){
+        } else if (Integer.parseInt(answer) > 100) {
             System.out.println(ColorConsole.RED + "Invalid number" + ColorConsole.RESET);
         }
         setBonusPercentage(Integer.parseInt(answer));
         System.out.println(ColorConsole.GREEN + "Bonus Percentage successfully changed");
     }
 
-    public void changeCardWage(){
+    public void changeCardWage() {
         System.out.println(ColorConsole.BLUE + "Please enter the new wage :");
         String answer = input.nextLine();
-        if (!input.exitPoint(answer)){
+        if (!input.exitPoint(answer)) {
             return;
-        } else if (!answer.matches("[0-9]+\\.?[0-9]*")){
+        } else if (!answer.matches("[0-9]+\\.?[0-9]*")) {
             System.out.println(ColorConsole.RED + "Wrong format" + ColorConsole.RESET);
             this.changeCardWage();
         }
@@ -191,27 +191,27 @@ public class ManagerData {
         System.out.println(ColorConsole.GREEN + "Fari Wage successfully changed");
     }
 
-    public void changeBridgeWage(){
+    public void changeBridgeWage() {
         System.out.println(ColorConsole.BLUE + "Please enter the new wage percentage:");
         String answer = input.nextLine();
-        if (!input.exitPoint(answer)){
+        if (!input.exitPoint(answer)) {
             return;
-        } else if (!answer.matches("[0-9]+")){
+        } else if (!answer.matches("[0-9]+")) {
             System.out.println(ColorConsole.RED + "Wrong format" + ColorConsole.RESET);
             this.changeBridgeWage();
-        }else if (Integer.parseInt(answer)>100){
+        } else if (Integer.parseInt(answer) > 100) {
             System.out.println(ColorConsole.RED + "Invalid number" + ColorConsole.RESET);
         }
         setBridgePercentage(Integer.parseInt(answer));
         System.out.println(ColorConsole.GREEN + "Bridge Wage successfully changed");
     }
 
-    public void changeWireWage(){
+    public void changeWireWage() {
         System.out.println(ColorConsole.BLUE + "Please enter the new wage :");
         String answer = input.nextLine();
-        if (!input.exitPoint(answer)){
+        if (!input.exitPoint(answer)) {
             return;
-        } else if (!answer.matches("[0-9]+\\.?[0-9]*")){
+        } else if (!answer.matches("[0-9]+\\.?[0-9]*")) {
             System.out.println(ColorConsole.RED + "Wrong format" + ColorConsole.RESET);
             this.changeWireWage();
         }
@@ -219,16 +219,16 @@ public class ManagerData {
         System.out.println(ColorConsole.GREEN + "Wire Wage successfully changed");
     }
 
-    public void emptyTransactions(){
+    public void emptyTransactions() {
         this.wireTransactions.clear();
     }
 
-    public void completeTransfers(CentralBank centralBank, NeoBank neoBank){
-        if (this.wireTransactions.isEmpty()){
+    public void completeTransfers(CentralBank centralBank, NeoBank neoBank) {
+        if (this.wireTransactions.isEmpty()) {
             System.out.println(ColorConsole.PURPLE + "No transaction on hold!" + ColorConsole.RESET);
             return;
         }
-        for (WireTransaction transaction : this.wireTransactions){
+        for (WireTransaction transaction : this.wireTransactions) {
             transaction.completeTransaction(centralBank, neoBank);
         }
         this.emptyTransactions();
@@ -236,15 +236,15 @@ public class ManagerData {
     }
 
 
-    public void depositBonuses(NeoBank neoBank){
-        if (this.bonusFunds.isEmpty()){
+    public void depositBonuses(NeoBank neoBank) {
+        if (this.bonusFunds.isEmpty()) {
             System.out.println(ColorConsole.PURPLE + "No bonus fund!" + ColorConsole.RESET);
             return;
         }
         boolean depositedOneFund = false;
-        for (BonusFund fund : this.bonusFunds){
+        for (BonusFund fund : this.bonusFunds) {
             boolean flag = fund.depositBonus(neoBank);
-            if (flag){
+            if (flag) {
                 depositedOneFund = true;
             }
         }
@@ -252,68 +252,68 @@ public class ManagerData {
             System.out.println(ColorConsole.GREEN + "All bonuses were deposited");
             return;
         }
-        System.out.println(ColorConsole.PURPLE  + "No available fund to deposit (the time hadn't come or they were expired!)" + ColorConsole.RESET);
+        System.out.println(ColorConsole.PURPLE + "No available fund to deposit (the time hadn't come or they were expired!)" + ColorConsole.RESET);
     }
 
-    public void addAdmin(){
+    public void addAdmin() {
         System.out.println(ColorConsole.BLUE + "Please enter the name" + ColorConsole.RESET);
         String name = input.nextLine();
-        if (!input.exitPoint(name)){
+        if (!input.exitPoint(name)) {
             return;
         }
         System.out.println(ColorConsole.BLUE + "Please enter the last name" + ColorConsole.RESET);
         String lastName = input.nextLine();
-        if (!input.exitPoint(lastName)){
+        if (!input.exitPoint(lastName)) {
             return;
         }
         String userName = input.nextUserNameAdmin(this);
-        if (userName==null){
+        if (userName == null) {
             return;
         }
         String password = input.nextPassword();
-        if (password==null){
+        if (password == null) {
             return;
         }
-        Admin newAdmin = new Admin(name,lastName, userName, password, this.data);
+        Admin newAdmin = new Admin(name, lastName, userName, password, this.data);
         this.addAdmin(newAdmin);
     }
 
-    public boolean adminExists(String userName){
-        for (Admin admin : this.admins){
-            if (admin.getUserName().equals(userName)){
+    public boolean adminExists(String userName) {
+        for (Admin admin : this.admins) {
+            if (admin.getUserName().equals(userName)) {
                 return true;
             }
         }
         return false;
     }
 
-    public boolean managerExists(String userName){
-        for (Manager manager : this.managers){
-            if (manager.getUserName().equals(userName)){
+    public boolean managerExists(String userName) {
+        for (Manager manager : this.managers) {
+            if (manager.getUserName().equals(userName)) {
                 return true;
             }
         }
         return false;
     }
 
-    public List<Object> getAllUsers(){
+    public List<Object> getAllUsers() {
         List<Object> allUsers = this.getData().getUsers();
         allUsers.addAll(this.admins);
         allUsers.addAll(this.managers);
         return allUsers;
     }
 
-    public List<Object> getAdmins(){
+    public List<Object> getAdmins() {
         return new ArrayList<>(this.admins);
     }
 
-    public List<Object> getManagers(){
+    public List<Object> getManagers() {
         return new ArrayList<>(this.managers);
     }
 
-    public List<Object> searchName(List<Object> users){
+    public List<Object> searchName(List<Object> users) {
         String name = input.nextSearchName();
-        if (name==null){
+        if (name == null) {
             return null;
         }
         List<Object> result = new ArrayList<>();
@@ -326,9 +326,9 @@ public class ManagerData {
         return result;
     }
 
-    public List<Object> searchLastName(List<Object> users){
+    public List<Object> searchLastName(List<Object> users) {
         String lastName = input.nextSearchLastName();
-        if (lastName==null){
+        if (lastName == null) {
             return null;
         }
         List<Object> result = new ArrayList<>();
@@ -341,14 +341,14 @@ public class ManagerData {
         return result;
     }
 
-    public List<Object> searchPhoneNumber(List<Object> users){
+    public List<Object> searchPhoneNumber(List<Object> users) {
         String phoneNumber = input.nextSearchPhoneNumber();
-        if (phoneNumber==null){
+        if (phoneNumber == null) {
             return null;
         }
         List<Object> result = new ArrayList<>();
         for (Object user : users) {
-            if (this.getPhoneNumber(user)!=null) {
+            if (this.getPhoneNumber(user) != null) {
                 Fuzzy similarity = new Fuzzy(phoneNumber, this.getPhoneNumber(user));
                 if (similarity.getSimilarity() >= 0.6) {
                     result.add(user);
@@ -358,14 +358,14 @@ public class ManagerData {
         return result;
     }
 
-    public List<Object> searchUserName(List<Object> users){
+    public List<Object> searchUserName(List<Object> users) {
         String userName = input.nextSearchUserName();
-        if (userName==null){
+        if (userName == null) {
             return null;
         }
         List<Object> result = new ArrayList<>();
         for (Object user : users) {
-            if (this.getUserName(user)!=null) {
+            if (this.getUserName(user) != null) {
                 Fuzzy similarity = new Fuzzy(userName, this.getUserName(user));
                 if (similarity.getSimilarity() >= 0.6) {
                     result.add(user);
@@ -375,64 +375,62 @@ public class ManagerData {
         return result;
     }
 
-    public List<Object> searchRole(List<Object> users){
+    public List<Object> searchRole(List<Object> users) {
         String role = input.nextRole();
-        if (role==null){
+        if (role == null) {
             return null;
         }
-        switch (role){
-            case "1"-> {
+        switch (role) {
+            case "1" -> {
                 return this.getData().getUsers();
             }
-            case "2"->{
+            case "2" -> {
                 return this.getAdmins();
             }
-            case "3"->{
+            case "3" -> {
                 return this.getManagers();
             }
-            default ->{
+            default -> {
                 return null;
             }
         }
     }
 
-    public String getName (Object obj){
-        if (obj instanceof SimpleUser simpleUser){
+    public String getName(Object obj) {
+        if (obj instanceof SimpleUser simpleUser) {
             return simpleUser.getName();
-        }else if(obj instanceof Manager manager){
+        } else if (obj instanceof Manager manager) {
             return manager.getName();
-        } else if(obj instanceof Admin admin){
+        } else if (obj instanceof Admin admin) {
             return admin.getName();
         }
         return null;
     }
 
-    public String getLastName (Object obj){
-        if (obj instanceof SimpleUser simpleUser){
+    public String getLastName(Object obj) {
+        if (obj instanceof SimpleUser simpleUser) {
             return simpleUser.getLastName();
-        }else if(obj instanceof Manager manager){
+        } else if (obj instanceof Manager manager) {
             return manager.getLastName();
-        } else if(obj instanceof Admin admin){
+        } else if (obj instanceof Admin admin) {
             return admin.getLastName();
         }
         return null;
     }
 
-    public String getPhoneNumber (Object obj){
-        if (obj instanceof SimpleUser simpleUser){
+    public String getPhoneNumber(Object obj) {
+        if (obj instanceof SimpleUser simpleUser) {
             return simpleUser.getSimCard().getPhoneNumber();
         }
         return null;
     }
 
-    public String getUserName (Object obj){
-        if(obj instanceof Manager manager){
+    public String getUserName(Object obj) {
+        if (obj instanceof Manager manager) {
             return manager.getUserName();
-        } else if(obj instanceof Admin admin){
+        } else if (obj instanceof Admin admin) {
             return admin.getUserName();
         }
         return null;
     }
-
-
 }

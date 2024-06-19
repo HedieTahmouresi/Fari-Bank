@@ -1,7 +1,5 @@
 package ir.ac.kntu;
 
-import ir.ac.kntu.util.Calendar;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -238,7 +236,7 @@ public class Manager {
             if (!input.exitPoint(command)){
                 return;
             }else if (command.matches("[0-9]+")) {
-                users.get(Integer.parseInt(command));
+                this.selectUser(users, command);
             } else if ("next".equals(command) || "previous".equals(command)) {
                 userList.changePage(command);
             } else {
@@ -247,5 +245,25 @@ public class Manager {
         }while (!"return".equals(command));
     }
 
+    public void selectUser(List<Object> users, String answer){
+        if (Integer.parseInt(answer) > 0 && Integer.parseInt(answer) <= users.size()) {
+            int index = Integer.parseInt(answer) - 1;
+            Object user = users.get(index);
+            if (user instanceof SimpleUser simpleUser){
 
+            }else if (user instanceof Admin admin){
+
+            }else if (user instanceof Manager manager){
+
+            }
+            return;
+        }
+        System.out.println(ColorConsole.RED + "Index out of Bound! try again!" + ColorConsole.RESET);
+    }
+
+    public void manageManager(Manager manager){
+        System.out.println(ColorConsole.BLUE + "Choose :");
+        System.out.println("   1. Edit");
+        System.out.println("   2. Block");
+    }
 }

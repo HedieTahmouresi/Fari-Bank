@@ -55,28 +55,28 @@ public class Pagination<T> {
 
     public void selectUserLog(Menu menu, NeoBank neoBank, String answer, CentralBank centralBank) {
         switch (answer) {
-            case "1", "Sign In":
+            case "1", "Sign In"-> {
                 SimpleUser currentUser = neoBank.getBankData().signInUser();
                 if (currentUser != null && currentUser.getAuthenticated().isAuthenticated()) {
                     menu.userService(currentUser, neoBank, centralBank);
+                } else if (currentUser != null && currentUser.isBlocked()) {
+                    System.out.println(ColorConsole.RED + "You are blocked!" + ColorConsole.RESET);
                 } else if (currentUser != null) {
                     currentUser.getAuthenticated().showRejection();
                     currentUser.changeInfo(neoBank);
                 }
-                break;
-            case "2", "Sign Up":
+            }
+            case "2", "Sign Up"-> {
                 neoBank.getBankData().signUp(neoBank);
-                break;
-            case "next", "previous":
+            }
+            case "next", "previous"-> {
                 this.changePage(answer);
-                break;
-            default:
+            }
+            default ->{
                 if (input.exitPoint(answer)) {
                     System.out.println(ColorConsole.RED + "There are no other options on the menu." + ColorConsole.BLUE + " Please Try again!" + ColorConsole.RESET);
-                } else {
-                    return;
                 }
-                break;
+            }
         }
     }
 
@@ -116,7 +116,9 @@ public class Pagination<T> {
         switch (answer) {
             case "1", "Sign In":
                 Admin currentAdmin = neoBank.signInAdmin();
-                if (currentAdmin != null) {
+                if (currentAdmin != null && currentAdmin.isBlocked()){
+                    System.out.println(ColorConsole.RED + "You are blocked!" + ColorConsole.RESET);
+                } else if (currentAdmin != null) {
                     menu.adminService(currentAdmin, neoBank);
                 }
                 break;
@@ -320,7 +322,9 @@ public class Pagination<T> {
         switch (answer) {
             case "1", "Sign In":
                 Manager currentManager = neoBank.signInManager();
-                if (currentManager != null) {
+                if (currentManager != null && currentManager.isBlocked()) {
+                    System.out.println(ColorConsole.RED + "You are blocked !" + ColorConsole.RESET);
+                } else if (currentManager != null){
                     menu.managerService(currentManager, neoBank, centralBank);
                 }
                 break;

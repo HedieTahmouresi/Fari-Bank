@@ -70,7 +70,7 @@ public class CentralBank {
         return null;
     }
 
-    public void wireTransfer(NeoBank neoBank, ArrayList<SimpleUser> users, String value, CentralBank centralBank){
+    public void wireTransfer(NeoBank neoBank, List<SimpleUser> users, String value, CentralBank centralBank){
         SimpleUser receiver = users.get(1);
         SimpleUser sender = users.get(0);
         if (receiver==null){
@@ -244,7 +244,7 @@ public class CentralBank {
         return input.nextLine();
     }
 
-    public void showTransferOptionsForCard(String value, ArrayList<SimpleUser> senderReceiver, NeoBank neoBank, CentralBank centralBank){
+    public void showTransferOptionsForCard(String value, List<SimpleUser> senderReceiver, NeoBank neoBank, CentralBank centralBank){
         String answer = this.displayTransferOptions();
         switch (answer){
             case "1", "Wire Transfer"-> {
@@ -302,34 +302,37 @@ public class CentralBank {
         return true;
     }
 
-    public void showTransferOptionsForAccount(String value, ArrayList<SimpleUser> senderReceiver, NeoBank neoBank, CentralBank centralBank){
+    public void showTransferOptionsForAccount(String value, List<SimpleUser> senderReceiver, NeoBank neoBank, CentralBank centralBank){
         String answer = this.displayTransferOptions();
         switch (answer){
-            case "1", "Wire Transfer":
+            case "1", "Wire Transfer"-> {
                 if (checkWire(value)) {
                     this.wireTransfer(neoBank, senderReceiver, value, centralBank);
                     return;
                 }
-            case "2", "Bridge Transfer":
-                if (checkBridge(value)){
+            }
+            case "2", "Bridge Transfer"-> {
+                if (checkBridge(value)) {
                     this.bridgeTransfer(neoBank, senderReceiver.get(0), senderReceiver.get(1), value);
                     return;
                 }
                 break;
-            case "3", "Card to Card Transfer" :
-                if (checkCard(value, false)){
+            }
+            case "3", "Card to Card Transfer" -> {
+                if (checkCard(value, false)) {
                     this.bridgeTransfer(neoBank, senderReceiver.get(0), senderReceiver.get(1), value);
                     return;
                 }
-                break;
-            case "4", "Fari Transfer" :
+            }
+            case "4", "Fari Transfer" -> {
                 System.out.println(ColorConsole.RED + "You can't choose this option" + ColorConsole.RESET);
-                break;
-            default:
-                if (!input.exitPoint(answer)){
+            }
+            default-> {
+                if (!input.exitPoint(answer)) {
                     return;
                 }
                 System.out.println(ColorConsole.RED + "No other option" + ColorConsole.RESET);
+            }
         }
         this.showTransferOptionsForCard(value, senderReceiver, neoBank, centralBank);
     }

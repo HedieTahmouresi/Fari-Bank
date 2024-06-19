@@ -8,8 +8,8 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 public class BonusThread implements Runnable {
-    NeoBank neoBank;
-    BonusFund fund;
+    private NeoBank neoBank;
+    private BonusFund fund;
 
     public NeoBank getNeoBank() {
         return neoBank;
