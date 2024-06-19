@@ -1,5 +1,9 @@
 package ir.ac.kntu;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class AdminAbilities {
     private Admin owner;
     private boolean authentications;
@@ -10,6 +14,8 @@ public class AdminAbilities {
     private boolean simCharge;
     private boolean creditCard;
     private boolean settings;
+
+    private final Input input = new Input();
 
     public Admin getOwner() {
         return owner;
@@ -125,5 +131,153 @@ public class AdminAbilities {
                 return false;
             }
         }
+    }
+
+
+
+    public void changeAbilities(){
+        List<String> list = new ArrayList<>(Arrays.asList(ColorConsole.CYAN +"AUTHENTICATIONS", ColorConsole.CYAN +"REPORT", ColorConsole.CYAN +"FUNDS", ColorConsole.CYAN +"CONTACTS",ColorConsole.CYAN + "TRANSFER",ColorConsole.CYAN + "SIM_CHARGE",ColorConsole.CYAN + "CREDIT_CARD",ColorConsole.CYAN + "SETTINGS" + ColorConsole.RESET));
+        Pagination<String> menu = new Pagination<>(list, 5);
+        String answer;
+        do{
+            menu.showPage();
+            answer = input.nextLine();
+            switch(answer){
+                case "1"-> this.changeAuthentications();
+                case "2"-> this.changeReport();
+                case "3"-> this.changeFunds();
+                case "4"->this.changeContacts();
+                case "5"-> this.changeTransfers();
+                case "6"-> this.changeSimCharge();
+                case "7"->this.changeCard();
+                case "8"->this.changeSettings();
+                default ->{
+                    if (!input.exitPoint(answer)){
+                        return;
+                    }
+                    System.out.println(ColorConsole.RED + "No other Option" + ColorConsole.RESET);
+                }
+            }
+        }while (!"return".equals(answer));
+    }
+
+    public void changeAuthentications(){
+        String activity = this.isAuthentications()? "active" : "not active";
+        System.out.println(ColorConsole.BLUE + "This option is " + activity + " Would you like to change it?");
+        String answer = input.nextLine();
+        if ("no".equalsIgnoreCase(answer) || !input.exitPoint(answer)) {
+            return;
+        } else if ("yes".equalsIgnoreCase(answer)) {
+            this.setAuthentications(!this.isAuthentications());
+            return;
+        } else {
+            System.out.println(ColorConsole.RED + "Wrong input! Try again" + ColorConsole.RESET);
+        }
+        this.changeAuthentications();
+    }
+
+    public void changeReport(){
+        String activity = this.isReports()? "active" : "not active";
+        System.out.println(ColorConsole.BLUE + "This option is " + activity + " Would you like to change it?");
+        String answer = input.nextLine();
+        if ("no".equalsIgnoreCase(answer) || !input.exitPoint(answer)) {
+            return;
+        } else if ("yes".equalsIgnoreCase(answer)) {
+            this.setReports(!this.isReports());
+            return;
+        } else {
+            System.out.println(ColorConsole.RED + "Wrong input! Try again" + ColorConsole.RESET);
+        }
+        this.changeReport();
+    }
+
+    public void changeFunds(){
+        String activity = this.isFunds()? "active" : "not active";
+        System.out.println(ColorConsole.BLUE + "This option is " + activity + " Would you like to change it?");
+        String answer = input.nextLine();
+        if ("no".equalsIgnoreCase(answer) || !input.exitPoint(answer)) {
+            return;
+        } else if ("yes".equalsIgnoreCase(answer)) {
+            this.setFunds(!this.isFunds());
+            return;
+        } else {
+            System.out.println(ColorConsole.RED + "Wrong input! Try again" + ColorConsole.RESET);
+        }
+        this.changeFunds();
+    }
+
+    public void changeContacts(){
+        String activity = this.isContacts()? "active" : "not active";
+        System.out.println(ColorConsole.BLUE + "This option is " + activity + " Would you like to change it?");
+        String answer = input.nextLine();
+        if ("no".equalsIgnoreCase(answer) || !input.exitPoint(answer)) {
+            return;
+        } else if ("yes".equalsIgnoreCase(answer)) {
+            this.setContacts(!this.isContacts());
+            return;
+        } else {
+            System.out.println(ColorConsole.RED + "Wrong input! Try again" + ColorConsole.RESET);
+        }
+        this.changeContacts();
+    }
+
+    public void changeTransfers(){
+        String activity = this.isTransfer()? "active" : "not active";
+        System.out.println(ColorConsole.BLUE + "This option is " + activity + " Would you like to change it?");
+        String answer = input.nextLine();
+        if ("no".equalsIgnoreCase(answer) || !input.exitPoint(answer)) {
+            return;
+        } else if ("yes".equalsIgnoreCase(answer)) {
+            this.setTransfer(!this.isTransfer());
+            return;
+        } else {
+            System.out.println(ColorConsole.RED + "Wrong input! Try again" + ColorConsole.RESET);
+        }
+        this.changeTransfers();
+    }
+
+    public void changeSimCharge(){
+        String activity = this.isSimCharge()? "active" : "not active";
+        System.out.println(ColorConsole.BLUE + "This option is " + activity + " Would you like to change it?");
+        String answer = input.nextLine();
+        if ("no".equalsIgnoreCase(answer) || !input.exitPoint(answer)) {
+            return;
+        } else if ("yes".equalsIgnoreCase(answer)) {
+            this.setSimCharge(!this.isSimCharge());
+            return;
+        } else {
+            System.out.println(ColorConsole.RED + "Wrong input! Try again" + ColorConsole.RESET);
+        }
+        this.changeSimCharge();
+    }
+
+    public void changeCard(){
+        String activity = this.isCreditCard()? "active" : "not active";
+        System.out.println(ColorConsole.BLUE + "This option is " + activity + " Would you like to change it?");
+        String answer = input.nextLine();
+        if ("no".equalsIgnoreCase(answer) || !input.exitPoint(answer)) {
+            return;
+        } else if ("yes".equalsIgnoreCase(answer)) {
+            this.setCreditCard(!this.isCreditCard());
+            return;
+        } else {
+            System.out.println(ColorConsole.RED + "Wrong input! Try again" + ColorConsole.RESET);
+        }
+        this.changeCard();
+    }
+
+    public void changeSettings(){
+        String activity = this.isSettings()? "active" : "not active";
+        System.out.println(ColorConsole.BLUE + "This option is " + activity + " Would you like to change it?");
+        String answer = input.nextLine();
+        if ("no".equalsIgnoreCase(answer) || !input.exitPoint(answer)) {
+            return;
+        } else if ("yes".equalsIgnoreCase(answer)) {
+            this.setSettings(!this.isSettings());
+            return;
+        } else {
+            System.out.println(ColorConsole.RED + "Wrong input! Try again" + ColorConsole.RESET);
+        }
+        this.changeSettings();
     }
 }
