@@ -32,6 +32,7 @@ public class WireTransaction extends TransferTransaction{
         if (this.getSender().isHasRemainsFund()) {
             this.getSender().getRemainsFund().saveRemains(remains, neoBank);
         }
+        setHasBeenDone(true);
         System.out.println(ColorConsole.GREEN_BOLD + "Transfer Completed!" + ColorConsole.RESET);
     }
 

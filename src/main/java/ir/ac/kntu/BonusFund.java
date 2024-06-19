@@ -7,6 +7,15 @@ import java.time.*;
 public class BonusFund extends Fund {
     private Instant manufacture;
     private Instant expiration;
+    private Instant lastDeposit;
+
+    public Instant getLastDeposit() {
+        return lastDeposit;
+    }
+
+    public void setLastDeposit(Instant lastDeposit) {
+        this.lastDeposit = lastDeposit;
+    }
 
     public Instant getExpiration() {
         return expiration;
@@ -32,6 +41,7 @@ public class BonusFund extends Fund {
         ZonedDateTime futureDateTime = zonedDateTime.plusMonths(numOfMonths);
         Instant futureInstant = futureDateTime.toInstant();
         setExpiration(futureInstant);
+        setLastDeposit(now);
     }
 
     @Override
@@ -49,6 +59,7 @@ public class BonusFund extends Fund {
         System.out.println(ColorConsole.RED + "The expiration is due!" + ColorConsole.RESET);
         this.getOwner().getAccount().setBalance(this.getOwner().getAccount().getBalance() + this.getBalance());
         Transaction newTransaction = new TransferInsideTransaction(this.getBalance(), neoBank.getTracingNumber(), "Bonus Fund", "Account", this.getFundID());
+        neoBank.setTracingNumber(neoBank.getTracingNumber()+1);
         this.getOwner().getAccount().addTransaction(newTransaction, "Inside Transfer");
         double remains = this.getOwner().isHasRemainsFund() ? this.getOwner().getRemainsFund().calculateRemains(Double.toString(this.getBalance())) : 0;
         if (this.getOwner().isHasRemainsFund()) {
@@ -71,4 +82,6 @@ public class BonusFund extends Fund {
     public String toString() {
         return ColorConsole.PURPLE + "Bonus " + super.toString();
     }
+
+
 }

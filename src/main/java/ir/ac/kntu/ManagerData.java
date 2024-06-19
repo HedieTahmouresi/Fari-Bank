@@ -5,7 +5,7 @@ import java.util.List;
 
 public class ManagerData {
     private Data data;
-    private List<Fund> bonusFunds;
+    private List<BonusFund> bonusFunds;
     private List<Admin> admins;
     private List<Manager> managers;
     private double fariWage;
@@ -217,4 +217,16 @@ public class ManagerData {
         setWireWage(Double.parseDouble(answer));
         System.out.println(ColorConsole.GREEN + "Wire Wage successfully changed");
     }
+
+    public void emptyTransactions(){
+        this.wireTransactions.clear();
+    }
+
+    public void completeTransfers(CentralBank centralBank, NeoBank neoBank){
+        for (WireTransaction transaction : this.wireTransactions){
+            transaction.completeTransaction(centralBank, neoBank);
+        }
+        this.emptyTransactions();
+    }
+
 }
