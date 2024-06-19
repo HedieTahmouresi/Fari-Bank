@@ -430,7 +430,7 @@ public class Input {
         String userName = this.nextLine();
         if (!this.exitPoint(userName)){
             return null;
-        }else if (!data.managerExists(userName)){
+        }else if (!data.managerExists(userName)) {
             return userName;
         }
         System.out.println(ColorConsole.RED + "Another Manager with this username exists" + ColorConsole.RESET);

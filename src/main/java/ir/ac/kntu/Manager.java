@@ -254,7 +254,7 @@ public class Manager {
             }else if (user instanceof Admin admin){
 
             }else if (user instanceof Manager manager){
-
+                this.manageManager(manager);
             }
             return;
         }
@@ -265,5 +265,83 @@ public class Manager {
         System.out.println(ColorConsole.BLUE + "Choose :");
         System.out.println("   1. Edit");
         System.out.println("   2. Block");
+        String answer = input.nextLine();
+        switch (answer){
+            case "1", "Edit"-> {
+                if (this.getRank()<manager.getRank()){
+                    manager.changeName();
+                    manager.changeLastName();
+                    manager.changeUserName();
+                } else{
+                    System.out.println(ColorConsole.RED + "You have lower rank!");
+                }
+            }
+            case "2", "Block"-> {
+                if (this.getRank()<manager.getRank()){
+                    manager.setBlocked(true);
+                } else{
+                    System.out.println(ColorConsole.RED + "You have lower rank!");
+                }
+            }
+        }
     }
+
+    public void changeName() {
+        System.out.println(ColorConsole.CYAN + "Would you like to change the name? (previous name : " + ColorConsole.PURPLE + this.getName() + ColorConsole.CYAN + ")" + ColorConsole.RESET);
+        String answer = input.nextLine();
+        if ("no".equalsIgnoreCase(answer) || !input.exitPoint(answer)) {
+            return;
+        } else if ("yes".equalsIgnoreCase(answer)) {
+            System.out.println(ColorConsole.CYAN + "Write the name you like!" + ColorConsole.RESET);
+            String name = input.nextLine();
+            if (input.exitPoint(name)) {
+                this.setName(name);
+            }
+            return;
+        } else {
+            System.out.println(ColorConsole.RED + "Wrong input! Try again" + ColorConsole.RESET);
+        }
+        this.changeName();
+    }
+
+    public void changeLastName() {
+        System.out.println(ColorConsole.CYAN + "Would you like to change the last name? (previous last name : " + ColorConsole.PURPLE + this.getLastName() + ColorConsole.CYAN + ")" + ColorConsole.RESET);
+        String answer = input.nextLine();
+        if ("no".equalsIgnoreCase(answer) || !input.exitPoint(answer)) {
+            return;
+        } else if ("yes".equalsIgnoreCase(answer)) {
+            System.out.println(ColorConsole.CYAN + "Write the last name you like!" + ColorConsole.RESET);
+            String lastName = input.nextLine();
+            if (input.exitPoint(lastName)) {
+                this.setLastName(lastName);
+            }
+            return;
+        } else {
+            System.out.println(ColorConsole.RED + "Wrong input! Try again" + ColorConsole.RESET);
+        }
+        this.changeLastName();
+    }
+
+    public void changeUserName() {
+        System.out.println(ColorConsole.CYAN + "Would you like to change the user name? (previous user name : " + ColorConsole.PURPLE + this.getUserName() + ColorConsole.CYAN + ")" + ColorConsole.RESET);
+        String answer = input.nextLine();
+        if ("no".equalsIgnoreCase(answer) || !input.exitPoint(answer)) {
+            return;
+        } else if ("yes".equalsIgnoreCase(answer)) {
+            System.out.println(ColorConsole.CYAN + "Write the last name you like!" + ColorConsole.RESET);
+            String userName = input.nextUserNameManager(this.getData());
+            if (userName==null) {
+                return;
+            } else if(!this.getData().adminExists(userName)) {
+                this.setUserName(userName);
+            } else {
+                System.out.println("Another admin with this username exists");
+            }
+            return;
+        } else {
+            System.out.println(ColorConsole.RED + "Wrong input! Try again" + ColorConsole.RESET);
+        }
+        this.changeUserName();
+    }
+
 }
