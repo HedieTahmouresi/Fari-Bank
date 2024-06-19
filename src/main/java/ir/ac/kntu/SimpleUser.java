@@ -433,6 +433,9 @@ public class SimpleUser extends UserPerson {
         }
         this.addFund(newFund);
         neoBank.getManagerData().addBonusFund(newFund);
+        BonusThread thread = new BonusThread(neoBank, newFund);
+        Thread newThread = new Thread(thread);
+        newThread.start();
         System.out.println(ColorConsole.GREEN + "Fund successfully created" + ColorConsole.RESET);
     }
 
