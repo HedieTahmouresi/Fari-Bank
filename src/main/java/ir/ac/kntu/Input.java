@@ -1,9 +1,8 @@
 package ir.ac.kntu;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
+import ir.ac.kntu.util.Calendar;
+
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -160,6 +159,7 @@ public class Input {
     public boolean nextConfirmation(SimpleUser receiver, String value) {
         System.out.println(ColorConsole.GREEN + "Receiver {Name : " + ColorConsole.YELLOW + receiver.getName() + ColorConsole.GREEN + ", Last Name : " + ColorConsole.YELLOW + receiver.getLastName() + "}" + ColorConsole.RESET);
         System.out.println(ColorConsole.GREEN + "Value : " + ColorConsole.YELLOW + value + "$" + ColorConsole.RESET);
+        System.out.println(ColorConsole.GREEN + "Time : " + ColorConsole.YELLOW + Calendar.now() + ColorConsole.RESET);
         System.out.println(ColorConsole.GREEN + "Are you sure?" + ColorConsole.RESET);
         String answer = this.nextLine();
         if (!this.exitPoint(answer)) {

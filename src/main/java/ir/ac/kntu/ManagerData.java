@@ -20,7 +20,6 @@ public class ManagerData {
     public void addTransaction(WireTransaction wireTransaction){
         this.wireTransactions.add(wireTransaction);
     }
-
     private final Input input = new Input();
 
     public double getWireWage() {

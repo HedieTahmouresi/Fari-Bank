@@ -223,10 +223,10 @@ public class Pagination<T> {
     public void selectTransfer(NeoBank neoBank, SimpleUser currentUser, String answer, CentralBank centralBank) {
         switch (answer) {
             case "1", "by Credit Card ID" :
-                centralBank.transferByCard(neoBank, currentUser);
+                centralBank.transferByCard(neoBank, currentUser, centralBank);
                 break;
             case "2", "by Account ID":
-                centralBank.transferByAccount(neoBank, currentUser);
+                centralBank.transferByAccount(neoBank, currentUser, centralBank);
                 break;
             case "3", "by Contact":
                 if (currentUser.isContactOption()) {

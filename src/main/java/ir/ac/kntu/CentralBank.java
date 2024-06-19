@@ -1,6 +1,7 @@
 package ir.ac.kntu;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class CentralBank {
@@ -69,7 +70,9 @@ public class CentralBank {
         return null;
     }
 
-    public void wireTransfer(NeoBank neoBank, SimpleUser sender, SimpleUser receiver, String value){
+    public void wireTransfer(NeoBank neoBank, ArrayList<SimpleUser> users, String value, CentralBank centralBank){
+        SimpleUser receiver = users.get(1);
+        SimpleUser sender = users.get(0);
         if (receiver==null){
             return;
         }
@@ -88,6 +91,9 @@ public class CentralBank {
         WireTransaction newTransaction = new WireTransaction(Double.parseDouble(value), neoBank.getTracingNumber(), receiver, receiver.getAccount().getAccountId(),"-", sender, false);
         neoBank.getManagerData().addTransaction(newTransaction);
         System.out.println(ColorConsole.GREEN + "Transaction is on hold" + ColorConsole.RESET);
+        TransactionThread thread = new TransactionThread(centralBank, neoBank, newTransaction);
+        Thread newThread = new Thread(thread);
+        newThread.start();
     }
 
     public void cardToCard(NeoBank neoBank, SimpleUser sender, SimpleUser receiver, String value){
@@ -101,8 +107,10 @@ public class CentralBank {
             System.out.println(ColorConsole.RED + "Transfer failed" + ColorConsole.RESET);
             return;
         }
-        if (!receiver.getAccount().getCreditCard().enterPreviousPassCode()){
-            return;
+        if (receiver.getAccount().getCreditCard().hasSetPassword()) {
+            if (!receiver.getAccount().getCreditCard().enterPreviousPassCode()) {
+                return;
+            }
         }
         double remains = sender.isHasRemainsFund() ? sender.getRemainsFund().calculateRemains(value) : 0;
         if (Double.parseDouble(value) + neoBank.getManagerData().getCardWage() + remains > sender.getAccount().getBalance()) {
@@ -155,7 +163,7 @@ public class CentralBank {
         }
     }
 
-    public void transferByCard(NeoBank neoBank, SimpleUser currentUser){
+    public void transferByCard(NeoBank neoBank, SimpleUser currentUser, CentralBank centralBank){
         String creditCardID = input.nextCreditCardID(this);
         if (creditCardID==null){
             return;
@@ -171,10 +179,10 @@ public class CentralBank {
             this.showOnlyFariCard(neoBank, value, currentUser, receiver);
             return;
         }
-        this.showTransferOptionsForCard(value, currentUser, receiver, neoBank);
+        this.showTransferOptionsForCard(value, new ArrayList<>(Arrays.asList(currentUser, receiver)), neoBank, centralBank);
     }
 
-    public void transferByAccount(NeoBank neoBank, SimpleUser currentUser){
+    public void transferByAccount(NeoBank neoBank, SimpleUser currentUser, CentralBank centralBank){
         String accountID = input.nextAccountID(this);
         if (accountID==null){
             return;
@@ -190,7 +198,7 @@ public class CentralBank {
             this.showOnlyFariAccount(neoBank, value, currentUser, receiver);
             return;
         }
-        this.showTransferOptionsForAccount(value, currentUser, receiver, neoBank);
+        this.showTransferOptionsForAccount(value, new ArrayList<>(Arrays.asList(currentUser, receiver)), neoBank, centralBank);
     }
 
     public void showOnlyFariCard(NeoBank neoBank, String value, SimpleUser sender, SimpleUser receiver){
@@ -236,24 +244,24 @@ public class CentralBank {
         return input.nextLine();
     }
 
-    public void showTransferOptionsForCard(String value, SimpleUser sender, SimpleUser receiver, NeoBank neoBank){
+    public void showTransferOptionsForCard(String value, ArrayList<SimpleUser> senderReceiver, NeoBank neoBank, CentralBank centralBank){
         String answer = this.displayTransferOptions();
         switch (answer){
             case "1", "Wire Transfer"-> {
                 if (checkWire(value)) {
-                    this.wireTransfer(neoBank, sender, receiver, value);
+                    this.wireTransfer(neoBank, senderReceiver, value, centralBank);
                     return;
                 }
             }
             case "2", "Bridge Transfer"-> {
                 if (checkBridge(value)) {
-                    this.bridgeTransfer(neoBank, sender, receiver, value);
+                    this.bridgeTransfer(neoBank, senderReceiver.get(0), senderReceiver.get(1), value);
                     return;
                 }
             }
             case "3", "Card to Card Transfer" -> {
                 if (checkCard(value, true)) {
-                    this.cardToCard(neoBank, sender, receiver, value);
+                    this.cardToCard(neoBank, senderReceiver.get(0), senderReceiver.get(1), value);
                     return;
                 }
             }
@@ -267,7 +275,7 @@ public class CentralBank {
                 System.out.println(ColorConsole.RED + "No other option" + ColorConsole.RESET);
             }
         }
-        this.showTransferOptionsForCard(value, sender, receiver, neoBank);
+        this.showTransferOptionsForCard(value, senderReceiver, neoBank, centralBank);
     }
 
     public boolean checkCard(String value, boolean byCard){
@@ -294,20 +302,23 @@ public class CentralBank {
         return true;
     }
 
-    public void showTransferOptionsForAccount(String value, SimpleUser sender, SimpleUser receiver, NeoBank neoBank){
+    public void showTransferOptionsForAccount(String value, ArrayList<SimpleUser> senderReceiver, NeoBank neoBank, CentralBank centralBank){
         String answer = this.displayTransferOptions();
         switch (answer){
             case "1", "Wire Transfer":
-
+                if (checkWire(value)) {
+                    this.wireTransfer(neoBank, senderReceiver, value, centralBank);
+                    return;
+                }
             case "2", "Bridge Transfer":
                 if (checkBridge(value)){
-                    this.bridgeTransfer(neoBank, sender, receiver, value);
+                    this.bridgeTransfer(neoBank, senderReceiver.get(0), senderReceiver.get(1), value);
                     return;
                 }
                 break;
             case "3", "Card to Card Transfer" :
                 if (checkCard(value, false)){
-                    this.cardToCard(neoBank,sender, receiver, value);
+                    this.bridgeTransfer(neoBank, senderReceiver.get(0), senderReceiver.get(1), value);
                     return;
                 }
                 break;
@@ -320,6 +331,6 @@ public class CentralBank {
                 }
                 System.out.println(ColorConsole.RED + "No other option" + ColorConsole.RESET);
         }
-        this.showTransferOptionsForCard(value, sender, receiver, neoBank);
+        this.showTransferOptionsForCard(value, senderReceiver, neoBank, centralBank);
     }
 }
