@@ -256,9 +256,14 @@ public class ManagerData {
     }
 
     public void addAdmin(){
-        System.out.println(ColorConsole.BLUE + "Please enter the full name" + ColorConsole.RESET);
-        String fullName = input.nextLine();
-        if (!input.exitPoint(fullName)){
+        System.out.println(ColorConsole.BLUE + "Please enter the name" + ColorConsole.RESET);
+        String name = input.nextLine();
+        if (!input.exitPoint(name)){
+            return;
+        }
+        System.out.println(ColorConsole.BLUE + "Please enter the last name" + ColorConsole.RESET);
+        String lastName = input.nextLine();
+        if (!input.exitPoint(lastName)){
             return;
         }
         String userName = input.nextUserNameAdmin(this);
@@ -269,7 +274,7 @@ public class ManagerData {
         if (password==null){
             return;
         }
-        Admin newAdmin = new Admin(fullName, userName, password, this.data);
+        Admin newAdmin = new Admin(name,lastName, userName, password, this.data);
         this.addAdmin(newAdmin);
     }
 
@@ -290,5 +295,144 @@ public class ManagerData {
         }
         return false;
     }
+
+    public List<Object> getAllUsers(){
+        List<Object> allUsers = this.getData().getUsers();
+        allUsers.addAll(this.admins);
+        allUsers.addAll(this.managers);
+        return allUsers;
+    }
+
+    public List<Object> getAdmins(){
+        return new ArrayList<>(this.admins);
+    }
+
+    public List<Object> getManagers(){
+        return new ArrayList<>(this.managers);
+    }
+
+    public List<Object> searchName(List<Object> users){
+        String name = input.nextSearchName();
+        if (name==null){
+            return null;
+        }
+        List<Object> result = new ArrayList<>();
+        for (Object user : users) {
+            Fuzzy similarity = new Fuzzy(name, this.getName(user));
+            if (similarity.getSimilarity() >= 0.6) {
+                result.add(user);
+            }
+        }
+        return result;
+    }
+
+    public List<Object> searchLastName(List<Object> users){
+        String lastName = input.nextSearchLastName();
+        if (lastName==null){
+            return null;
+        }
+        List<Object> result = new ArrayList<>();
+        for (Object user : users) {
+            Fuzzy similarity = new Fuzzy(lastName, this.getLastName(user));
+            if (similarity.getSimilarity() >= 0.6) {
+                result.add(user);
+            }
+        }
+        return result;
+    }
+
+    public List<Object> searchPhoneNumber(List<Object> users){
+        String phoneNumber = input.nextSearchPhoneNumber();
+        if (phoneNumber==null){
+            return null;
+        }
+        List<Object> result = new ArrayList<>();
+        for (Object user : users) {
+            if (this.getPhoneNumber(user)!=null) {
+                Fuzzy similarity = new Fuzzy(phoneNumber, this.getPhoneNumber(user));
+                if (similarity.getSimilarity() >= 0.6) {
+                    result.add(user);
+                }
+            }
+        }
+        return result;
+    }
+
+    public List<Object> searchUserName(List<Object> users){
+        String userName = input.nextSearchUserName();
+        if (userName==null){
+            return null;
+        }
+        List<Object> result = new ArrayList<>();
+        for (Object user : users) {
+            if (this.getUserName(user)!=null) {
+                Fuzzy similarity = new Fuzzy(userName, this.getUserName(user));
+                if (similarity.getSimilarity() >= 0.6) {
+                    result.add(user);
+                }
+            }
+        }
+        return result;
+    }
+
+    public List<Object> searchRole(List<Object> users){
+        String role = input.nextRole();
+        if (role==null){
+            return null;
+        }
+        switch (role){
+            case "1"-> {
+                return this.getData().getUsers();
+            }
+            case "2"->{
+                return this.getAdmins();
+            }
+            case "3"->{
+                return this.getManagers();
+            }
+            default ->{
+                return null;
+            }
+        }
+    }
+
+    public String getName (Object obj){
+        if (obj instanceof SimpleUser simpleUser){
+            return simpleUser.getName();
+        }else if(obj instanceof Manager manager){
+            return manager.getName();
+        } else if(obj instanceof Admin admin){
+            return admin.getName();
+        }
+        return null;
+    }
+
+    public String getLastName (Object obj){
+        if (obj instanceof SimpleUser simpleUser){
+            return simpleUser.getLastName();
+        }else if(obj instanceof Manager manager){
+            return manager.getLastName();
+        } else if(obj instanceof Admin admin){
+            return admin.getLastName();
+        }
+        return null;
+    }
+
+    public String getPhoneNumber (Object obj){
+        if (obj instanceof SimpleUser simpleUser){
+            return simpleUser.getSimCard().getPhoneNumber();
+        }
+        return null;
+    }
+
+    public String getUserName (Object obj){
+        if(obj instanceof Manager manager){
+            return manager.getUserName();
+        } else if(obj instanceof Admin admin){
+            return admin.getUserName();
+        }
+        return null;
+    }
+
 
 }

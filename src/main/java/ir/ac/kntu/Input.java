@@ -285,6 +285,31 @@ public class Input {
 
     }
 
+    public String nextSearchUserName() {
+        System.out.println(ColorConsole.BLUE + "Do you want to enter a user name?" + ColorConsole.RESET);
+        String answer = this.nextLine();
+        switch (answer) {
+            case "yes":
+                System.out.println(ColorConsole.BLUE + "Enter the user name you are looking for!" + ColorConsole.RESET);
+                String name = this.nextLine();
+                if (!this.exitPoint(name)) {
+                    return null;
+                } else {
+                    return name;
+                }
+            case "no":
+                return null;
+            default:
+                if (!this.exitPoint(answer)) {
+                    return null;
+                }
+                System.out.println(ColorConsole.RED + "THERE IS NO OTHER OPTION! Please input something else!" + ColorConsole.RESET);
+
+        }
+        return nextSearchUserName();
+
+    }
+
     public String nextSearchLastName() {
         System.out.println(ColorConsole.BLUE + "Do you want to enter a last name?" + ColorConsole.RESET);
         String answer = this.nextLine();
@@ -408,7 +433,27 @@ public class Input {
         }else if (!data.managerExists(userName)){
             return userName;
         }
-        System.out.println(ColorConsole.RED + "Another Admin with this username exists" + ColorConsole.RESET);
+        System.out.println(ColorConsole.RED + "Another Manager with this username exists" + ColorConsole.RESET);
         return this.nextUserNameManager(data);
+    }
+
+    public String nextRole(){
+        System.out.println(ColorConsole.BLUE + "Choose :");
+        System.out.println("   1. Simple User");
+        System.out.println("   2. Admin");
+        System.out.println("   3. Manager");
+        String answer = this.nextLine();
+        switch (answer){
+            case "1", "2", "3"->{
+                return answer;
+            }
+            default -> {
+                if (!this.exitPoint(answer)){
+                    return null;
+                }
+                System.out.println(ColorConsole.RED + "No other option" + ColorConsole.RESET);
+            }
+        }
+        return this.nextRole();
     }
 }

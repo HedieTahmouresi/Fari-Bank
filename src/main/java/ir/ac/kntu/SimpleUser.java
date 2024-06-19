@@ -484,4 +484,8 @@ public class SimpleUser extends UserPerson {
         System.out.println(ColorConsole.RED + "Wrong input try again!" + ColorConsole.RESET);
     }
 
+    @Override
+    public String toString() {
+        return ColorConsole.CYAN + "Simple User{" + super.toString() + ColorConsole.CYAN + "}" + ColorConsole.RESET;
+    }
 }

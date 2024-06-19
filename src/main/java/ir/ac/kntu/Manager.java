@@ -7,7 +7,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Manager {
-    private String fullName;
+    private String name;
+    private String lastName;
     private String userName;
     private String password;
     private ManagerData data;
@@ -56,25 +57,34 @@ public class Manager {
         this.data = data;
     }
 
-    public String getFullName() {
-        return fullName;
+    public String getName() {
+        return name;
     }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public Manager(String fullName, String userName, String password, ManagerData data, int rank) {
-        setFullName(fullName);
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public Manager(String name, String lastName, String userName, String password, ManagerData data, int rank) {
+        setName(name);
         setUserName(userName);
         setPassword(password);
         setData(data);
         setRank(rank);
         setBlocked(false);
+        setLastName(lastName);
     }
 
 
-    public void settings(NeoBank neoBank){
+    public void settings(){
         List<String> options = new ArrayList<>(Arrays.asList(ColorConsole.CYAN + "Fari Wage", ColorConsole.CYAN + "Charge Wage", ColorConsole.CYAN + "Bonus Percentage", ColorConsole.CYAN + "Card to Card Wage", ColorConsole.CYAN + "Bridge Transfer Wage", ColorConsole.CYAN + "Wire Transfer Wage" + ColorConsole.RESET));
         Pagination<String> menu = new Pagination<>(options, 5);
         String answer;
@@ -112,8 +122,8 @@ public class Manager {
         System.out.println("   2. Display All users");
         String answer = input.nextLine();
         switch (answer){
-            case "1" -> this.add(neoBank);
-            case "2" -> System.out.println("hhh");
+            case "1" -> this.add();
+            case "2" -> this.displayUsers(neoBank);
             default -> {
                 if (!input.exitPoint(answer)){
                     return;
@@ -124,7 +134,7 @@ public class Manager {
         this.userManagement(neoBank);
     }
 
-    public void add(NeoBank neoBank){
+    public void add(){
         System.out.println(ColorConsole.BLUE + "Choose :");
         System.out.println("   1. Add Manager");
         System.out.println("   2. Add Admin");
@@ -139,15 +149,20 @@ public class Manager {
                 System.out.println(ColorConsole.RED + "No other Option!" + ColorConsole.RESET);
             }
         }
+        this.add();
     }
 
     public void addManager(){
-        System.out.println(ColorConsole.BLUE + "Please enter the full name" + ColorConsole.RESET);
-        String fullName = input.nextLine();
-        if (!input.exitPoint(fullName)){
+        System.out.println(ColorConsole.BLUE + "Please enter the name" + ColorConsole.RESET);
+        String name = input.nextLine();
+        if (!input.exitPoint(name)){
             return;
         }
-        System.out.println(ColorConsole.BLUE + "Please enter your user name" + ColorConsole.RESET);
+        System.out.println(ColorConsole.BLUE + "Please enter the last name" + ColorConsole.RESET);
+        String lastName = input.nextLine();
+        if (!input.exitPoint(lastName)){
+            return;
+        }
         String userName = input.nextUserNameManager(this.getData());
         if (userName==null){
             return;
@@ -157,7 +172,80 @@ public class Manager {
             return;
         }
         int rank = this.getRank() + 1;
-        Manager newManager = new Manager(fullName, userName, password, this.getData(), rank);
+        Manager newManager = new Manager(name, lastName, userName, password, this.getData(), rank);
         this.getData().addManager(newManager);
     }
+
+    @Override
+    public String toString() {
+        return ColorConsole.CYAN + "Manager{" +ColorConsole.PURPLE +  "Name : "+ ColorConsole.PINK + name + ColorConsole.PURPLE + ", Last Name : " + ColorConsole.PINK + this.getLastName() + ColorConsole.PURPLE + ", User Name :" + ColorConsole.PINK+ userName  +ColorConsole.CYAN + '}' + ColorConsole.RESET;
+    }
+
+
+    public void displayUsers(NeoBank neoBank){
+        System.out.println(ColorConsole.BLUE + "Choose : ");
+        System.out.println("   1. All users");
+        System.out.println("   2. Filtered users");
+        String answer = input.nextLine();
+        switch (answer){
+            case "1" -> this.showUsers(neoBank, this.getData().getAllUsers());
+            case "2" -> this.displayFilteredUsers(neoBank, this.getData().getAllUsers());
+            default -> {
+                if (!input.exitPoint(answer)){
+                    return;
+                }
+                System.out.println(ColorConsole.RED + "No other Option!" + ColorConsole.RESET);
+            }
+        }
+    }
+
+    public void displayFilteredUsers(NeoBank neoBank, List<Object> users){
+        List<String> menu1 = new ArrayList<>(Arrays.asList(ColorConsole.CYAN + "by Name", ColorConsole.CYAN + "by LasT Name", ColorConsole.CYAN + "by User Name", ColorConsole.CYAN + "by Phone Number", ColorConsole.CYAN + "by Role" + ColorConsole.RESET));
+        Pagination<String> menu = new Pagination<>(menu1, 5);
+        String command;
+        do{
+            menu.showPage();
+            command= input.nextLine();
+            switch (command){
+                case "1"-> this.showUsers(neoBank, this.getData().searchName(users));
+                case "2"-> this.showUsers(neoBank, this.getData().searchLastName(users));
+                case "3"-> this.showUsers(neoBank, this.getData().searchUserName(users));
+                case "4"-> this.showUsers(neoBank, this.getData().searchPhoneNumber(users));
+                case "5"-> this.showUsers(neoBank, this.getData().searchRole(users));
+                case "next", "previous"-> menu.changePage(command);
+                default -> {
+                    if (!input.exitPoint(command)){
+                        return;
+                    }
+                    System.out.println(ColorConsole.RED + "No other option" + ColorConsole.RESET);
+                }
+            }
+        }while (!"return".equals(command));
+    }
+
+    public void showUsers(NeoBank neoBank, List<Object> users){
+        if (users==null || users.isEmpty()){
+            return;
+        }
+        Pagination userList = new Pagination<>(users, 5);
+        String command;
+        do{
+            if (users.isEmpty()){
+                return;
+            }
+            userList.showPage();
+            command= input.nextLine();
+            if (!input.exitPoint(command)){
+                return;
+            }else if (command.matches("[0-9]+")) {
+                users.get(Integer.parseInt(command));
+            } else if ("next".equals(command) || "previous".equals(command)) {
+                userList.changePage(command);
+            } else {
+                System.out.println(ColorConsole.RED + "No other option! Please try again!" + ColorConsole.RESET);
+            }
+        }while (!"return".equals(command));
+    }
+
+
 }

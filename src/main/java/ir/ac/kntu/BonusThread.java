@@ -45,7 +45,6 @@ public class BonusThread implements Runnable {
             Thread.sleep(time);
             this.getFund().depositBonus(this.getNeoBank());
             if (!Calendar.now().isAfter(endTime)){
-                System.out.println("haha");
                 this.run();
             }
         } catch (InterruptedException error) {

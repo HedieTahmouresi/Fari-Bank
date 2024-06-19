@@ -340,7 +340,7 @@ public class Pagination<T> {
     public void selectManagerService(NeoBank neoBank, String answer, Manager currentManager, CentralBank centralBank) {
         switch (answer) {
             case "1", "Settings":
-                currentManager.settings(neoBank);
+                currentManager.settings();
                 break;
             case "2", "User Management":
                 currentManager.userManagement(neoBank);

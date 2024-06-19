@@ -3,7 +3,8 @@ package ir.ac.kntu;
 import java.util.List;
 
 public class Admin {
-    private String fullName;
+    private String name;
+    private String lastName;
     private String userName;
     private String password;
     private Data data;
@@ -12,15 +13,24 @@ public class Admin {
 
     private final Input input = new Input();
 
-    public Admin(String fullName, String userName, String password, Data data) {
-        setFullName(fullName);
+    public Admin(String name,String lastName,  String userName, String password, Data data) {
+        setName(name);
         setUserName(userName);
         setPassword(password);
         setData(data);
         setAbilities(new AdminAbilities(this));
         setBlocked(false);
+        setLastName(lastName);
     }
 
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
 
     public boolean isBlocked() {
         return blocked;
@@ -39,12 +49,12 @@ public class Admin {
         this.abilities = abilities;
     }
 
-    public String getFullName() {
-        return fullName;
+    public String getName() {
+        return name;
     }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getUserName() {
@@ -206,5 +216,8 @@ public class Admin {
 
     }
 
-
+    @Override
+    public String toString() {
+        return ColorConsole.CYAN + "Admin{" +ColorConsole.PURPLE +  "Name : "+ ColorConsole.PINK + name + ColorConsole.PURPLE + ", Last Name : " + ColorConsole.PINK + this.getLastName() + ColorConsole.PURPLE + ", User Name :" + ColorConsole.PINK+ userName  +ColorConsole.CYAN + '}' + ColorConsole.RESET;
+    }
 }

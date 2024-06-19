@@ -87,7 +87,7 @@ public class BonusFund extends Fund {
         Instant now = Calendar.now();
         Duration oneDay = Duration.ofDays(1);
         Instant endTime = this.getExpiration().plus(oneDay);
-        if (endTime.isAfter(this.getExpiration())){
+        if (now.isAfter(endTime)){
             return false;
         }
         ZonedDateTime zonedDateTime = this.getLastDeposit().atZone(ZoneId.systemDefault());
