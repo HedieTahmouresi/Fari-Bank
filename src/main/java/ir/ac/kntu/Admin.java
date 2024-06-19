@@ -220,4 +220,76 @@ public class Admin {
     public String toString() {
         return ColorConsole.CYAN + "Admin{" +ColorConsole.PURPLE +  "Name : "+ ColorConsole.PINK + name + ColorConsole.PURPLE + ", Last Name : " + ColorConsole.PINK + this.getLastName() + ColorConsole.PURPLE + ", User Name :" + ColorConsole.PINK+ userName  +ColorConsole.CYAN + '}' + ColorConsole.RESET;
     }
+
+    public void changeName() {
+        System.out.println(ColorConsole.CYAN + "Would you like to change the name? (previous name : " + ColorConsole.PURPLE + this.getName() + ColorConsole.CYAN + ")" + ColorConsole.RESET);
+        String answer = input.nextLine();
+        if ("no".equalsIgnoreCase(answer) || !input.exitPoint(answer)) {
+            return;
+        } else if ("yes".equalsIgnoreCase(answer)) {
+            System.out.println(ColorConsole.CYAN + "Write the name you like!" + ColorConsole.RESET);
+            String name = input.nextLine();
+            if (input.exitPoint(name)) {
+                this.setName(name);
+            }
+            return;
+        } else {
+            System.out.println(ColorConsole.RED + "Wrong input! Try again" + ColorConsole.RESET);
+        }
+        this.changeName();
+    }
+
+    public void changeLastName() {
+        System.out.println(ColorConsole.CYAN + "Would you like to change the last name? (previous last name : " + ColorConsole.PURPLE + this.getLastName() + ColorConsole.CYAN + ")" + ColorConsole.RESET);
+        String answer = input.nextLine();
+        if ("no".equalsIgnoreCase(answer) || !input.exitPoint(answer)) {
+            return;
+        } else if ("yes".equalsIgnoreCase(answer)) {
+            System.out.println(ColorConsole.CYAN + "Write the last name you like!" + ColorConsole.RESET);
+            String lastName = input.nextLine();
+            if (input.exitPoint(lastName)) {
+                this.setLastName(lastName);
+            }
+            return;
+        } else {
+            System.out.println(ColorConsole.RED + "Wrong input! Try again" + ColorConsole.RESET);
+        }
+        this.changeLastName();
+    }
+
+    public void changeUserName(ManagerData data) {
+        System.out.println(ColorConsole.CYAN + "Would you like to change the user name? (previous user name : " + ColorConsole.PURPLE + this.getUserName() + ColorConsole.CYAN + ")" + ColorConsole.RESET);
+        String answer = input.nextLine();
+        if ("no".equalsIgnoreCase(answer) || !input.exitPoint(answer)) {
+            return;
+        } else if ("yes".equalsIgnoreCase(answer)) {
+            System.out.println(ColorConsole.CYAN + "Write the last name you like!" + ColorConsole.RESET);
+            String userName = input.nextUserNameAdmin(data);
+            if (userName == null) {
+                return;
+            } else if (!data.managerExists(userName)) {
+                this.setUserName(userName);
+            } else {
+                System.out.println("A manager with this username exists");
+            }
+            return;
+        } else {
+            System.out.println(ColorConsole.RED + "Wrong input! Try again" + ColorConsole.RESET);
+        }
+        this.changeUserName(data);
+    }
+
+    public void changeAbility(){
+        System.out.println(ColorConsole.CYAN + "Would you like to change the abilities?" + ColorConsole.RESET);
+        String answer = input.nextLine();
+        if ("no".equalsIgnoreCase(answer) || !input.exitPoint(answer)) {
+            return;
+        } else if ("yes".equalsIgnoreCase(answer)) {
+            this.getAbilities().changeAbilities();
+            return;
+        } else {
+            System.out.println(ColorConsole.RED + "Wrong input! Try again" + ColorConsole.RESET);
+        }
+        this.changeAbility();
+    }
 }

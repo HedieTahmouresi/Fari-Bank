@@ -372,7 +372,7 @@ public class Manager {
             } else if (!this.getData().adminExists(userName)) {
                 this.setUserName(userName);
             } else {
-                System.out.println("Another admin with this username exists");
+                System.out.println("An admin with this username exists");
             }
             return;
         } else {
@@ -392,6 +392,27 @@ public class Manager {
                 currentUser.changeLastName();
             }
             case "2", "Block" -> currentUser.setBlocked(true);
+            default -> {
+                if (!input.exitPoint(answer)){
+                    return;
+                }
+                System.out.println(ColorConsole.RED + "no other option" + ColorConsole.RESET);
+            }
+        }
+    }
+
+    public void manageAdmin(Admin currentAdmin){
+        System.out.println(ColorConsole.BLUE + "Choose :");
+        System.out.println("   1. Edit");
+        System.out.println("   2. Block");
+        String answer = input.nextLine();
+        switch (answer) {
+            case "1", "Edit" -> {
+                currentAdmin.changeName();
+                currentAdmin.changeLastName();
+                currentAdmin.changeAbility();
+            }
+            case "2", "Block" -> currentAdmin.setBlocked(true);
             default -> {
                 if (!input.exitPoint(answer)){
                     return;
