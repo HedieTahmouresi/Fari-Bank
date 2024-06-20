@@ -8,11 +8,15 @@ public class RemainsFund extends Fund {
     }
 
     public double calculateRemains(String amount) {
+        amount = amount.substring(0, amount.length()-2);
         int len = amount.length();
         double rem = (double) (3 * len) / 4;
         len = (int) Math.ceil(rem);
+        if (Double.parseDouble(amount)%(Math.pow(10,len))==0){
+            return 0;
+        }
         String value = amount.substring(amount.length() - len);
-        Long intValue = Long.parseLong(value);
+        double intValue = Double.parseDouble(value);
         return Math.pow(10, len) - intValue;
     }
 
